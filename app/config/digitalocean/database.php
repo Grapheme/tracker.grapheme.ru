@@ -3,7 +3,7 @@
 return array(
 	'connections' => array(
 		'mysql' => array(
-			'database'  => '',
+			'database'  => 'tracker',
 			'username'  => 'root',
 			'password'  => 'perl03',
 		),
