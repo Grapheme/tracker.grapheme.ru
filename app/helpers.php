@@ -155,3 +155,8 @@ function morph($n, $f1, $f2, $f5) {
     if ($n==1) return $f1;
     return $f5;
 }
+
+function getInitials($fio){
+
+    return preg_replace('/(\w+) (\w)\w+ (\w)\w+/iu', '$1 $2. $3.',$fio);
+}

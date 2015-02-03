@@ -3,10 +3,10 @@
 return array(
 
 	'debug' => false,
-	'url' => 'http://localhost',
-	'timezone' => 'UTC',
-	'locale' => 'en',
-	'fallback_locale' => 'en',
+	'url' => '',
+	'timezone' => 'Europe/Moscow',
+	'locale' => 'ru',
+	'fallback_locale' => 'ru',
 	'key' => '5TZqHw80OVBVqlFWGsDiLfcRqHKRivqe',
 	'cipher' => MCRYPT_RIJNDAEL_128,
 	'providers' => array(
@@ -36,6 +36,10 @@ return array(
 		'Illuminate\Validation\ValidationServiceProvider',
 		'Illuminate\View\ViewServiceProvider',
 		'Illuminate\Workbench\WorkbenchServiceProvider',
+
+		'Way\Generators\GeneratorsServiceProvider',
+		'Intervention\Image\ImageServiceProvider',
+		'Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider',
 
 	),
 	'manifest' => storage_path().'/meta',
@@ -79,6 +83,8 @@ return array(
 		'URL'               => 'Illuminate\Support\Facades\URL',
 		'Validator'         => 'Illuminate\Support\Facades\Validator',
 		'View'              => 'Illuminate\Support\Facades\View',
+
+		'ImageManipulation' => 'Intervention\Image\Facades\Image',
 
 	),
 );

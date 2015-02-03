@@ -22,7 +22,8 @@
 			"app/libraries"
 		],
 	  	"files" : [
-			"app/helpers.php"
+			"app/helpers.php",
+			"app/extra-helpers.php"
 		]
 	},
 	"scripts": {

@@ -35,35 +35,11 @@ class AuthAccount {
 
 	public static function getGroupStartUrl(){
 
-		$StartUrl = '';
 		if(Auth::check()):
-            $group = Auth::user()->group;
-			$StartUrl = $group->start_url ? $group->start_url : $group->dashboard;
-		endif;
-        return $StartUrl;
-	}
-	
-    /**
-     * @TODO Выпилить и не использовать
-     */
-	public static function isAdminLoggined(){
-		
-		if(self::getGroupID() == 1):
-			return TRUE;
+            return Auth::user()->group->dashboard;
 		else:
-			return FALSE;
+			return URL::route('home');
 		endif;
 	}
 	
-    /**
-     * @TODO Выпилить и не использовать
-     */
-	public static function isUserLoggined(){
-		
-		if(self::getGroupID() == 2):
-			return TRUE;
-		else:
-			return FALSE;
-		endif;
-	}
 }
