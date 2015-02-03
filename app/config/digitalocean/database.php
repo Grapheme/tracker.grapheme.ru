@@ -5,7 +5,7 @@ return array(
 		'mysql' => array(
 			'database'  => '',
 			'username'  => 'root',
-			'password'  => '',
+			'password'  => 'perl03',
 		),
 	)
 );
