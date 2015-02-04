@@ -9,8 +9,8 @@ class TimeSheetsController extends \BaseController {
 	public function index(){
 
 		$tasks = $weekTasks = array();
+		$dt_request = Request::has('date') ? Request::get('date') : $dt_request = date('Y-m-d');
 		if($projectsIDs = Project::where('superior_id',Auth::user()->id)->lists('id')):
-			$dt_request = Request::has('date') ? Request::get('date') : $dt_request = date('Y-m-d');
 			$startOfDay = (new \Carbon\Carbon($dt_request))->hour(0)->minute(0)->second(0);
 			$endOfDay = (new \Carbon\Carbon($dt_request))->hour(23)->minute(59)->second(59);
 			$startOfWeek = (new \Carbon\Carbon($startOfDay))->startOfWeek()->hour(0)->minute(0)->second(0);
