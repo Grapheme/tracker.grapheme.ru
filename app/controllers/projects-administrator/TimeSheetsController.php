@@ -14,12 +14,12 @@ class TimeSheetsController extends \BaseController {
 		$endOfDay = (new \Carbon\Carbon($dt_request))->hour(23)->minute(59)->second(59);
 		$startOfWeek = (new \Carbon\Carbon($startOfDay))->startOfWeek()->hour(0)->minute(0)->second(0);
 		$endOfWeek = (new \Carbon\Carbon($startOfDay))->endOfWeek()->hour(23)->minute(59)->second(59);
+		for($day = 0; $day < 7; $day++):
+			$index = (new \Carbon\Carbon($dt_request))->startOfWeek()->AddDays($day);
+			$weekTasks[$index->format('Y-m-d')] = ['label'=>$index->format('d.m'),'lead_time'=>'0:00','tasks_count'=>0];
+		endfor;
 		if($projectsIDs = Project::where('superior_id',Auth::user()->id)->lists('id')):
 			$tasks = ProjectTask::whereIn('project_id',$projectsIDs)->whereBetween('set_date',[$startOfDay,$endOfDay])->with('cooperator','project')->get();
-			for($day = 0; $day < 7; $day++):
-				$index = (new \Carbon\Carbon($dt_request))->startOfWeek()->AddDays($day);
-				$weekTasks[$index->format('Y-m-d')] = ['label'=>$index->format('d.m'),'lead_time'=>'0:00','tasks_count'=>0];
-			endfor;
 			foreach(ProjectTask::whereIn('project_id',$projectsIDs)->whereBetween('set_date',[$startOfWeek,$endOfWeek])->get() as $task):
 				$index = (new myDateTime())->setDateString($task->set_date);
 				$weekTasks[$index->format('Y-m-d')]['lead_time'] += (getLeadTimeMinutes($task)+floor($task->lead_time/60));
