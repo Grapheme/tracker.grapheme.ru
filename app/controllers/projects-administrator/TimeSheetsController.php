@@ -10,11 +10,11 @@ class TimeSheetsController extends \BaseController {
 
 		$tasks = $weekTasks = array();
 		$dt_request = Request::has('date') ? Request::get('date') : $dt_request = date('Y-m-d');
+		$startOfDay = (new \Carbon\Carbon($dt_request))->hour(0)->minute(0)->second(0);
+		$endOfDay = (new \Carbon\Carbon($dt_request))->hour(23)->minute(59)->second(59);
+		$startOfWeek = (new \Carbon\Carbon($startOfDay))->startOfWeek()->hour(0)->minute(0)->second(0);
+		$endOfWeek = (new \Carbon\Carbon($startOfDay))->endOfWeek()->hour(23)->minute(59)->second(59);
 		if($projectsIDs = Project::where('superior_id',Auth::user()->id)->lists('id')):
-			$startOfDay = (new \Carbon\Carbon($dt_request))->hour(0)->minute(0)->second(0);
-			$endOfDay = (new \Carbon\Carbon($dt_request))->hour(23)->minute(59)->second(59);
-			$startOfWeek = (new \Carbon\Carbon($startOfDay))->startOfWeek()->hour(0)->minute(0)->second(0);
-			$endOfWeek = (new \Carbon\Carbon($startOfDay))->endOfWeek()->hour(23)->minute(59)->second(59);
 			$tasks = ProjectTask::whereIn('project_id',$projectsIDs)->whereBetween('set_date',[$startOfDay,$endOfDay])->with('cooperator','project')->get();
 			for($day = 0; $day < 7; $day++):
 				$index = (new \Carbon\Carbon($dt_request))->startOfWeek()->AddDays($day);
