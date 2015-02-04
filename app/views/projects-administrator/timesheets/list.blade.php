@@ -24,14 +24,23 @@
         <table class="table table-striped">
             <tbody>
             @foreach($tasks as $task)
-                <tr>
+                <tr {{ ($task->start_status && !$task->stop_status) ? 'class="success"' : '' }}>
                     <td>
                         {{ $task->project->title }} <br>
                         {{ getInitials($task->cooperator->fio) }} - {{ $task->note }}
                     </td>
                     <td>{{ culcLeadTime($task) }}</td>
                     <td>
-                        <a href="#" class="btn btn-default">Остановить</a>
+                    {{ Form::open(array('route'=>array('project_admin.timesheets.run_timer',),'method'=>'POST','style'=>'display:inline-block')) }}
+                        {{ Form::hidden('task',$task->id) }}
+                    @if($task->start_status && !$task->stop_status)
+                        {{ Form::hidden('run',0) }}
+                        {{ Form::submit('Остановить',['class'=>'btn btn-primary']) }}
+                    @else
+                        {{ Form::hidden('run',1) }}
+                        {{ Form::submit('Начать',['class'=>'btn btn-default']) }}
+                    @endif
+                    {{ Form::close() }}
                     </td>
                     <td><a href="{{ URL::route('project_admin.timesheets.edit',$task->id) }}" class="btn btn-success">Редактировать</td>
                     <td>

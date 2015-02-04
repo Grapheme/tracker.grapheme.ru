@@ -43,15 +43,15 @@ class TimeSheetsController extends \BaseController {
 	public function store()	{
 
 		$validator = Validator::make(Input::all(),ProjectTask::$rules);
+		$set_date = Input::get('set_date') ? Input::get('set_date') : date('Y-m-d');
 		if($validator->passes()):
-			$set_date = Input::get('set_date') ? Input::get('set_date') : date('Y-m-d');
 			if($task = ProjectTask::create(['project_id' => Input::get('project'), 'user_id' => Input::get('performer'),'note' => Input::get('note'),'start_status' => 1,'start_date' => date('Y-m-d H:i:s'),'set_date'=>$set_date,'lead_time'=>str2secLeadTime(Input::get('lead_time'))])):
 				return Redirect::route('project_admin.timesheets.index',['date'=>$set_date])->with('message','Задача создана успешно.');
 			else:
 				return Redirect::back()->with('message','Возникла ошибка при записи в БД');
 			endif;
 		else:
-			return Redirect::route('project_admin.timesheets.create')->withErrors($validator)->withInput(Input::all());
+			return Redirect::route('project_admin.timesheets.create',['date'=>$set_date])->withErrors($validator)->withInput(Input::all());
 		endif;
 	}
 
@@ -96,6 +96,35 @@ class TimeSheetsController extends \BaseController {
 			if(Project::where('id',$task->project_id)->where('superior_id',Auth::user()->id)->first()):
 				$task->delete();
 				return Redirect::route('project_admin.timesheets.index')->with('message','Задача удалена успешно.');
+			endif;
+		endif;
+		App::abort(404);
+	}
+
+	public function RunningTimer(){
+
+		$validator = Validator::make(Input::all(),['task'=>'integer|required','run'=>'integer|required']);
+		if($validator->passes()):
+			if ($task = ProjectTask::where('id',Input::get('task'))->first()):
+				$teamIDs = Team::where('superior_id',Auth::user()->id)->lists('cooperator_id');
+				$teamIDs[] = Auth::user()->id;
+				if (in_array($task->user_id,$teamIDs)):
+					if (Input::get('run') == 0):
+						$task->stop_status = 1;
+						$task->stop_date = date('Y-m-d H:i:s');
+					elseif(Input::get('run') == 1 && $task->start_status == 0):
+						$task->start_status = 1;
+						$task->start_date = date('Y-m-d H:i:s');
+						$task->stop_status = 0;
+						$task->stop_date = '0000-00-00 00:00:00';
+					elseif(Input::get('run') == 1 && $task->start_status == 1):
+						$task->stop_status = 0;
+						$task->stop_date = '0000-00-00 00:00:00';
+					endif;
+					$task->save();
+					$task->touch();
+				endif;
+				return Redirect::back();
 			endif;
 		endif;
 		App::abort(404);

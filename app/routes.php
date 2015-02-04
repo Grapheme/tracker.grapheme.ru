@@ -56,4 +56,5 @@ Route::group(array('before' => 'auth.projectAdministrator','prefix' => $prefix),
             )
         )
     );
+    Route::post('timesheets/running_timer',array('as'=>'project_admin.timesheets.run_timer','uses'=>'TimeSheetsController@RunningTimer'));
 });
