@@ -8,18 +8,25 @@ class TimeSheetsController extends \BaseController {
 
 	public function index(){
 
-		$tasks = array();
+		$tasks = $weekTasks = array();
 		if($projectsIDs = Project::where('superior_id',Auth::user()->id)->lists('id')):
-			if (Request::has('date')):
-				$start = (new \Carbon\Carbon(Request::get('date')))->hour(0)->minute(0)->second(0);
-				$end = (new \Carbon\Carbon(Request::get('date')))->hour(23)->minute(59)->second(59);
-			else:
-				$start = (new \Carbon\Carbon('now'))->hour(0)->minute(0)->second(0);
-				$end = (new \Carbon\Carbon('now'))->hour(23)->minute(59)->second(59);
-			endif;
-			$tasks = ProjectTask::whereIn('project_id',$projectsIDs)->whereBetween('set_date',[$start,$end])->with('cooperator','project')->get();
+			$dt_request = Request::has('date') ? Request::get('date') : $dt_request = date('Y-m-d');
+			$startOfDay = (new \Carbon\Carbon($dt_request))->hour(0)->minute(0)->second(0);
+			$endOfDay = (new \Carbon\Carbon($dt_request))->hour(23)->minute(59)->second(59);
+			$startOfWeek = (new \Carbon\Carbon($startOfDay))->startOfWeek()->hour(0)->minute(0)->second(0);
+			$endOfWeek = (new \Carbon\Carbon($startOfDay))->endOfWeek()->hour(23)->minute(59)->second(59);
+			$tasks = ProjectTask::whereIn('project_id',$projectsIDs)->whereBetween('set_date',[$startOfDay,$endOfDay])->with('cooperator','project')->get();
+			for($day = 0; $day < 7; $day++):
+				$index = (new \Carbon\Carbon($dt_request))->startOfWeek()->AddDays($day);
+				$weekTasks[$index->format('Y-m-d')] = ['label'=>$index->format('d.m'),'lead_time'=>'0:00','tasks_count'=>0];
+			endfor;
+			foreach(ProjectTask::whereIn('project_id',$projectsIDs)->whereBetween('set_date',[$startOfWeek,$endOfWeek])->get() as $task):
+				$index = (new myDateTime())->setDateString($task->set_date);
+				$weekTasks[$index->format('Y-m-d')]['lead_time'] += (getLeadTimeMinutes($task)+floor($task->lead_time/60));
+				$weekTasks[$index->format('Y-m-d')]['tasks_count'] += 1;
+			endforeach;
 		endif;
-		return View::make(Helper::acclayout('timesheets.list'),compact('tasks'));
+		return View::make(Helper::acclayout('timesheets.list'),compact('tasks','weekTasks','dt_request','startOfWeek','endOfWeek'));
 	}
 
 	public function create(){

@@ -1,15 +1,26 @@
 <?php
 
-function culcLeadTime($task){
+function getLeadTimeMinutes($task){
 
     if ($task->start_status && !$task->stop_status):
-        $sub_seconds = myDateTime::getDiffTimeStamp((new \Carbon\Carbon('now')),(new \Carbon\Carbon($task->start_date)));
+        return floor(myDateTime::getDiffTimeStamp((new \Carbon\Carbon('now')),(new \Carbon\Carbon($task->start_date)))/60);
     elseif($task->start_status && $task->stop_status):
-        $sub_seconds = myDateTime::getDiffTimeStamp((new \Carbon\Carbon($task->stop_date)),(new \Carbon\Carbon($task->start_date)));
+        return floor(myDateTime::getDiffTimeStamp((new \Carbon\Carbon($task->stop_date)),(new \Carbon\Carbon($task->start_date)))/60);
     endif;
-    $hours = floor(($sub_seconds+$task->lead_time)/3600);
-    $seconds = ($sub_seconds+$task->lead_time)%3600;
-    return $hours.':'.str_pad(floor($seconds/60),2,'0',STR_PAD_LEFT);
+}
+
+function getLeadTimeFromMinutes($sub_minutes,$lead_time = 0){
+
+    $lead_time = floor($lead_time/60);
+    $hours = floor(($sub_minutes+$lead_time)/60);
+    $minutes = ($sub_minutes+$lead_time)%60;
+    return $hours.':'.str_pad($minutes,2,'0',STR_PAD_LEFT);
+}
+
+function culcLeadTime($task){
+
+    $sub_minutes = getLeadTimeMinutes($task);
+    return getLeadTimeFromMinutes($sub_minutes,$task->lead_time);
 }
 
 function str2secLeadTime($string){
