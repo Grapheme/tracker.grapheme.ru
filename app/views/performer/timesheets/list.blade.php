@@ -26,7 +26,7 @@
             @foreach($tasks as $task)
                 <tr {{ ($task->start_status && !$task->stop_status) ? 'class="success"' : '' }}>
                     <td>
-                        <a href="{{ URL::route('projects.show',$task->project->id) }}">{{ $task->project->title }}</a>
+                        {{ $task->project->title }}
                         <br>
                         {{ $task->note }}
                     </td>

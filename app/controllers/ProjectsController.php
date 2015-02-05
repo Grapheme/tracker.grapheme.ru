@@ -62,7 +62,7 @@ class ProjectsController extends \BaseController {
 			endif;
 			if (count($project->team)):
 				foreach($project->team as $user):
-					$project_team[] = $user->id;
+					$set_project_team[] = $user->id;
 				endforeach;
 			endif;
 			return View::make(Helper::acclayout('projects.edit'),compact('project','project_team','set_project_team'));

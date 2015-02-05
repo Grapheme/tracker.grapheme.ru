@@ -13,10 +13,8 @@
 <div class="row placeholders">
     @foreach($projects as $project)
         <div class="col-xs-6 col-sm-3 placeholder">
-            <a href="{{ URL::route('projects.show',$project->id) }}" class="">
-                <img data-src="holder.js/200x200/auto/sky" class="img-responsive" alt="Generic placeholder thumbnail">
-            </a>
-            <a href="{{ URL::route('projects.show',$project->id) }}" class=""><h4>{{ $project->title }}</h4></a>
+            <img data-src="holder.js/200x200/auto/sky" class="img-responsive" alt="Generic placeholder thumbnail">
+            <h4>{{ $project->title }}</h4>
             <span class="text-muted">{{ $project->description }}</span>
             @if($project->team->count())
                 <br><span class="text-muted">{{ $project->team->count() }} {{ Lang::choice('участник|участника|участников',$project->team->count()) }}</span>
@@ -38,7 +36,7 @@
         @foreach($tasks as $task)
             <tr>
                 <td>
-                    <a href="{{ URL::route('projects.show',$task->project->id) }}">{{ $task->project->title }}</a>
+                    {{ $task->project->title }}
                     <br>
                     {{ $task->note }}
                 </td>

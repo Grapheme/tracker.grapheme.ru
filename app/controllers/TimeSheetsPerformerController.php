@@ -1,6 +1,6 @@
 <?php
 
-class TimeSheetsController extends \BaseController {
+class TimeSheetsPerformerController extends \BaseController {
 
 	public function __construct(){
 
