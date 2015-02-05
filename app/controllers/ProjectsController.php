@@ -31,12 +31,12 @@ class ProjectsController extends \BaseController {
 				if (Input::has('team')):
 					Project::where('id',$project->id)->first()->team()->sync(Input::get('team'));
 				endif;
-				return Redirect::route('project_admin.projects.show',$project->id)->with('message','Проект создан успешно.');
+				return Redirect::route('projects.show',$project->id)->with('message','Проект создан успешно.');
 			else:
 				return Redirect::back()->with('message','Возникла ошибка при записи в БД');
 			endif;
 		else:
-			return Redirect::route('project_admin.projects.create')->withErrors($validator)->withInput(Input::all());
+			return Redirect::back()->withErrors($validator)->withInput(Input::all());
 		endif;
 	}
 
@@ -79,9 +79,9 @@ class ProjectsController extends \BaseController {
 			if (Input::has('team')):
 				Project::where('id',$id)->first()->team()->sync(Input::get('team'));
 			endif;
-			return Redirect::route('project_admin.projects.show',$id)->with('message','Проект сохранен успешно.');
+			return Redirect::route('projects.show',$id)->with('message','Проект сохранен успешно.');
 		else:
-			return Redirect::route('project_admin.projects.edit',$id)->withErrors($validator)->withInput(Input::all());
+			return Redirect::back()->withErrors($validator)->withInput(Input::all());
 		endif;
 	}
 
@@ -90,7 +90,7 @@ class ProjectsController extends \BaseController {
 		if (Project::where('id',$id)->where('superior_id',Auth::user()->id)->first()):
 			ProjectTeam::where('project_id',$id)->delete();
 			Project::where('id',$id)->delete();
-			return Redirect::route('project_admin.projects.index')->with('message','Проект удален успешно.');
+			return Redirect::route('projects.index')->with('message','Проект удален успешно.');
 		else:
 			App::abort(404);
 		endif;

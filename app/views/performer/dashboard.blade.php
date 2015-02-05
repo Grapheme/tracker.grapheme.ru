@@ -3,11 +3,9 @@
 
 @section('content')
 <?php
-    $tasks = array();
-    if($projects = Project::where('superior_id',Auth::user()->id)->orderBy('updated_at','DESC')->with('team','tasks')->limit(4)->get()):
-        $projectsIDs = Project::where('superior_id',Auth::user()->id)->lists('id');
-        $tasks = ProjectTask::whereIn('project_id',$projectsIDs)->where('stop_status',0)->with('cooperator','project')->get();
-    endif;
+    $projects = User::where('id',Auth::user()->id)->first()->cooperator_projects()->get();
+    $tasks = ProjectTask::where('user_id',Auth::user()->id)->where('start_status',1)->where('stop_status',0)->with('project')->get();
+    $dt_request = Request::get('date') ? Request::get('date') : date('Y-m-d');
 ?>
 
 <h1 class="page-header">Dashboard</h1>
@@ -42,8 +40,6 @@
                 <td>
                     <a href="{{ URL::route('projects.show',$task->project->id) }}">{{ $task->project->title }}</a>
                     <br>
-                    <a href="{{ URL::route('cooperators.show',$task->cooperator->id) }}">{{ getInitials($task->cooperator->fio) }}</a>
-                    <br>
                     {{ $task->note }}
                 </td>
                 <td>{{ culcLeadTime($task) }}</td>
@@ -59,7 +55,7 @@
                     @endif
                     {{ Form::close() }}
                 </td>
-                <td><a href="{{ URL::route('timesheets.edit',$task->id) }}" class="btn btn-success">Редактировать</td>
+                <td><a href="{{ URL::route('timesheets.edit',[$task->id,'date'=>$dt_request]) }}" class="btn btn-success">Редактировать</td>
                 <td>
                     {{ Form::open(array('route'=>array('timesheets.destroy',$task->id),'method'=>'DELETE','style'=>'display:inline-block')) }}
                     {{ Form::submit('Удалить',['class'=>'btn btn-danger']) }}

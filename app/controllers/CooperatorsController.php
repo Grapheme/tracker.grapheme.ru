@@ -28,12 +28,12 @@ class CooperatorsController extends \BaseController {
 					$message->from(Config::get('mail.from.address'),Config::get('mail.from.name'));
 					$message->to($account->email)->subject('Регистрация на Tracker Grapheme');
 				});
-				return Redirect::route('project_admin.cooperators.index')->with('message','Сотрудник добавлен успешно.');
+				return Redirect::route('cooperators.index')->with('message','Сотрудник добавлен успешно.');
 			else:
 				return Redirect::back()->with('message','Возникла ошибка при записи в БД');
 			endif;
 		else:
-			return Redirect::route('project_admin.cooperators.create')->withErrors($validator)->withInput(Input::all());
+			return Redirect::back()->withErrors($validator)->withInput(Input::all());
 		endif;
 	}
 
@@ -64,12 +64,12 @@ class CooperatorsController extends \BaseController {
 		if($validator->passes()):
 			if (Team::where('superior_id',Auth::user()->id)->where('cooperator_id',$id)->exists()):
 				User::where('id',$id)->update(['fio' => Input::get('fio'),'position' => Input::get('position')]);
-				return Redirect::route('project_admin.cooperators.show',$id)->with('message','Профиль сотрудника сохранен успешно.');
+				return Redirect::route('cooperators.show',$id)->with('message','Профиль сотрудника сохранен успешно.');
 			else:
 				App::abort(404);
 			endif;
 		else:
-			return Redirect::route('project_admin.cooperators.edit',$id)->withErrors($validator)->withInput(Input::all());
+			return Redirect::back()->withErrors($validator)->withInput(Input::all());
 		endif;
 	}
 
@@ -79,7 +79,7 @@ class CooperatorsController extends \BaseController {
 			User::where('id',$id)->delete();
 			Team::where('cooperator_id',$id)->delete();
 			ProjectTeam::where('user_id',$id)->delete();
-			return Redirect::route('project_admin.cooperators.index')->with('message','Профиль сотрудника удален успешно.');
+			return Redirect::route('cooperators.index')->with('message','Профиль сотрудника удален успешно.');
 		else:
 			App::abort(404);
 		endif;

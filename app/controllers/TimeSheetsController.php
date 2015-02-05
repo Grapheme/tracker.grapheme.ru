@@ -1,6 +1,6 @@
 <?php
 
-class TimeSheetsController extends \BaseController {
+class TimeSheetsPerformerController extends \BaseController {
 
 	public function __construct(){
 
@@ -53,47 +53,40 @@ class TimeSheetsController extends \BaseController {
 				$start_date = date('Y-m-d H:i:s');
 			endif;
 			if($task = ProjectTask::create(['project_id' => Input::get('project'), 'user_id' => Input::get('performer'),'note' => Input::get('note'),'start_status' => $start_status,'start_date' => $start_date,'set_date'=>$set_date,'lead_time'=>str2secLeadTime(Input::get('lead_time'))])):
-				return Redirect::route('project_admin.timesheets.index',['date'=>$set_date])->with('message','Задача создана успешно.');
+				return Redirect::route('timesheets.index',['date'=>$set_date])->with('message','Задача создана успешно.');
 			else:
 				return Redirect::back()->with('message','Возникла ошибка при записи в БД');
 			endif;
 		else:
-			return Redirect::route('project_admin.timesheets.create',['date'=>$set_date])->withErrors($validator)->withInput(Input::all());
+			return Redirect::route('timesheets.create',['date'=>$set_date])->withErrors($validator)->withInput(Input::all());
 		endif;
 	}
 
 	public function edit($id){
 
-		if($project = Project::where('id',$id)->where('superior_id',Auth::user()->id)->with('icon','team')->first()):
-			$project_team = array();
-			$set_project_team = array();
-			if($team = Team::where('superior_id',Auth::user()->id)->with('cooperator')->get()):
-				foreach($team as $user):
-					$project_team[$user->cooperator->id] = $user->cooperator->fio;
-				endforeach;
+		if ($task = ProjectTask::where('id',$id)->first()):
+			if(Project::where('id',$task->project_id)->where('superior_id',Auth::user()->id)->first()):
+				return View::make(Helper::acclayout('timesheets.edit'),compact('task'));
 			endif;
-			if (count($project->team)):
-				foreach($project->team as $user):
-					$project_team[] = $user->id;
-				endforeach;
-			endif;
-			return View::make(Helper::acclayout('projects.edit'),compact('project','project_team','set_project_team'));
-		else:
-			App::abort(404);
 		endif;
+		App::abort(404);
 	}
 
 	public function update($id){
 
-		$validator = Validator::make(Input::all(),Project::$rules);
+		$set_date = Input::get('set_date') ? Input::get('set_date') : date('Y-m-d');
+		$validator = Validator::make(Input::all(),ProjectTask::$update_rules);
 		if($validator->passes()):
-			Project::where('id',$id)->where('superior_id',Auth::user()->id)->update(['title' => Input::get('title'),'description' => Input::get('description'),'hour_price' => Input::get('hour_price')]);
-			if (Input::has('team')):
-				Project::where('id',$id)->first()->team()->sync(Input::get('team'));
+			if ($task = ProjectTask::where('id',$id)->first()):
+				if(Project::where('id',$task->project_id)->where('superior_id',Auth::user()->id)->first()):
+					$task->note = Input::get('note');
+					$task->save();
+					$task->touch();
+					return Redirect::route('timesheets.index',['data'=>$set_date])->with('message','Задача сохранена успешно.');
+				endif;
 			endif;
-			return Redirect::route('project_admin.projects.show',$id)->with('message','Проект сохранен успешно.');
 		else:
-			return Redirect::route('project_admin.projects.edit',$id)->withErrors($validator)->withInput(Input::all());
+			return Redirect::back()->withErrors($validator)->withInput(Input::all());
 		endif;
 	}
 
@@ -109,6 +102,35 @@ class TimeSheetsController extends \BaseController {
 	}
 
 	public function RunningTimer(){
+
+		$validator = Validator::make(Input::all(),['task'=>'integer|required','run'=>'integer|required']);
+		if($validator->passes()):
+			if ($task = ProjectTask::where('id',Input::get('task'))->first()):
+				$teamIDs = Team::where('superior_id',Auth::user()->id)->lists('cooperator_id');
+				$teamIDs[] = Auth::user()->id;
+				if (in_array($task->user_id,$teamIDs)):
+					if (Input::get('run') == 0):
+						$task->stop_status = 1;
+						$task->stop_date = date('Y-m-d H:i:s');
+					elseif(Input::get('run') == 1):
+						$dt = myDateTime::getDiffTimeStamp($task->stop_date,$task->start_date);
+						$task->lead_time += $dt > 60 ? $dt : 0;
+						$task->start_status = 1;
+						$task->start_date = date('Y-m-d H:i:s');
+						$task->stop_status = 0;
+						$task->stop_date = '0000-00-00 00:00:00';
+						ProjectTask::where('user_id',Auth::user()->id)->where('stop_status',0)->where('id','!=',$task->id)->update(['stop_status'=>1,'stop_date'=>date('Y-m-d H:i:s'),'updated_at'=>date('Y-m-d H:i:s')]);
+					endif;
+					$task->save();
+					$task->touch();
+				endif;
+				return Redirect::back();
+			endif;
+		endif;
+		App::abort(404);
+	}
+
+	public function PerformerRunningTimer(){
 
 		$validator = Validator::make(Input::all(),['task'=>'integer|required','run'=>'integer|required']);
 		if($validator->passes()):

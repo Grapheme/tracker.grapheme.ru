@@ -5,6 +5,7 @@ class ProjectTask extends \BaseModel {
 	protected $table = 'projects_tasks';
 	protected $fillable = ['project_id','user_id','note','start_date','set_date','lead_time','start_status'];
 	public static $rules = ['project'=>'required|integer','performer'=>'required|integer','note' => 'required'];
+	public static $update_rules = ['note' => 'required'];
 
 	public function cooperator(){
 

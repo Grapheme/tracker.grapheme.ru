@@ -5,7 +5,7 @@
     <h1 class="page-header">Добавить сотрудника</h1>
     <div class="row">
         <div class="col-md-8">
-        {{ Form::open(array('route'=>'project_admin.cooperators.store','role'=>'form','class'=>'form-horizontal','file'=>TRUE)) }}
+        {{ Form::open(array('route'=>'cooperators.store','role'=>'form','class'=>'form-horizontal','file'=>TRUE)) }}
             <div class="form-group has-feedback">
                 <label for="inputFIO" class="col-sm-3 control-label">Ф.И.О.</label>
                 <div class="col-sm-4">
@@ -38,7 +38,7 @@
             <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
                     <button type="submit" class="btn btn-success">Добавить</button>
-                    <a href="{{ URL::route('project_admin.cooperators.index') }}" class="btn btn-default">Отмена</a>
+                    <a href="{{ URL::route('cooperators.index') }}" class="btn btn-default">Отмена</a>
                 </div>
             </div>
         {{ Form::close() }}

@@ -43,9 +43,37 @@ function str2secLeadTime($string){
     return $lead_time;
 }
 
+function getCooperatorTeam($account = null){
+
+    if (is_null($account)):
+        $account = Auth::user()->id;
+    endif;
+    $cooperators = array();
+    $superiorIDs = Team::where('cooperator_id',$account)->lists('superior_id');
+    $teams = Team::whereIn('superior_id',$superiorIDs)->with(array('cooperator'=>function($query) use ($account){
+        $query->where('id','!=',$account);
+    }))->get();
+    if ($teams):
+        foreach($teams as $team):
+            if ($team->cooperator):
+                $cooperators[] = $team->cooperator->toArray();
+            endif;
+        endforeach;
+    endif;
+    return $cooperators;
+}
+
 function isProjectAdministrator(){
 
     if (Auth::check() && Auth::user()->group->slug == 'admin-projects'):
+        return TRUE;
+    endif;
+    return FALSE;
+}
+
+function isPerformer(){
+
+    if (Auth::check() && Auth::user()->group->slug == 'performer'):
         return TRUE;
     endif;
     return FALSE;

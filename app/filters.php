@@ -31,8 +31,13 @@ Route::filter('auth', function(){
 });
 
 Route::filter('auth.projectAdministrator', function(){
-
 	if(!isProjectAdministrator()):
+		return Redirect::route('home');
+	endif;
+});
+
+Route::filter('auth.performer', function(){
+	if(!isPerformer()):
 		return Redirect::route('home');
 	endif;
 });

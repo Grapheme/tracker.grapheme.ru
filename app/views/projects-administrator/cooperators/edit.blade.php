@@ -5,7 +5,7 @@
     <h1 class="page-header">Редактирование проекта</h1>
     <div class="row">
         <div class="col-md-8">
-        {{ Form::model($user,array('route'=>array('project_admin.cooperators.update',$user->id),'role'=>'form','class'=>'form-horizontal','method'=>'PUT','file'=>TRUE)) }}
+        {{ Form::model($user,array('route'=>array('cooperators.update',$user->id),'role'=>'form','class'=>'form-horizontal','method'=>'PUT','file'=>TRUE)) }}
             <div class="form-group has-feedback">
                 <label for="inputFIO" class="col-sm-3 control-label">Ф.И.О.</label>
                 <div class="col-sm-4">
@@ -30,7 +30,7 @@
             <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
                     <button type="submit" class="btn btn-success">Сохранить</button>
-                    <a href="{{ URL::route('project_admin.cooperators.show',$user->id) }}" class="btn btn-default">Отмена</a>
+                    <a href="{{ URL::route('cooperators.show',$user->id) }}" class="btn btn-default">Отмена</a>
                 </div>
             </div>
         {{ Form::close() }}

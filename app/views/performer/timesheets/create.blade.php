@@ -15,13 +15,19 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label">Проект</label>
                 <div class="col-sm-6">
-                    {{ Form::select('project',Project::where('superior_id',Auth::user()->id)->lists('title','id'),Input::old('project'),['class'=>'form-control']) }}
+                    <?php
+                    $projects_list = array();
+                    foreach(User::where('id',Auth::user()->id)->first()->cooperator_projects()->get() as $project):
+                        $projects_list[$project->id] = $project->title;
+                    endforeach;
+                    ?>
+                    {{ Form::select('project',$projects_list,Input::old('project'),['class'=>'form-control']) }}
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-sm-3 control-label">Исполнитель</label>
                 <div class="col-sm-6">
-                    {{ Form::select('performer',$project_team,Input::old('performer'),['class'=>'form-control']) }}
+                    {{ Form::select('performer',[Auth::user()->id=>getInitials(Auth::user()->fio)],Input::old('performer'),['class'=>'form-control']) }}
                 </div>
             </div>
             <div class="form-group has-feedback">
