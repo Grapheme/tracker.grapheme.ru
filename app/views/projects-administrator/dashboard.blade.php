@@ -4,14 +4,9 @@
 @section('content')
 <?php
     $tasks = array();
-    if($projects = Project::where('superior_id',Auth::user()->id)->orderBy('updated_at','DESC')->limit(4)->get()):
-        $projectsIDs = array();
-        foreach($projects as $project):
-            $projectsIDs[] = $project->id;
-        endforeach;
-        if ($projectsIDs):
-            $tasks = ProjectTask::whereIn('project_id',$projectsIDs)->where('stop_status',0)->with('cooperator','project')->get();
-        endif;
+    if($projects = Project::where('superior_id',Auth::user()->id)->orderBy('updated_at','DESC')->with('team','tasks')->limit(4)->get()):
+        $projectsIDs = Project::where('superior_id',Auth::user()->id)->lists('id');
+        $tasks = ProjectTask::whereIn('project_id',$projectsIDs)->where('stop_status',0)->with('cooperator','project')->get();
     endif;
 ?>
 
@@ -25,6 +20,12 @@
             </a>
             <a href="{{ URL::route('project_admin.projects.show',$project->id) }}" class=""><h4>{{ $project->title }}</h4></a>
             <span class="text-muted">{{ $project->description }}</span>
+            @if($project->team->count())
+                <br><span class="text-muted">{{ $project->team->count() }} {{ Lang::choice('участник|участника|участников',$project->team->count()) }}</span>
+            @endif
+            @if($project->tasks->count())
+                <br><span class="text-muted">{{ $project->tasks->count() }} {{ Lang::choice('задача|задачи|задач',$project->tasks->count()) }}</span>
+            @endif
         </div>
     @endforeach
 </div>
@@ -39,12 +40,24 @@
         @foreach($tasks as $task)
             <tr>
                 <td>
-                    {{ $task->project->title }} <br>
-                    {{ getInitials($task->cooperator->fio) }} - {{ $task->note }}
+                    <a href="{{ URL::route('project_admin.projects.show',$task->project->id) }}">{{ $task->project->title }}</a>
+                    <br>
+                    <a href="{{ URL::route('project_admin.cooperators.show',$task->cooperator->id) }}">{{ getInitials($task->cooperator->fio) }}</a>
+                    <br>
+                    {{ $task->note }}
                 </td>
                 <td>{{ culcLeadTime($task) }}</td>
                 <td>
-                    <a href="#" class="btn btn-default">Остановить</a>
+                    {{ Form::open(array('route'=>array('project_admin.timesheets.run_timer',),'method'=>'POST','style'=>'display:inline-block')) }}
+                    {{ Form::hidden('task',$task->id) }}
+                    @if($task->start_status && !$task->stop_status)
+                        {{ Form::hidden('run',0) }}
+                        {{ Form::submit('Остановить',['class'=>'btn btn-primary']) }}
+                    @else
+                        {{ Form::hidden('run',1) }}
+                        {{ Form::submit('Начать',['class'=>'btn btn-default']) }}
+                    @endif
+                    {{ Form::close() }}
                 </td>
                 <td><a href="{{ URL::route('project_admin.timesheets.edit',$task->id) }}" class="btn btn-success">Редактировать</td>
                 <td>
