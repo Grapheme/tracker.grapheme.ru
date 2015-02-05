@@ -23,7 +23,7 @@
             <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
                     <button type="submit" class="btn btn-success">Сохранить</button>
-                    <a href="{{ URL::route('timesheets.index',$task->id) }}" class="btn btn-default">Отмена</a>
+                    <a href="{{ URL::route('timesheets.index',['date'=>$dt_request]) }}" class="btn btn-default">Отмена</a>
                 </div>
             </div>
         {{ Form::close() }}

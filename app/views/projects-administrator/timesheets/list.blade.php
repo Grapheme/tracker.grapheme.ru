@@ -45,7 +45,7 @@
                     @endif
                     {{ Form::close() }}
                     </td>
-                    <td><a href="{{ URL::route('timesheets.edit',$task->id) }}" class="btn btn-success">Редактировать</td>
+                    <td><a href="{{ URL::route('timesheets.edit',[$task->id,'date'=>$dt_request]) }}" class="btn btn-success">Редактировать</td>
                     <td>
                         {{ Form::open(array('route'=>array('timesheets.destroy',$task->id),'method'=>'DELETE','style'=>'display:inline-block')) }}
                             {{ Form::submit('Удалить',['class'=>'btn btn-danger']) }}

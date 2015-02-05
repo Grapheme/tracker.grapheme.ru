@@ -82,7 +82,7 @@ class TimeSheetsController extends \BaseController {
 					$task->note = Input::get('note');
 					$task->save();
 					$task->touch();
-					return Redirect::route('timesheets.index',['data'=>$set_date])->with('message','Задача сохранена успешно.');
+					return Redirect::route('timesheets.index',['date'=>$set_date])->with('message','Задача сохранена успешно.');
 				endif;
 			endif;
 		else:

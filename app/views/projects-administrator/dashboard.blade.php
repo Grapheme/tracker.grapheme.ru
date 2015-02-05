@@ -8,6 +8,7 @@
         $projectsIDs = Project::where('superior_id',Auth::user()->id)->lists('id');
         $tasks = ProjectTask::whereIn('project_id',$projectsIDs)->where('stop_status',0)->with('cooperator','project')->get();
     endif;
+    $dt_request = Request::get('date') ? Request::get('date') : date('Y-m-d');
 ?>
 
 <h1 class="page-header">Dashboard</h1>
@@ -59,7 +60,7 @@
                     @endif
                     {{ Form::close() }}
                 </td>
-                <td><a href="{{ URL::route('timesheets.edit',$task->id) }}" class="btn btn-success">Редактировать</td>
+                <td><a href="{{ URL::route('timesheets.edit',[$task->id,'date'=>$dt_request]) }}" class="btn btn-success">Редактировать</a></td>
                 <td>
                     {{ Form::open(array('route'=>array('timesheets.destroy',$task->id),'method'=>'DELETE','style'=>'display:inline-block')) }}
                     {{ Form::submit('Удалить',['class'=>'btn btn-danger']) }}

@@ -75,7 +75,7 @@ class TimeSheetsPerformerController extends \BaseController {
 		$validator = Validator::make(Input::all(),ProjectTask::$update_rules);
 		if($validator->passes()):
 			ProjectTask::where('id',$id)->where('user_id',Auth::user()->id)->update(['note'=>Input::get('note'),'updated_at'=>date('Y-m-d H:i:s')]);
-			return Redirect::route('timesheets.index',['data'=>$set_date])->with('message','Задача сохранена успешно.');
+			return Redirect::route('timesheets.index',['date'=>$set_date])->with('message','Задача сохранена успешно.');
 		else:
 			return Redirect::back()->withErrors($validator)->withInput(Input::all());
 		endif;
