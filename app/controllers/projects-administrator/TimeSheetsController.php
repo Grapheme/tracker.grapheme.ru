@@ -118,6 +118,8 @@ class TimeSheetsController extends \BaseController {
 						$task->stop_status = 0;
 						$task->stop_date = '0000-00-00 00:00:00';
 					elseif(Input::get('run') == 1 && $task->start_status == 1):
+						$task->lead_time += myDateTime::getDiffTimeStamp($task->stop_date,$task->start_date);
+						$task->start_date = date('Y-m-d H:i:s');
 						$task->stop_status = 0;
 						$task->stop_date = '0000-00-00 00:00:00';
 					endif;
