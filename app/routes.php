@@ -19,62 +19,68 @@ Route::group(array('before' => 'auth','prefix' => $prefix), function(){
     Route::get('profile',array('as'=>'profile','uses'=>'AccountController@profile'));
 });
 
-Route::group(array('before' => 'auth.projectAdministrator','prefix' => $prefixes['admin-projects']), function(){
-    Route::resource('projects', 'ProjectsController',
-        array(
-            'names' => array(
-                'index'   => 'projects.index',
-                'show'    => 'projects.show',
-                'create'  => 'projects.create',
-                'store'   => 'projects.store',
-                'edit'    => 'projects.edit',
-                'update'  => 'projects.update',
-                'destroy' => 'projects.destroy'
+Route::group(array('before' => 'auth','prefix' => $prefixes['admin-projects']), function(){
+    if(isProjectAdministrator()):
+        Route::resource('projects', 'ProjectsController',
+            array(
+                'names' => array(
+                    'index'   => 'projects.index',
+                    'show'    => 'projects.show',
+                    'create'  => 'projects.create',
+                    'store'   => 'projects.store',
+                    'edit'    => 'projects.edit',
+                    'update'  => 'projects.update',
+                    'destroy' => 'projects.destroy'
+                )
             )
-        )
-    );
-    Route::resource('officers', 'CooperatorsController',
-        array(
-            'names' => array(
-                'index'   => 'cooperators.index',
-                'show'    => 'cooperators.show',
-                'create'  => 'cooperators.create',
-                'store'   => 'cooperators.store',
-                'edit'    => 'cooperators.edit',
-                'update'  => 'cooperators.update',
-                'destroy' => 'cooperators.destroy'
+        );
+        Route::resource('officers', 'CooperatorsController',
+            array(
+                'names' => array(
+                    'index'   => 'cooperators.index',
+                    'show'    => 'cooperators.show',
+                    'create'  => 'cooperators.create',
+                    'store'   => 'cooperators.store',
+                    'edit'    => 'cooperators.edit',
+                    'update'  => 'cooperators.update',
+                    'destroy' => 'cooperators.destroy'
+                )
             )
-        )
-    );
-    Route::resource('timesheets', 'TimeSheetsController',
-        array(
-            'except' => array('show'),
-            'names' => array(
-                'index'   => 'timesheets.index',
-                'create'  => 'timesheets.create',
-                'store'   => 'timesheets.store',
-                'edit'    => 'timesheets.edit',
-                'update'  => 'timesheets.update',
-                'destroy' => 'timesheets.destroy'
+        );
+        Route::resource('timesheets', 'TimeSheetsController',
+            array(
+                'except' => array('show'),
+                'names' => array(
+                    'index'   => 'timesheets.index',
+                    'create'  => 'timesheets.create',
+                    'store'   => 'timesheets.store',
+                    'edit'    => 'timesheets.edit',
+                    'update'  => 'timesheets.update',
+                    'destroy' => 'timesheets.destroy'
+                )
             )
-        )
-    );
-    Route::post('timesheets/running_timer',array('as'=>'timesheets.run_timer','uses'=>'TimeSheetsController@RunningTimer'));
+        );
+        Route::post('timesheets/running_timer',array('as'=>'timesheets.run_timer','uses'=>'TimeSheetsController@RunningTimer'));
+    endif;
 });
 
-Route::group(array('before' => 'auth.performer','prefix' => $prefixes['performer']), function(){
-    Route::resource('timesheets', 'TimeSheetsController',
-        array(
-            'except' => array('show'),
-            'names' => array(
-                'index'   => 'timesheets.index',
-                'create'  => 'timesheets.create',
-                'store'   => 'timesheets.store',
-                'edit'    => 'timesheets.edit',
-                'update'  => 'timesheets.update',
-                'destroy' => 'timesheets.destroy'
+Route::group(array('before' => 'auth','prefix' => $prefixes['performer']), function(){
+    if(isPerformer()):
+        Route::resource('timesheets', 'TimeSheetsPerformerController',
+            array(
+                'except' => array('show'),
+                'names' => array(
+                    'index'   => 'timesheets.index',
+                    'create'  => 'timesheets.create',
+                    'store'   => 'timesheets.store',
+                    'edit'    => 'timesheets.edit',
+                    'update'  => 'timesheets.update',
+                    'destroy' => 'timesheets.destroy'
+                )
             )
-        )
-    );
-    Route::post('timesheets/running_timer',array('as'=>'timesheets.run_timer','uses'=>'TimeSheetsPerformerController@RunningTimer'));
+        );
+        Route::post('timesheets/running_timer',array('as'=>'timesheets.run_timer','uses'=>'TimeSheetsPerformerController@RunningTimer'));
+    else:
+        return Redirect::route('home');
+    endif;
 });
