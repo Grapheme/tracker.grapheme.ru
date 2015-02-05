@@ -12,6 +12,9 @@
             </a>
             <a href="{{ URL::route('project_admin.cooperators.show',$user->cooperator->id) }}" class=""><h4>{{ $user->cooperator->fio }}</h4></a>
             <span class="text-muted">{{ $user->cooperator->position }}</span>
+            @if( $user->cooperator->tasks->count())
+                <br><span class="text-muted">{{  $user->cooperator->tasks->count() }} {{ Lang::choice('задача|задачи|задач', $user->cooperator->tasks->count()) }}</span>
+            @endif
         </div>
         @endforeach
     </div>

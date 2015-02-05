@@ -8,7 +8,7 @@ class CooperatorsController extends \BaseController {
 
 	public function index(){
 
-		$users = Team::where('superior_id',Auth::user()->id)->orderBy('updated_at','DESC')->with('cooperator.avatar')->get();
+		$users = Team::where('superior_id',Auth::user()->id)->orderBy('updated_at','DESC')->with('cooperator.avatar','cooperator.tasks')->get();
 		return View::make(Helper::acclayout('cooperators.list'),compact('users'));
 	}
 
@@ -42,7 +42,8 @@ class CooperatorsController extends \BaseController {
 		if (Auth::user()->id == $id):
 			return Redirect::route('profile');
 		elseif($user = Team::where('superior_id',Auth::user()->id)->where('cooperator_id',$id)->first()->cooperator):
-			return View::make(Helper::acclayout('cooperators.show'),compact('user'));
+			$tasks = ProjectTask::where('user_id',$id)->get();
+			return View::make(Helper::acclayout('cooperators.show'),compact('user','tasks'));
 		else:
 			App::abort(404);
 		endif;

@@ -26,8 +26,11 @@
             @foreach($tasks as $task)
                 <tr {{ ($task->start_status && !$task->stop_status) ? 'class="success"' : '' }}>
                     <td>
-                        {{ $task->project->title }} <br>
-                        {{ getInitials($task->cooperator->fio) }} - {{ $task->note }}
+                        <a href="{{ URL::route('project_admin.projects.show',$task->project->id) }}">{{ $task->project->title }}</a>
+                        <br>
+                        <a href="{{ URL::route('project_admin.cooperators.show',$task->cooperator->id) }}">{{ getInitials($task->cooperator->fio) }}</a>
+                        <br>
+                        {{ $task->note }}
                     </td>
                     <td>{{ culcLeadTime($task) }}</td>
                     <td>

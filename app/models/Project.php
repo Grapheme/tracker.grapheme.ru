@@ -20,4 +20,9 @@ class Project extends \BaseModel {
 
 		return $this->belongsToMany('User','projects_team','project_id','user_id');
 	}
+
+	public function tasks(){
+
+		return $this->hasMany('ProjectTask','project_id');
+	}
 }

@@ -11,134 +11,53 @@
             {{ Form::submit('Удалить',['class'=>'btn btn-danger btn-sm']) }}
         {{ Form::close() }}
     </div>
+    @if(count($tasks))
     <h2 class="sub-header">Список задач</h2>
     <div class="table-responsive">
         <table class="table table-striped">
-            <thead>
-            <tr>
-                <th>#</th>
-                <th>Header</th>
-                <th>Header</th>
-                <th>Header</th>
-                <th>Header</th>
-            </tr>
-            </thead>
             <tbody>
+            <?php $tasks_total_time = 0;?>
+            @foreach($tasks as $task)
+                <?php $tasks_total_time += (getLeadTimeMinutes($task)+floor($task->lead_time/60));?>
+                <tr {{ ($task->start_status && !$task->stop_status) ? 'class="success"' : '' }}>
+                    <td>
+                        <a href="{{ URL::route('project_admin.projects.show',$task->project->id) }}">{{ $task->project->title }}</a>
+                        <br>{{ $task->note }}
+                    </td>
+                    <td>{{ culcLeadTime($task) }}</td>
+                    <td>
+                        {{ Form::open(array('route'=>array('project_admin.timesheets.run_timer',),'method'=>'POST','style'=>'display:inline-block')) }}
+                        {{ Form::hidden('task',$task->id) }}
+                        @if($task->start_status && !$task->stop_status)
+                            {{ Form::hidden('run',0) }}
+                            {{ Form::submit('Остановить',['class'=>'btn btn-primary']) }}
+                        @else
+                            {{ Form::hidden('run',1) }}
+                            {{ Form::submit('Начать',['class'=>'btn btn-default']) }}
+                        @endif
+                        {{ Form::close() }}
+                    </td>
+                    <td><a href="{{ URL::route('project_admin.timesheets.edit',$task->id) }}" class="btn btn-success">Редактировать</td>
+                    <td>
+                        {{ Form::open(array('route'=>array('project_admin.timesheets.destroy',$task->id),'method'=>'DELETE','style'=>'display:inline-block')) }}
+                        {{ Form::submit('Удалить',['class'=>'btn btn-danger']) }}
+                        {{ Form::close() }}
+                    </td>
+                </tr>
+            @endforeach
             <tr>
-                <td>1,001</td>
-                <td>Lorem</td>
-                <td>ipsum</td>
-                <td>dolor</td>
-                <td>sit</td>
-            </tr>
-            <tr>
-                <td>1,002</td>
-                <td>amet</td>
-                <td>consectetur</td>
-                <td>adipiscing</td>
-                <td>elit</td>
-            </tr>
-            <tr>
-                <td>1,003</td>
-                <td>Integer</td>
-                <td>nec</td>
-                <td>odio</td>
-                <td>Praesent</td>
-            </tr>
-            <tr>
-                <td>1,003</td>
-                <td>libero</td>
-                <td>Sed</td>
-                <td>cursus</td>
-                <td>ante</td>
-            </tr>
-            <tr>
-                <td>1,004</td>
-                <td>dapibus</td>
-                <td>diam</td>
-                <td>Sed</td>
-                <td>nisi</td>
-            </tr>
-            <tr>
-                <td>1,005</td>
-                <td>Nulla</td>
-                <td>quis</td>
-                <td>sem</td>
-                <td>at</td>
-            </tr>
-            <tr>
-                <td>1,006</td>
-                <td>nibh</td>
-                <td>elementum</td>
-                <td>imperdiet</td>
-                <td>Duis</td>
-            </tr>
-            <tr>
-                <td>1,007</td>
-                <td>sagittis</td>
-                <td>ipsum</td>
-                <td>Praesent</td>
-                <td>mauris</td>
-            </tr>
-            <tr>
-                <td>1,008</td>
-                <td>Fusce</td>
-                <td>nec</td>
-                <td>tellus</td>
-                <td>sed</td>
-            </tr>
-            <tr>
-                <td>1,009</td>
-                <td>augue</td>
-                <td>semper</td>
-                <td>porta</td>
-                <td>Mauris</td>
-            </tr>
-            <tr>
-                <td>1,010</td>
-                <td>massa</td>
-                <td>Vestibulum</td>
-                <td>lacinia</td>
-                <td>arcu</td>
-            </tr>
-            <tr>
-                <td>1,011</td>
-                <td>eget</td>
-                <td>nulla</td>
-                <td>Class</td>
-                <td>aptent</td>
-            </tr>
-            <tr>
-                <td>1,012</td>
-                <td>taciti</td>
-                <td>sociosqu</td>
-                <td>ad</td>
-                <td>litora</td>
-            </tr>
-            <tr>
-                <td>1,013</td>
-                <td>torquent</td>
-                <td>per</td>
-                <td>conubia</td>
-                <td>nostra</td>
-            </tr>
-            <tr>
-                <td>1,014</td>
-                <td>per</td>
-                <td>inceptos</td>
-                <td>himenaeos</td>
-                <td>Curabitur</td>
-            </tr>
-            <tr>
-                <td>1,015</td>
-                <td>sodales</td>
-                <td>ligula</td>
-                <td>in</td>
-                <td>libero</td>
+                <td>
+                    Всего {{ count($tasks) }} {{ Lang::choice('задача|задачи|задач',count($tasks)) }}. <br>
+                    Время выполнения: {{ getLeadTimeFromMinutes($tasks_total_time) }} ч.
+                </td>
+                <td colspan="4"></td>
             </tr>
             </tbody>
         </table>
     </div>
+    @else
+
+    @endif
 @stop
 @section('scripts')
     {{ HTML::script(Config::get('site.theme_path').'/js/docs.min.js') }}

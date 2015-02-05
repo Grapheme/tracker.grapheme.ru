@@ -8,7 +8,7 @@ class ProjectsController extends \BaseController {
 
 	public function index(){
 
-		$projects = Project::where('superior_id',Auth::user()->id)->orderBy('updated_at','DESC')->with('team')->get();
+		$projects = Project::where('superior_id',Auth::user()->id)->orderBy('updated_at','DESC')->with('team','tasks')->get();
 		return View::make(Helper::acclayout('projects.list'),compact('projects'));
 	}
 
@@ -43,7 +43,8 @@ class ProjectsController extends \BaseController {
 	public function show($id){
 
 		if($project = Project::where('id',$id)->where('superior_id',Auth::user()->id)->with('icon','team')->first()):
-			return View::make(Helper::acclayout('projects.show'),compact('project'));
+			$tasks = ProjectTask::where('project_id',$project->id)->with('cooperator')->get();
+			return View::make(Helper::acclayout('projects.show'),compact('project','tasks'));
 		else:
 			App::abort(404);
 		endif;

@@ -13,7 +13,10 @@
             <a href="{{ URL::route('project_admin.projects.show',$project->id) }}" class=""><h4>{{ $project->title }}</h4></a>
             <span class="text-muted">{{ $project->description }}</span>
             @if($project->team->count())
-            <p class="text-muted">{{ $project->team->count() }} {{ Lang::choice('участник|участника|участников',$project->team->count()) }}</p>
+            <br><span class="text-muted">{{ $project->team->count() }} {{ Lang::choice('участник|участника|участников',$project->team->count()) }}</span>
+            @endif
+            @if($project->tasks->count())
+            <br><span class="text-muted">{{ $project->tasks->count() }} {{ Lang::choice('задача|задачи|задач',$project->tasks->count()) }}</span>
             @endif
         </div>
         @endforeach
