@@ -21,15 +21,6 @@
                 </div>
             </div>
             <div class="form-group">
-                <label for="inputHourPrice" class="col-sm-3 control-label">Цена за час</label>
-                <div class="col-sm-3">
-                    <div class="input-group">
-                        {{ Form::text('hour_price',NULL,['class' => 'form-control','placeholder'=>'500','id'=>'inputHourPrice']) }}
-                        <div class="input-group-addon"> руб.</div>
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
                 <label for="iconFile" class="col-sm-3 control-label">Изображение </label>
                 <div class="col-sm-6">
                     {{ Form::file('file',['id'=>"iconFile"]) }}
@@ -39,7 +30,25 @@
             <div class="form-group">
                 <label for="faviconFile" class="col-sm-3 control-label">Комманда </label>
                 <div class="col-sm-6">
-                    {{ Form::select('team[]',$project_team,$set_project_team,['multiple'=>'','class'=>'form-control','size'=>5]) }}
+                @foreach($project_team as $user_id => $user_fio)
+                    <?php
+                        $selected = in_array($user_id,$setProjectTeamIDs);
+                        $hour_price = $budget = '';
+                        if ($selected && isset($setProjectValues[$user_id])):
+                            $hour_price = $setProjectValues[$user_id]['hour_price'];
+                            $budget = $setProjectValues[$user_id]['budget'];
+                        endif;
+                    ?>
+                    <div class="checkbox">
+                        <label>
+                            {{ Form::checkbox('team['.$user_id.'][user_id]',$user_id,$selected) }} {{ $user_fio }}
+                        </label>
+                    </div>
+                    <div class="form-inline">
+                        {{ Form::text('team['.$user_id.'][hour_price]',$hour_price,['class'=>'form-control','placeholder'=>'Цена за час']) }}
+                        {{ Form::text('team['.$user_id.'][budget]',$budget,['class'=>'form-control','placeholder'=>'Бюджет']) }}
+                    </div>
+                @endforeach
                 </div>
             </div>
             <div class="form-group">

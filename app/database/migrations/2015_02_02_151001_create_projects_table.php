@@ -11,7 +11,6 @@ class CreateProjectsTable extends Migration {
 			$table->integer('superior_id')->nullable()->default(0)->unsigned();
 			$table->string('title',100)->nullable();
 			$table->string('description',255)->nullable();
-			$table->integer('hour_price')->nullable()->default(0)->unsigned();
 			$table->integer('image_id')->nullable()->default(0)->unsigned();
 			$table->timestamps();
 		});

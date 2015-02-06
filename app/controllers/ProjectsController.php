@@ -27,9 +27,22 @@ class ProjectsController extends \BaseController {
 
 		$validator = Validator::make(Input::all(),Project::$rules);
 		if($validator->passes()):
-			if($project = Project::create(['superior_id' => Auth::user()->id, 'title' => Input::get('title'),'description' => Input::get('description'),'hour_price' => Input::get('hour_price')])):
+			if($project = Project::create(['superior_id' => Auth::user()->id, 'title' => Input::get('title'),'description' => Input::get('description')])):
 				if (Input::has('team')):
-					Project::where('id',$project->id)->first()->team()->sync(Input::get('team'));
+					$usersIDs = $users= array();
+					foreach(Input::get('team') as $user):
+						if (isset($user['user_id'])):
+							$usersIDs[] = $user['user_id'];
+							$users[$user['user_id']]['hour_price'] = $user['hour_price'] ? $user['hour_price'] : 0;
+							$users[$user['user_id']]['budget'] = $user['budget'] ? $user['budget'] : 0;
+						endif;
+					endforeach;
+					if ($usersIDs):
+						Project::where('id',$project->id)->first()->team()->sync($usersIDs);
+						foreach($users as $user_id => $user):
+							ProjectTeam::where('project_id',$project->id)->where('user_id',$user_id)->update(['hour_price'=>$user['hour_price'],'budget'=>$user['budget']]);
+						endforeach;
+					endif;
 				endif;
 				return Redirect::route('projects.show',$project->id)->with('message','Проект создан успешно.');
 			else:
@@ -53,8 +66,7 @@ class ProjectsController extends \BaseController {
 	public function edit($id){
 
 		if($project = Project::where('id',$id)->where('superior_id',Auth::user()->id)->with('icon','team')->first()):
-			$project_team = array();
-			$set_project_team = array();
+			$project_team = $setProjectTeamIDs = $setProjectValues = array();
 			if($team = Team::where('superior_id',Auth::user()->id)->with('cooperator')->get()):
 				foreach($team as $user):
 					$project_team[$user->cooperator->id] = $user->cooperator->fio;
@@ -62,10 +74,12 @@ class ProjectsController extends \BaseController {
 			endif;
 			if (count($project->team)):
 				foreach($project->team as $user):
-					$set_project_team[] = $user->id;
+					$setProjectTeamIDs[] = $user->id;
+					$setProjectValues[$user->id]['hour_price'] = ($user->hour_price > 0) ? $user->hour_price : '';
+					$setProjectValues[$user->id]['budget'] = ($user->budget > 0) ? $user->budget : '';
 				endforeach;
 			endif;
-			return View::make(Helper::acclayout('projects.edit'),compact('project','project_team','set_project_team'));
+			return View::make(Helper::acclayout('projects.edit'),compact('project','project_team','setProjectTeamIDs','setProjectValues'));
 		else:
 			App::abort(404);
 		endif;
@@ -75,9 +89,22 @@ class ProjectsController extends \BaseController {
 
 		$validator = Validator::make(Input::all(),Project::$rules);
 		if($validator->passes()):
-			Project::where('id',$id)->where('superior_id',Auth::user()->id)->update(['title' => Input::get('title'),'description' => Input::get('description'),'hour_price' => Input::get('hour_price')]);
+			Project::where('id',$id)->where('superior_id',Auth::user()->id)->update(['title' => Input::get('title'),'description' => Input::get('description')]);
 			if (Input::has('team')):
-				Project::where('id',$id)->first()->team()->sync(Input::get('team'));
+				$usersIDs = $users= array();
+				foreach(Input::get('team') as $user):
+					if (isset($user['user_id'])):
+						$usersIDs[] = $user['user_id'];
+						$users[$user['user_id']]['hour_price'] = $user['hour_price'] ? $user['hour_price'] : 0;
+						$users[$user['user_id']]['budget'] = $user['budget'] ? $user['budget'] : 0;
+					endif;
+				endforeach;
+				if ($usersIDs):
+					Project::where('id',$id)->first()->team()->sync($usersIDs);
+					foreach($users as $user_id => $user):
+						ProjectTeam::where('project_id',$id)->where('user_id',$user_id)->update(['hour_price'=>$user['hour_price'],'budget'=>$user['budget']]);
+					endforeach;
+				endif;
 			endif;
 			return Redirect::route('projects.show',$id)->with('message','Проект сохранен успешно.');
 		else:

@@ -4,7 +4,8 @@
 @section('content')
 <?php
     $tasks = array();
-    if($projects = Project::where('superior_id',Auth::user()->id)->orderBy('updated_at','DESC')->with('team','tasks')->limit(4)->get()):
+    $projects = Project::where('superior_id',Auth::user()->id)->orderBy('updated_at','DESC')->with('team','tasks')->limit(4)->get();
+    if($projects->count()):
         $projectsIDs = Project::where('superior_id',Auth::user()->id)->lists('id');
         $tasks = ProjectTask::whereIn('project_id',$projectsIDs)->where('stop_status',0)->with('cooperator','project')->get();
     endif;

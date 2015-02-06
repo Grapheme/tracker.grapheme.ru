@@ -3,7 +3,7 @@
 class Project extends \BaseModel {
 
 	protected $table = 'projects';
-	protected $fillable = ['superior_id','title','description','hour_price','image_id'];
+	protected $fillable = ['superior_id','title','description','image_id'];
 	public static $rules = ['title' => 'required'];
 
 	public function icon(){
@@ -18,7 +18,7 @@ class Project extends \BaseModel {
 
 	public function team(){
 
-		return $this->belongsToMany('User','projects_team','project_id','user_id');
+		return $this->belongsToMany('User','projects_team','project_id','user_id')->select(['users.*','projects_team.hour_price','projects_team.budget']);
 	}
 
 	public function tasks(){

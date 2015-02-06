@@ -10,6 +10,8 @@ class CreateProjectsTeamTable extends Migration {
 			$table->increments('id');
 			$table->integer('project_id')->nullable()->default(0)->unsigned();
 			$table->integer('user_id')->nullable()->default(0)->unsigned();
+			$table->integer('hour_price')->nullable()->default(0)->unsigned();
+			$table->integer('budget')->nullable()->default(0)->unsigned();
 			$table->timestamps();
 		});
 	}
