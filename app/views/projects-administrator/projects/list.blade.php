@@ -6,7 +6,7 @@
     <div class="row">
         <div class="col-xs-6">
         {{ Form::open(array('route'=>array('oauth.register'),'method'=>'POST','style'=>'display:inline-block')) }}
-            {{ Form::submit('Импорт из Basecamp',['class'=>'btn btn-default']) }}
+            {{ Form::submit('Импорт из Basecamp',['class'=>'btn btn-success']) }}
         {{ Form::close() }}
         </div>
     </div>
