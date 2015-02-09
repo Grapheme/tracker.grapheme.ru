@@ -17,6 +17,8 @@
         <table class="table table-striped">
             <tbody>
             <?php $tasks_total_time = 0;?>
+            <?php $earnMoneyCurrentDate = costCalculation(NULL,['tasks' => $tasks]);?>
+            <?php $earnMoneyTotal = costCalculation();?>
             @foreach($tasks as $task)
                 <?php $tasks_total_time += (getLeadTimeMinutes($task)+floor($task->lead_time/60));?>
                 <tr {{ ($task->start_status && !$task->stop_status) ? 'class="success"' : '' }}>
@@ -24,7 +26,14 @@
                         <a href="{{ URL::route('projects.show',$task->project->id) }}">{{ $task->project->title }}</a>
                         <br>{{ $task->note }}
                     </td>
-                    <td>{{ culcLeadTime($task) }}</td>
+                    <td>
+                        {{ culcLeadTime($task) }} / {{ isset($earnMoneyCurrentDate[$task->project->id][$task->id]['earnings']) ? number_format($earnMoneyCurrentDate[$task->project->id][$task->id]['earnings'],2,'.',' ').' руб.' : '' }}
+                        @if(isset($earnMoneyTotal[$task->project->id][$task->id]['overdose']) && $earnMoneyTotal[$task->project->id][$task->id]['overdose'] == 1)
+                            <br><span class="label label-danger">Превышен допустимый лимит бюджета</span>
+                            <br><span class="label label-info">Текущий заработок: {{ number_format($earnMoneyTotal[$task->project->id][$task->id]['overdose_money'],2,'.',' ').' руб.' }}</span>
+                            <br><span class="label label-info">Доступный бюджет: {{ number_format($earnMoneyTotal[$task->project->id][$task->id]['budget'],2,'.',' ').' руб.' }}</span>
+                        @endif
+                    </td>
                     <td>
                         {{ Form::open(array('route'=>array('timesheets.run_timer'),'method'=>'POST','style'=>'display:inline-block')) }}
                         {{ Form::hidden('task',$task->id) }}

@@ -33,6 +33,8 @@
 <div class="table-responsive">
     <table class="table table-striped">
         <tbody>
+        <?php $earnMoneyCurrentDate = costCalculation(NULL,['tasks' => $tasks]);?>
+        <?php $earnMoneyTotal = costCalculation(NULL,['accounts' => Team::where('cooperator_id',Auth::user()->id)->groupBy('superior_id')->lists('superior_id')]);?>
         @foreach($tasks as $task)
             <tr>
                 <td>
@@ -40,7 +42,14 @@
                     <br>
                     {{ $task->note }}
                 </td>
-                <td>{{ culcLeadTime($task) }}</td>
+                <td>
+                    {{ culcLeadTime($task) }} / {{ isset($earnMoneyCurrentDate[$task->project->id][$task->id]['earnings']) ? number_format($earnMoneyCurrentDate[$task->project->id][$task->id]['earnings'],2,'.',' ').' руб.' : '' }}
+                    @if(isset($earnMoneyTotal[$task->project->id][$task->id]['overdose']) && $earnMoneyTotal[$task->project->id][$task->id]['overdose'] == 1)
+                        <br><span class="label label-danger">Превышен допустимый лимит бюджета</span>
+                        <br><span class="label label-info">Текущий заработок: {{ number_format($earnMoneyTotal[$task->project->id][$task->id]['overdose_money'],2,'.',' ').' руб.' }}</span>
+                        <br><span class="label label-info">Доступный бюджет: {{ number_format($earnMoneyTotal[$task->project->id][$task->id]['budget'],2,'.',' ').' руб.' }}</span>
+                    @endif
+                </td>
                 <td>
                     {{ Form::open(array('route'=>array('timesheets.run_timer'),'method'=>'POST','style'=>'display:inline-block')) }}
                     {{ Form::hidden('task',$task->id) }}

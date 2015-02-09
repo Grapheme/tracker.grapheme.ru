@@ -22,6 +22,8 @@
                 <label class="col-sm-3 control-label">Исполнитель</label>
                 <div class="col-sm-6">
                     {{ Form::select('performer',$project_team,Input::old('performer'),['class'=>'form-control']) }}
+                    <span class="label label-warning">После выбора проекта, должен "перегружаться" список исполнителей.</span>
+                    <span class="label label-warning">Список должен содержать только команду выбранного проекта</span>
                 </div>
             </div>
             <div class="form-group has-feedback">
