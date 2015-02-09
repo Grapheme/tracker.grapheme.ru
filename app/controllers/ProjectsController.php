@@ -28,6 +28,8 @@ class ProjectsController extends \BaseController {
 		$validator = Validator::make(Input::all(),Project::$rules);
 		if($validator->passes()):
 			if($project = Project::create(['superior_id' => Auth::user()->id, 'title' => Input::get('title'),'description' => Input::get('description')])):
+				Project::where('id',$project->id)->first()->ownwers()->sync([Auth::user()->id]);
+				ProjectOwners::where('project_id',$project->id)->where('user_id',Auth::user()->id)->update(['hour_price'=>Input::get('hour_price'),'budget'=>Input::get('budget')]);
 				if (Input::has('team')):
 					$usersIDs = $users= array();
 					foreach(Input::get('team') as $user):
@@ -65,8 +67,12 @@ class ProjectsController extends \BaseController {
 
 	public function edit($id){
 
-		if($project = Project::where('id',$id)->where('superior_id',Auth::user()->id)->with('icon','team')->first()):
+		if($project = Project::where('id',$id)->where('superior_id',Auth::user()->id)->with('icon','team','owners')->first()):
 			$project_team = $setProjectTeamIDs = $setProjectValues = array();
+			foreach($project->owners as $owner):
+				$setProjectValues[$owner->id]['hour_price'] = ($owner->hour_price > 0) ? $owner->hour_price : '';
+				$setProjectValues[$owner->id]['budget'] = ($owner->budget > 0) ? $owner->budget : '';
+			endforeach;
 			if($team = Team::where('superior_id',Auth::user()->id)->with('cooperator')->get()):
 				foreach($team as $user):
 					$project_team[$user->cooperator->id] = $user->cooperator->fio;
@@ -90,6 +96,8 @@ class ProjectsController extends \BaseController {
 		$validator = Validator::make(Input::all(),Project::$rules);
 		if($validator->passes()):
 			Project::where('id',$id)->where('superior_id',Auth::user()->id)->update(['title' => Input::get('title'),'description' => Input::get('description')]);
+			Project::where('id',$id)->first()->owners()->sync([Auth::user()->id]);
+			ProjectOwners::where('project_id',$id)->where('user_id',Auth::user()->id)->update(['hour_price'=>Input::get('hour_price'),'budget'=>Input::get('budget')]);
 			if (Input::has('team')):
 				$usersIDs = $users= array();
 				foreach(Input::get('team') as $user):
@@ -115,6 +123,7 @@ class ProjectsController extends \BaseController {
 	public function destroy($id){
 
 		if (Project::where('id',$id)->where('superior_id',Auth::user()->id)->first()):
+			ProjectOwners::where('project_id',$id)->delete();
 			ProjectTeam::where('project_id',$id)->delete();
 			Project::where('id',$id)->delete();
 			return Redirect::route('projects.index')->with('message','Проект удален успешно.');

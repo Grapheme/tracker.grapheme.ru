@@ -23,6 +23,8 @@
     <div class="table-responsive">
         <table class="table table-striped">
             <tbody>
+            <?php $earnMoney = costCalculation($tasks);?>
+            {{ Helper::ta($earnMoney); }}
             @foreach($tasks as $task)
                 <tr {{ ($task->start_status && !$task->stop_status) ? 'class="success"' : '' }}>
                     <td>
@@ -32,7 +34,7 @@
                         <br>
                         {{ $task->note }}
                     </td>
-                    <td>{{ culcLeadTime($task) }}</td>
+                    <td>{{ culcLeadTime($task) }} / {{ 0 }}</td>
                     <td>
                     {{ Form::open(array('route'=>array('timesheets.run_timer'),'method'=>'POST','style'=>'display:inline-block')) }}
                         {{ Form::hidden('task',$task->id) }}

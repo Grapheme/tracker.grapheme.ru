@@ -23,6 +23,40 @@ function culcLeadTime($task){
     return getLeadTimeFromMinutes($sub_minutes,$task->lead_time);
 }
 
+function costCalculation($tasks){
+
+    $projectsIDs = $userTasksMinutes = $projectsData = [];
+    foreach($tasks as $task):
+        if ($task->project):
+            $projectsIDs[$task->project->id] = $task->project->id;
+            $userTasksMinutes[$task->project->id][$task->id] = ['user_id'=>$task->user_id,'minutes'=>getLeadTimeMinutes($task)+floor($task->lead_time/60),'earnings'=>0,'overdose'=>FALSE,'work_price'=>0,'budget'=>0];
+        endif;
+    endforeach;
+    if ($projectsIDs):
+        foreach(Project::whereIn('id',$projectsIDs)->with('team')->get() as $project):
+            if ($project->team):
+                $projectsData[$project->id] = [];
+                foreach($project->team as $user):
+                    $projectsData[$project->id][$user->id] = ['hour_price'=>$user->hour_price,'budget'=>$user->budget];
+                endforeach;
+            endif;
+        endforeach;
+        foreach($projectsData as $project_id => $project):
+            foreach($project as $user_id => $prices):
+                if (isset($userTasksMinutes[$project_id])):
+                    foreach($userTasksMinutes[$project_id] as $task_id => $task):
+                        if ($task['user_id'] == $user_id):
+                            $userTasksMinutes[$project_id][$task_id]['work_price'] = $prices['hour_price'];
+                            $userTasksMinutes[$project_id][$task_id]['budget'] = $prices['budget'];
+                        endif;
+                    endforeach;
+                endif;
+            endforeach;
+        endforeach;
+    endif;
+    return [$userTasksMinutes,$projectsData];
+}
+
 function str2secLeadTime($string){
 
     $lead_time = 0;

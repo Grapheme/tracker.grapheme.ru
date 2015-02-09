@@ -28,7 +28,19 @@
                 </div>
             </div>
             <div class="form-group">
-                <label for="faviconFile" class="col-sm-3 control-label">Комманда </label>
+                <label for="priceHour" class="col-sm-3 control-label">Цена за час</label>
+                <div class="col-sm-4">
+                    {{ Form::text('hour_price',@$setProjectValues[Auth::user()->id]['hour_price'],['class'=>'form-control','placeholder'=>'Цена за час для владельца']) }}
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="priceBudget" class="col-sm-3 control-label">Бюджет</label>
+                <div class="col-sm-4">
+                    {{ Form::text('budget',@$setProjectValues[Auth::user()->id]['budget'],['class'=>'form-control','placeholder'=>'Бюджет для владельца']) }}
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="commands" class="col-sm-3 control-label">Комманда </label>
                 <div class="col-sm-6">
                 @foreach($project_team as $user_id => $user_fio)
                     <?php

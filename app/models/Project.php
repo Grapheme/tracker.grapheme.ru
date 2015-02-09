@@ -21,6 +21,11 @@ class Project extends \BaseModel {
 		return $this->belongsToMany('User','projects_team','project_id','user_id')->select(['users.*','projects_team.hour_price','projects_team.budget']);
 	}
 
+	public function owners(){
+
+		return $this->belongsToMany('User','projects_owners','project_id','user_id')->select(['users.*','projects_owners.hour_price','projects_owners.budget']);
+	}
+
 	public function tasks(){
 
 		return $this->hasMany('ProjectTask','project_id');
