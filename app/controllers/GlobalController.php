@@ -67,4 +67,44 @@ class GlobalController extends \BaseController {
 		return Redirect::route('home');
 	}
 
+	protected function oauth_url(){
+
+		$callback = URL::route('oauth.callback');
+		$url = Config::get('basecamp.urlAuthorize').'?&client_id='.Config::get('basecamp.client_id').'&redirect_uri='.Config::get('basecamp.redirect_uri');
+		return Redirect::to($url.'&type=web_server');
+	}
+
+	protected function oauth_callback(){
+
+		try {
+			$url = Config::get('basecamp.urlAccessToken').'?type=web_server&client_id='.Config::get('basecamp.client_id').'&redirect_uri='.Config::get('basecamp.redirect_uri').'&client_secret='.Config::get('basecamp.client_secret').'&code='.Input::get('code');
+			$result = self::post_request($url);
+			$json_result = json_decode($result,TRUE);
+			if (isset($json_result['access_token'])):
+				$result = file_get_contents(Config::get('basecamp.urlUserDetails').'?access_token='.$json_result['access_token']);
+				$json_result = json_decode($result,TRUE);
+				Helper::tad($json_result);
+			endif;
+		} catch (Exception $e) {
+			if ($error = Input::get('error')):
+				return Redirect::route('dashboard')->withErrors($error);
+			endif;
+			App::abort(404);
+		}
+
+	}
+
+	protected function post_request($url){
+
+		$opts = array('http' =>
+			array(
+				'method'  => 'POST',
+				'header'  => "Content-type: application/x-www-form-urlencoded",
+				'content' => '',
+				'timeout' => 60
+			)
+		);
+		$context  = stream_context_create($opts);
+		return file_get_contents($url, false, $context, -1, 40000);
+	}
 }

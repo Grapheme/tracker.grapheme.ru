@@ -40,7 +40,6 @@ return array(
 		'Way\Generators\GeneratorsServiceProvider',
 		'Intervention\Image\ImageServiceProvider',
 		'Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider',
-
 	),
 	'manifest' => storage_path().'/meta',
 	'aliases' => array(
@@ -85,6 +84,5 @@ return array(
 		'View'              => 'Illuminate\Support\Facades\View',
 
 		'ImageManipulation' => 'Intervention\Image\Facades\Image',
-
 	),
 );

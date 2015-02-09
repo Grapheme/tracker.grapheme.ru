@@ -9,6 +9,11 @@ Route::group(array('before' => 'guest'), function(){
     Route::post('register',array('before' => 'csrf', 'as'=>'register-store','uses' => 'GlobalController@register'));
 });
 
+Route::group(array('before' => 'auth'), function(){
+    Route::post('oauth/register', array('as'=>'oauth.register','uses' => 'GlobalController@oauth_url'));
+    Route::get('oauth/callback', array('as'=>'oauth.callback','uses' => 'GlobalController@oauth_callback'));
+});
+
 if (Auth::check()):
     foreach(Group::all() as $group):
         $prefixes[$group->slug] = $group->dashboard;
