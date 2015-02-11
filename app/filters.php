@@ -30,6 +30,15 @@ Route::filter('auth', function(){
 	endif;
 });
 
+Route::filter('auth.basecamp', function(){
+
+	if (Auth::check()):
+		if (!Session::has('basecamp_id')):
+			return Redirect::route('dashboard')->with('message','Возникла ошибка при синхронизации с Basecamp.');
+		endif;
+	endif;
+});
+
 Route::filter('auth.basic', function(){
 	return Auth::basic();
 });

@@ -28,9 +28,9 @@ class ProjectsController extends \BaseController {
 		$validator = Validator::make(Input::all(),Project::$rules);
 		if($validator->passes()):
 			if($project = Project::create(['superior_id' => Auth::user()->id, 'title' => Input::get('title'),'description' => Input::get('description')])):
-				Project::where('id',$project->id)->first()->ownwers()->sync([Auth::user()->id]);
-				ProjectOwners::where('project_id',$project->id)->where('user_id',Auth::user()->id)->update(['hour_price'=>Input::get('hour_price'),'budget'=>Input::get('budget')]);
+				ProjectOwners::create(['project_id'=>$project->id,'user_id'=>Auth::user()->id,'hour_price'=>Input::get('hour_price'),'budget'=>Input::get('budget')]);
 				if (Input::has('team')):
+					Project::where('id',$project->id)->first()->ownwers()->sync([Auth::user()->id]);
 					$usersIDs = $users= array();
 					foreach(Input::get('team') as $user):
 						if (isset($user['user_id'])):
@@ -96,9 +96,9 @@ class ProjectsController extends \BaseController {
 		$validator = Validator::make(Input::all(),Project::$rules);
 		if($validator->passes()):
 			Project::where('id',$id)->where('superior_id',Auth::user()->id)->update(['title' => Input::get('title'),'description' => Input::get('description')]);
-			Project::where('id',$id)->first()->owners()->sync([Auth::user()->id]);
 			ProjectOwners::where('project_id',$id)->where('user_id',Auth::user()->id)->update(['hour_price'=>Input::get('hour_price'),'budget'=>Input::get('budget')]);
 			if (Input::has('team')):
+				Project::where('id',$id)->first()->owners()->sync([Auth::user()->id]);
 				$usersIDs = $users= array();
 				foreach(Input::get('team') as $user):
 					if (isset($user['user_id'])):

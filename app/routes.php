@@ -9,11 +9,6 @@ Route::group(array('before' => 'guest'), function(){
     Route::post('register',array('before' => 'csrf', 'as'=>'register-store','uses' => 'GlobalController@register'));
 });
 
-Route::group(array('before' => 'auth'), function(){
-    Route::post('oauth/register', array('as'=>'oauth.register','uses' => 'GlobalController@oauth_url'));
-    Route::get('oauth/callback', array('as'=>'oauth.callback','uses' => 'GlobalController@oauth_callback'));
-});
-
 if (Auth::check()):
     foreach(Group::all() as $group):
         $prefixes[$group->slug] = $group->dashboard;
@@ -87,5 +82,15 @@ if (Auth::check()):
         else:
             return Redirect::route('home');
         endif;
+    });
+
+    Route::group(array('before' => 'auth'), function(){
+        Route::post('oauth/register', array('before'=>'csrf','as'=>'oauth.register','uses' => 'BasecampController@oauth_url'));
+        Route::get('oauth/callback', array('as'=>'oauth.callback','uses' => 'BasecampController@oauth_callback'));
+    });
+    Route::group(array('before' => 'auth.basecamp','prefix' => @$prefix), function(){
+        Route::get('basecamp/accounts', array('as'=>'basecamp.accounts','uses' => 'BasecampController@userAccountsList'));
+        Route::post('basecamp/projects', array('before'=>'csrf','as'=>'basecamp.projects','uses' => 'BasecampController@getUserAccountProjects'));
+        Route::post('basecamp/project/import', array('before'=>'csrf','as'=>'basecamp.project.import','uses' => 'BasecampController@userAccountProjectImport'));
     });
 endif;

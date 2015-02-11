@@ -32,4 +32,17 @@ class BaseController extends Controller {
         endif;
     }
 
+    public static function post_request($url){
+
+        $opts = array('http' =>
+            array(
+                'method'  => 'POST',
+                'header'  => "Content-type: application/x-www-form-urlencoded",
+                'content' => '',
+                'timeout' => 60
+            )
+        );
+        $context  = stream_context_create($opts);
+        return file_get_contents($url, false, $context, -1, 40000);
+    }
 }

@@ -3,13 +3,6 @@
 
 @section('content')
     <h1 class="page-header">Список проектов</h1>
-    <div class="row">
-        <div class="col-xs-6 pull-right">
-        {{ Form::open(array('route'=>array('oauth.register'),'method'=>'POST','style'=>'display:inline-block')) }}
-            {{ Form::submit('Импорт из Basecamp',['class'=>'btn btn-success']) }}
-        {{ Form::close() }}
-        </div>
-    </div>
     @if(count($projects))
     <div class="row placeholders">
         @foreach($projects as $project)

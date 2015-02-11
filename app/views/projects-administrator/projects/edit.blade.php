@@ -39,6 +39,7 @@
                     {{ Form::text('budget',@$setProjectValues[Auth::user()->id]['budget'],['class'=>'form-control','placeholder'=>'Бюджет для владельца']) }}
                 </div>
             </div>
+            @if(count($project_team))
             <div class="form-group">
                 <label for="commands" class="col-sm-3 control-label">Комманда </label>
                 <div class="col-sm-6">
@@ -63,6 +64,7 @@
                 @endforeach
                 </div>
             </div>
+            @endif
             <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
                     <button type="submit" class="btn btn-success">Сохранить</button>
