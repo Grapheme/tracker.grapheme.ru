@@ -30,7 +30,7 @@ class ProjectsController extends \BaseController {
 			if($project = Project::create(['superior_id' => Auth::user()->id, 'title' => Input::get('title'),'description' => Input::get('description')])):
 				ProjectOwners::create(['project_id'=>$project->id,'user_id'=>Auth::user()->id,'hour_price'=>Input::get('hour_price'),'budget'=>Input::get('budget')]);
 				if (Input::has('team')):
-					Project::where('id',$project->id)->first()->ownwers()->sync([Auth::user()->id]);
+					Project::where('id',$project->id)->first()->owners()->sync([Auth::user()->id]);
 					$usersIDs = $users= array();
 					foreach(Input::get('team') as $user):
 						if (isset($user['user_id'])):
