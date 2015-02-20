@@ -84,16 +84,19 @@ class BasecampController extends \BaseController {
                         $projectImportIndex = array_search($project['id'],$BasecampImportProjectsIDs);
                         if ($projectImportIndex === FALSE):
                             $new_project = Project::create(['superior_id'=>Auth::user()->id,'title'=>@$project['name'],'description'=>@$project['description']]);
+                            ProjectOwners::create(['project_id'=>$new_project->id,'user_id'=>Auth::user()->id,'hour_price'=>0,'budget'=>0]);
+                            $project_data = ['account_id'=>Input::get('account_id'),'app_url'=>@$project['app_url'],'accesses'=>@$project['accesses']['count'],'attachments'=>@$project['attachments']['count'],'documents'=>@$project['documents']['count'],'todolists'=>@$project['todolists']['count']];
+                            BasecampImportProject::create(['user_id'=>Auth::user()->id,'project_id'=>$new_project->id,'basecamp_project_id'=>$project_id,'basecamp_project_data'=>json_encode($project_data)]);
                         else:
-                            $new_project = Project::where('where',$projectImportIndex)->first();
+                            $new_project = Project::where('id',$projectImportIndex)->first();
                         endif;
 						if ($new_project):
-							ProjectOwners::create(['project_id'=>$new_project->id,'user_id'=>Auth::user()->id,'hour_price'=>0,'budget'=>0]);
-							$project_data = ['account_id'=>Input::get('account_id'),'app_url'=>@$project['app_url'],'accesses'=>@$project['accesses']['count'],'attachments'=>@$project['attachments']['count'],'documents'=>@$project['documents']['count'],'todolists'=>@$project['todolists']['count']];
-							BasecampImportProject::create(['user_id'=>Auth::user()->id,'project_id'=>$new_project->id,'basecamp_project_id'=>$project_id,'basecamp_project_data'=>json_encode($project_data)]);
 							if (Input::has('sync_tasks')):
 								self::userAccountProjectTasksImport($new_project->id, $project_id,$basecamp_client);
 							endif;
+                            if (Input::has('sync_people')):
+                                self::userAccountProjectTeamImport($new_project->id, $project_id,$basecamp_client);
+                            endif;
 						endif;
 					endif;
 				endforeach;
@@ -164,7 +167,7 @@ class BasecampController extends \BaseController {
 								Team::create(['superior_id'=>Auth::user()->id,'cooperator_id'=>$user->id]);
 							endif;
 							if(in_array($people['identity_id'],$BasecampImportUserIDs) === FALSE):
-								BasecampImportUser::create(['user_id'=>Auth::user()->id,'basecamp_user_id'=>$people['identity_id']]);
+								BasecampImportUser::create(['import_user_id'=>Auth::user()->id,'user_id'=>$user->id,'basecamp_user_id'=>$people['id'],'basecamp_identity_id'=>$people['identity_id']]);
 							endif;
 						endif;
 					endif;
@@ -176,6 +179,28 @@ class BasecampController extends \BaseController {
 		}
 		return Redirect::route('dashboard')->with('message','Возникла ошибка при синхронизации с Basecamp.');
 	}
+
+    protected function userAccountProjectTeamImport($projectID,$basecampProjectID, $basecamp_client = NULL){
+
+        if (is_null($basecamp_client)):
+            $basecamp_client = self::getBasecampClientHandler(Input::get('account_id'));
+        endif;
+        try{
+            if($responseAccesses = $basecamp_client->getAccessesByProject(['projectId' =>(int)$basecampProjectID])):
+                $BasecampImportUserIDs = BasecampImportUser::where('import_user_id',Auth::user()->id)->lists('basecamp_user_id','user_id');
+                foreach($responseAccesses as $accesses):
+                    $userID = array_search($accesses['id'],$BasecampImportUserIDs);
+                    if ($userID !== FALSE):
+                        ProjectTeam::create(['project_id'=>$projectID,'user_id'=>$userID,'hour_price'=>0,'budget'=>0]);
+                    endif;
+                endforeach;
+            endif;
+            return TRUE;
+        } catch(Exception $error){
+            # errors
+        }
+        return Redirect::route('dashboard')->with('message','Возникла ошибка при синхронизации с Basecamp.');
+    }
 
 	private function getBasecampClientHandler($user_id = NULL){
 
