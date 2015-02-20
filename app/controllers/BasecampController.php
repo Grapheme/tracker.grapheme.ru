@@ -61,7 +61,6 @@ class BasecampController extends \BaseController {
 					$account = Input::except(['_token']);
 					$already_uses = BasecampImportProject::where('user_id',Auth::user()->id)->get();
 					$basecamp_peoples_count = self::userAccountPeopleCount($basecamp_client);
-
 					return View::make(Helper::acclayout('basecamp.projects'),compact('projects','account','already_uses','basecamp_peoples_count'));
 				endif;
 			endif;
@@ -115,7 +114,7 @@ class BasecampController extends \BaseController {
             if($responseTodoLists = $basecamp_client->getTodolistsByProject(['projectId' =>(int)$basecampProjectID])):
                 $TeamUserIDs = Team::where('superior_id',Auth::user()->id)->lists('cooperator_id');
                 $BasecampImportUserIDs = BasecampImportUser::lists('user_id','basecamp_user_id');
-                $BasecampImportTasksIDs = BasecampImportProjectTask::where('basecamp_project_id',$basecampProjectID)->lists('basecamp_task_id');
+                $BasecampImportTasksIDs = BasecampImportProjectTask::where('cooperator_id',Auth::user()->id)->where('basecamp_project_id',$basecampProjectID)->lists('basecamp_task_id');
                 foreach($responseTodoLists as $todo):
                     if ($responseTodo = $basecamp_client->getTodolist(['projectId'=>(int)$basecampProjectID,'todolistId'=>(int)$todo['id']])):
                         if ($responseTodo['remaining_count'] && isset($responseTodo['todos']['remaining'])):
@@ -127,7 +126,7 @@ class BasecampController extends \BaseController {
                                 endif;
                                 if (in_array($task['id'],$BasecampImportTasksIDs) === FALSE):
                                     if($new_task = ProjectTask::create(['project_id'=>$projectID,'user_id'=>$performerID,'note'=>$task['content'],'set_date'=>$set_date,'lead_time'=>0])):
-                                        BasecampImportProjectTask::create(['user_id'=>$performerID,'project_id'=>$projectID,'task_id'=>$new_task->id,'basecamp_project_id'=>$basecampProjectID,'basecamp_task_id'=>$task['id'],'basecamp_task_link'=>$task['app_url']]);
+                                        BasecampImportProjectTask::create(['cooperator_id'=>Auth::user()->id,'user_id'=>$performerID,'project_id'=>$projectID,'task_id'=>$new_task->id,'basecamp_project_id'=>$basecampProjectID,'basecamp_task_id'=>$task['id'],'basecamp_task_link'=>$task['app_url']]);
                                     endif;
                                 endif;
                             endforeach;
