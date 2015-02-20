@@ -38,6 +38,9 @@
                     <td>
                         <a href="{{ URL::route('cooperators.show',$task->cooperator->id) }}">{{ getInitials($task->cooperator->fio) }}</a>
                         <br>{{ $task->note }}
+                        @if(count($task->basecamp_task))
+                        <a href="{{ $task->basecamp_task->basecamp_task_link  }}" target="_blank"><span aria-hidden="true" class="glyphicon glyphicon-new-window"></span></a>
+                        @endif
                     </td>
                     <td>
                         {{ culcLeadTime($task) }} / {{ isset($earnMoneyCurrentDate[$task->project->id][$task->id]['earnings']) ? number_format($earnMoneyCurrentDate[$task->project->id][$task->id]['earnings'],2,'.',' ').' руб.' : '' }}

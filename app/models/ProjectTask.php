@@ -16,4 +16,9 @@ class ProjectTask extends \BaseModel {
 
 		return $this->hasOne('Project','id','project_id');
 	}
+
+    public function basecamp_task(){
+
+        return $this->hasOne('BasecampImportProjectTask','task_id');
+    }
 }

@@ -13,6 +13,7 @@ class CreateBasecampImportTasksTable extends Migration {
 			$table->integer('task_id')->nullable()->default(0)->unsigned();
 			$table->integer('basecamp_project_id')->nullable()->default(0)->unsigned();
 			$table->integer('basecamp_task_id')->nullable()->default(0)->unsigned();
+			$table->string('basecamp_task_link',255)->nullable();
 			$table->timestamps();
 		});
 	}

@@ -7,6 +7,7 @@ return array(
 
     'theme_path' => 'theme',
     'service_password' => 'qlFWGsDiLfcRq',
+    'default_password' => 'dge9rmgqjs8m1',
     'paginate_limit' => 30,
     'time_zone' => 'Europe/Moscow'
 );

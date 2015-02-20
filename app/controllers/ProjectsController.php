@@ -9,7 +9,7 @@ class ProjectsController extends \BaseController {
 	public function index(){
 
 		$projects = Project::where('superior_id',Auth::user()->id)->orderBy('updated_at','DESC')->with('team','tasks')->get();
-		return View::make(Helper::acclayout('projects.list'),compact('projects'));
+        return View::make(Helper::acclayout('projects.list'),compact('projects'));
 	}
 
 	public function create(){
@@ -58,7 +58,7 @@ class ProjectsController extends \BaseController {
 	public function show($id){
 
 		if($project = Project::where('id',$id)->where('superior_id',Auth::user()->id)->with('icon','team')->first()):
-			$tasks = ProjectTask::where('project_id',$project->id)->with('cooperator')->get();
+			$tasks = ProjectTask::where('project_id',$project->id)->with('cooperator','basecamp_task')->get();
 			return View::make(Helper::acclayout('projects.show'),compact('project','tasks'));
 		else:
 			App::abort(404);

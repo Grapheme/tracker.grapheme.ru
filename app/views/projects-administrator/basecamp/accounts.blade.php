@@ -2,7 +2,7 @@
 @section('style') @stop
 
 @section('content')
-    <h1 class="page-header">Basecamp. Выбирите аккаунт</h1>
+    <h1 class="page-header">Basecamp. Выберите аккаунт</h1>
     @if(count($accounts))
         <div class="row placeholders">
             @foreach($accounts as $account)
