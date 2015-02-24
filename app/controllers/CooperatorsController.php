@@ -22,7 +22,7 @@ class CooperatorsController extends \BaseController {
 		$validator = Validator::make(Input::all(),User::$rules);
 		if($validator->passes()):
 			$password = Str::random(12);
-			if($account = User::create(['group_id' => 4, 'email' => Input::get('email'),'fio' => Input::get('fio'),'position' => Input::get('position'),'active' => 1, 'password' => Hash::make($password)])):
+			if($account = User::create(['group_id' => 4, 'email' => Input::get('email'),'fio' => Input::get('fio'),'position' => Input::get('position'),'hour_price' => Input::get('hour_price'),'active' => 1, 'password' => Hash::make($password)])):
 				Team::create(['superior_id' => Auth::user()->id,'cooperator_id' => $account->id]);
 				Mail::send('emails.auth.register',['fio'=>$account->fio,'login'=>$account->email,'password'=>$password],function($message) use ($account){
 					$message->from(Config::get('mail.from.address'),Config::get('mail.from.name'));
@@ -63,7 +63,7 @@ class CooperatorsController extends \BaseController {
 		$validator = Validator::make(Input::all(),User::$update_rules);
 		if($validator->passes()):
 			if (Team::where('superior_id',Auth::user()->id)->where('cooperator_id',$id)->exists()):
-				User::where('id',$id)->update(['fio' => Input::get('fio'),'position' => Input::get('position')]);
+				User::where('id',$id)->update(['fio' => Input::get('fio'),'position' => Input::get('position'),'hour_price' => Input::get('hour_price')]);
 				return Redirect::route('cooperators.show',$id)->with('message','Профиль сотрудника сохранен успешно.');
 			else:
 				App::abort(404);

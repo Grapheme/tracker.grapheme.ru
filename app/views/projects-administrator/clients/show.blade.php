@@ -3,25 +3,21 @@
 
 @section('content')
     <div class="jumbotron" style="background-image: url(/uploads/images/1422287024_1908.jpg)">
-        <h1>{{ $project->title }}</h1>
-        <p class="lead">{{ $project->description }}</p>
-        @if(!empty($project->client))
-            <a href="{{ URL::route('clients.show',$project->client->id) }}" class=""><h5>{{ $project->client->title }}</h5></a>
-        @endif
-        <a role="button" href="{{ URL::route('projects.edit',$project->id) }}" class="btn btn-primary btn-sm">Редактировать</a>
-        {{ Form::open(array('route'=>array('projects.destroy',$project->id),'method'=>'DELETE','style'=>'display:inline-block')) }}
+        <h1>{{ $client->title }}</h1>
+        <p class="lead">{{ $client->description }}</p>
+        <a role="button" href="{{ URL::route('clients.edit',$client->id) }}" class="btn btn-primary btn-sm">Редактировать</a>
+        {{ Form::open(array('route'=>array('clients.destroy',$client->id),'method'=>'DELETE','style'=>'display:inline-block')) }}
             {{ Form::submit('Удалить',['class'=>'btn btn-danger btn-sm']) }}
         {{ Form::close() }}
     </div>
-    @if($project->team->count())
+    @if(count($projects))
     <div class="container marketing">
         <div class="row">
-        @foreach($project->team as $user)
+        @foreach($projects as $project)
             <div class="col-lg-4">
                 <img class="img-circle" data-src="holder.js/140x140/auto/sky" alt="">
-                <h2>{{ getInitials($user->fio) }}</h2>
-                <p>{{ $user->position }}</p>
-                <p><a class="btn btn-default" href="{{ URL::route('cooperators.show',$user->id) }}" role="button">Подробнее &raquo;</a></p>
+                <h2>{{ $project->title }}</h2>
+                <p><a class="btn btn-default" href="{{ URL::route('projects.show',$project->id) }}" role="button">Подробнее &raquo;</a></p>
             </div>
         @endforeach
         </div>

@@ -21,6 +21,19 @@ if (Auth::check()):
     });
     Route::group(array('before' => 'auth','prefix' => @$prefixes['admin-projects']), function(){
         if(isProjectAdministrator()):
+            Route::resource('clients', 'ClientsController',
+                array(
+                    'names' => array(
+                        'index'   => 'clients.index',
+                        'create'  => 'clients.create',
+                        'store'   => 'clients.store',
+                        'show'    => 'clients.show',
+                        'edit'    => 'clients.edit',
+                        'update'  => 'clients.update',
+                        'destroy' => 'clients.destroy'
+                    )
+                )
+            );
             Route::resource('projects', 'ProjectsController',
                 array(
                     'names' => array(

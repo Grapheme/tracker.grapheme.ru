@@ -95,7 +95,7 @@ function costCalculation($cooperator = NULL, $data = NULL){
             foreach($userTasksMinutes as $project_id => $tasks):
                 foreach($tasks as $task_id => $prices):
                     if (isset($userTaskEarnings[$project_id][$prices['user_id']])):
-                        if ($userTaskEarnings[$project_id][$prices['user_id']] > $prices['budget']):
+                        if ($prices['budget'] > 0 && $userTaskEarnings[$project_id][$prices['user_id']] > $prices['budget']):
                             $userTasksMinutes[$project_id][$task_id]['overdose'] = TRUE;
                             $userTasksMinutes[$project_id][$task_id]['overdose_money'] = $userTaskEarnings[$project_id][$prices['user_id']];
                         endif;

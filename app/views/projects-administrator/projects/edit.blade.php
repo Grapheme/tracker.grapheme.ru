@@ -9,7 +9,7 @@
             <div class="form-group has-feedback">
                 <label for="inputTitle" class="col-sm-3 control-label">Название проекта</label>
                 <div class="col-sm-4">
-                    {{ Form::text('title',NULL,['class' => 'form-control','placeholder'=>'Первый проект','required'=>'','id'=>'inputTitle','autofocus'=>'']) }}
+                    {{ Form::text('title',NULL,['class' => 'form-control','placeholder'=>'Первый проект','required'=>'','id'=>'inputTitle','autofocus'=>'','required'=>'']) }}
                     <span class="glyphicon glyphicon-warning-sign form-control-feedback" aria-hidden="true"></span>
                     <span id="inputWarning2Status" class="sr-only">(warning)</span>
                 </div>
@@ -18,6 +18,18 @@
                 <label for="inputDescription" class="col-sm-3 control-label">Описание</label>
                 <div class="col-sm-6">
                     {{ Form::text('description',NULL,['class' => 'form-control','placeholder'=>'Коротко опишите проект','id'=>'inputDescription']) }}
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Клиент</label>
+                <div class="col-sm-6">
+                <?php
+                    $clientsLists[0] = 'Без клиента';
+                    foreach(Clients::where('superior_id',Auth::user()->id)->orderBy('title')->lists('title','id') as $client_id => $client_title):
+                        $clientsLists[$client_id] = $client_title;
+                    endforeach;
+                ?>
+                    {{ Form::select('client_id',$clientsLists, Input::old('client_id'),['class'=>'form-control']) }}
                 </div>
             </div>
             <div class="form-group">
@@ -33,12 +45,13 @@
                     {{ Form::text('hour_price',@$setProjectValues[Auth::user()->id]['hour_price'],['class'=>'form-control','placeholder'=>'Цена за час для владельца']) }}
                 </div>
             </div>
-            <div class="form-group">
+            {{ Form::hidden('budget',@$setProjectValues[Auth::user()->id]['budget'],['class'=>'form-control','placeholder'=>'Бюджет для владельца']) }}
+            <!--<div class="form-group">
                 <label for="priceBudget" class="col-sm-3 control-label">Бюджет</label>
                 <div class="col-sm-4">
-                    {{ Form::text('budget',@$setProjectValues[Auth::user()->id]['budget'],['class'=>'form-control','placeholder'=>'Бюджет для владельца']) }}
+                    {{-- Form::text('budget',@$setProjectValues[Auth::user()->id]['budget'],['class'=>'form-control','placeholder'=>'Бюджет для владельца']) --}}
                 </div>
-            </div>
+            </div>-->
             @if(count($project_team))
             <div class="form-group">
                 <label for="commands" class="col-sm-3 control-label">Комманда </label>
@@ -59,7 +72,7 @@
                     </div>
                     <div class="form-inline">
                         {{ Form::text('team['.$user_id.'][hour_price]',$hour_price,['class'=>'form-control','placeholder'=>'Цена за час']) }}
-                        {{ Form::text('team['.$user_id.'][budget]',$budget,['class'=>'form-control','placeholder'=>'Бюджет']) }}
+                        {{ Form::hidden('team['.$user_id.'][budget]',$budget,['class'=>'form-control','placeholder'=>'Бюджет']) }}
                     </div>
                 @endforeach
                 </div>

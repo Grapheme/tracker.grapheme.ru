@@ -12,6 +12,9 @@
             </a>
             <a href="{{ URL::route('projects.show',$project->id) }}" class=""><h4>{{ $project->title }}</h4></a>
             <span class="text-muted">{{ $project->description }}</span>
+            @if(!empty($project->client))
+                <a href="{{ URL::route('clients.show',$project->client->id) }}" class=""><h5>{{ $project->client->title }}</h5></a>
+            @endif
             @if($project->team->count())
             <br><span class="text-muted">{{ $project->team->count() }} {{ Lang::choice('участник|участника|участников',$project->team->count()) }}</span>
             @endif

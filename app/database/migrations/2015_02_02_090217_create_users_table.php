@@ -11,6 +11,7 @@ class CreateUsersTable extends Migration {
 			$table->smallInteger('group_id')->default(0)->nullable()->unsigned();
 			$table->string('fio',100)->nullable();
 			$table->string('position',100)->nullable();
+            $table->integer('hour_price')->nullable()->default(0)->unsigned();
 			$table->string('email')->unique()->nullable();
 			$table->smallInteger('active')->default(0)->nullable()->unsigned();
 			$table->string('password',60)->nullable();

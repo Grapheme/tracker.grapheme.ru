@@ -24,12 +24,13 @@
                     {{ Form::select('project',$projects_list,Input::old('project'),['class'=>'form-control']) }}
                 </div>
             </div>
-            <div class="form-group">
+            {{ Form::hidden('performer',Auth::user()->id) }}
+            <!--<div class="form-group">
                 <label class="col-sm-3 control-label">Исполнитель</label>
                 <div class="col-sm-6">
                     {{ Form::select('performer',[Auth::user()->id=>getInitials(Auth::user()->fio)],Input::old('performer'),['class'=>'form-control']) }}
                 </div>
-            </div>
+            </div>-->
             <div class="form-group has-feedback">
                 <label for="inputNote" class="col-sm-3 control-label">Описание</label>
                 <div class="col-sm-6">

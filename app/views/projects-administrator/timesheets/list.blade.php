@@ -3,7 +3,9 @@
 
 @section('content')
     <h1 class="page-header">Список задач</h1>
+    @if(strtotime($dt_request) <= strtotime(date("Y-m-d",time())))
     <a class="btn btn-success" href="{{ URL::route('timesheets.create',['date'=>$dt_request]) }}" title="Добавить задачу" role="button"><span aria-hidden="true" class="glyphicon glyphicon-plus"></span></a>
+    @endif
     <a class="btn btn-info" href="{{ URL::route('timesheets.index') }}" role="button">Сегодня</a>
     <div class="btn-group" role="group">
         <a href="{{ URL::route('timesheets.index',['date'=>$startOfWeek->subWeek()->format('Y-m-d')]) }}" class="btn btn-primary">Предыдущая <br> неделя</a>

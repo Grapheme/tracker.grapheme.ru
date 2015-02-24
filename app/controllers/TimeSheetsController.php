@@ -31,6 +31,9 @@ class TimeSheetsController extends \BaseController {
 
 	public function create(){
 
+        if(strtotime(Request::get('date')) > strtotime(date("Y-m-d",time()))):
+            return Redirect::route('timesheets.create',['date'=>date("Y-m-d")]);
+        endif;
 		$project_team[Auth::user()->id] = Auth::user()->fio;
 		if($team = Team::where('superior_id',Auth::user()->id)->with('cooperator')->get()):
 			foreach($team as $user):
@@ -45,20 +48,8 @@ class TimeSheetsController extends \BaseController {
 		$validator = Validator::make(Input::all(),ProjectTask::$rules);
 		$set_date = Input::get('set_date') ? Input::get('set_date') : date('Y-m-d');
 		if($validator->passes()):
-			if (Input::get('performer') == Auth::user()->id):
-				if (ProjectTask::where('user_id',Auth::user()->id)->where('start_status',1)->where('stop_status',0)->exists()):
-					$start_status = 0;
-					$start_date = '0000-00-00 00:00:00';
-				else:
-					$start_status = 1;
-					$start_date = date('Y-m-d H:i:s');
-				endif;
-			else:
-				$start_status = 0;
-				$start_date = '0000-00-00 00:00:00';
-			endif;
-
-			if($task = ProjectTask::create(['project_id' => Input::get('project'), 'user_id' => Input::get('performer'),'note' => Input::get('note'),'start_status' => $start_status,'start_date' => $start_date,'set_date'=>$set_date,'lead_time'=>str2secLeadTime(Input::get('lead_time'))])):
+            ProjectTask::where('user_id',Auth::user()->id)->where('start_status',1)->where('stop_status',0)->update(['stop_status'=>1,'stop_date'=>date("Y-m-d H:i:s")]);
+			if($task = ProjectTask::create(['project_id' => Input::get('project'), 'user_id' => Input::get('performer'),'note' => Input::get('note'),'start_status' => 1,'start_date' => date("Y-m-d H:i:s"),'set_date'=>$set_date,'lead_time'=>str2secLeadTime(Input::get('lead_time'))])):
 				return Redirect::route('timesheets.index',['date'=>$set_date])->with('message','Задача создана успешно.');
 			else:
 				return Redirect::back()->with('message','Возникла ошибка при записи в БД');

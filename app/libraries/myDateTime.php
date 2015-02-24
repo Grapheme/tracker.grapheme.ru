@@ -113,7 +113,12 @@ class myDateTime {
 
     public static function getDiffTimeStamp($date_begin,$date_over){
 
-        return strtotime($date_begin) - strtotime($date_over);
+        $empty = '0000-00-00 00:00:00';
+        if ($date_begin == $empty || $date_over == $empty):
+            return 0;
+        else:
+            return strtotime($date_begin) - strtotime($date_over);
+        endif;
     }
 
     public function addDays($days = 0){

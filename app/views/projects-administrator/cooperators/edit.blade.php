@@ -21,6 +21,12 @@
                 </div>
             </div>
             <div class="form-group">
+                <label for="priceHour" class="col-sm-3 control-label">Цена за час</label>
+                <div class="col-sm-4">
+                    {{ Form::text('hour_price',Input::old('hour_price'),['class'=>'form-control','placeholder'=>'Цена за час']) }}
+                </div>
+            </div>
+            <div class="form-group">
                 <label for="iconFile" class="col-sm-3 control-label">Аватар </label>
                 <div class="col-sm-6">
                     {{ Form::file('file',['id'=>"iconFile"]) }}

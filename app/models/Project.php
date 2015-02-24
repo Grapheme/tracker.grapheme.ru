@@ -3,7 +3,7 @@
 class Project extends \BaseModel {
 
 	protected $table = 'projects';
-	protected $fillable = ['superior_id','title','description','image_id'];
+	protected $fillable = ['client_id','superior_id','title','description','image_id'];
 	public static $rules = ['title' => 'required'];
 
 	public function icon(){
@@ -14,6 +14,11 @@ class Project extends \BaseModel {
 	public function superior(){
 
 		return $this->hasOne('User','id','superior_id');
+	}
+
+    public function client(){
+
+		return $this->hasOne('Clients','id','client_id');
 	}
 
 	public function team(){
@@ -29,5 +34,10 @@ class Project extends \BaseModel {
 	public function tasks(){
 
 		return $this->hasMany('ProjectTask','project_id');
+	}
+
+    public function basecamp_projects(){
+
+		return $this->hasMany('BasecampImportProject','project_id');
 	}
 }
