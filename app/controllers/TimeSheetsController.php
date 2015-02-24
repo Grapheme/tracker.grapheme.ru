@@ -19,8 +19,14 @@ class TimeSheetsController extends \BaseController {
 			$weekTasks[$index->format('Y-m-d')] = ['label'=>$index->format('d.m'),'lead_time'=>'0:00','tasks_count'=>0];
 		endfor;
 		if($projectsIDs = Project::where('superior_id',Auth::user()->id)->lists('id')):
-			$tasks = ProjectTask::whereIn('project_id',$projectsIDs)->whereBetween('set_date',[$startOfDay,$endOfDay])->with('cooperator','project')->get();
-			foreach(ProjectTask::whereIn('project_id',$projectsIDs)->whereBetween('set_date',[$startOfWeek,$endOfWeek])->get() as $task):
+            if (Request::get('show') == 'all'):
+                $tasks = ProjectTask::whereIn('project_id',$projectsIDs)->whereBetween('set_date',[$startOfDay,$endOfDay])->with('cooperator','project')->get();
+                $tasksWeeek = ProjectTask::whereIn('project_id',$projectsIDs)->whereBetween('set_date',[$startOfWeek,$endOfWeek])->get();
+            else:
+                $tasks = ProjectTask::where('user_id',Auth::user()->id)->whereIn('project_id',$projectsIDs)->whereBetween('set_date',[$startOfDay,$endOfDay])->with('cooperator','project')->get();
+                $tasksWeeek = ProjectTask::where('user_id',Auth::user()->id)->whereIn('project_id',$projectsIDs)->whereBetween('set_date',[$startOfWeek,$endOfWeek])->get();
+            endif;
+			foreach($tasksWeeek as $task):
 				$index = (new myDateTime())->setDateString($task->set_date);
 				$weekTasks[$index->format('Y-m-d')]['lead_time'] += (getLeadTimeMinutes($task)+floor($task->lead_time/60));
 				$weekTasks[$index->format('Y-m-d')]['tasks_count'] += 1;
