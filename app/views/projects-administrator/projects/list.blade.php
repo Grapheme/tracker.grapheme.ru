@@ -11,15 +11,17 @@
                 <img data-src="holder.js/200x200/auto/sky" class="img-responsive" alt="Generic placeholder thumbnail">
             </a>
             <a href="{{ URL::route('projects.show',$project->id) }}" class=""><h4>{{ $project->title }}</h4></a>
-            <span class="text-muted">{{ $project->description }}</span>
+            @if(!empty($project->description))
+            <span class="text-muted">{{ $project->description }}</span><br>
+            @endif
             @if(!empty($project->client))
-                <a href="{{ URL::route('clients.show',$project->client->id) }}" class=""><h5>{{ $project->client->title }}</h5></a>
+                <a href="{{ URL::route('clients.show',$project->client->id) }}" class="">{{ $project->client->title }}</a><br>
             @endif
             @if($project->team->count())
-            <br><span class="text-muted">{{ $project->team->count() }} {{ Lang::choice('участник|участника|участников',$project->team->count()) }}</span>
+            <span class="text-muted">{{ $project->team->count() }} {{ Lang::choice('участник|участника|участников',$project->team->count()) }}</span><br>
             @endif
             @if($project->tasks->count())
-            <br><span class="text-muted">{{ $project->tasks->count() }} {{ Lang::choice('задача|задачи|задач',$project->tasks->count()) }}</span>
+            <span class="text-muted">{{ $project->tasks->count() }} {{ Lang::choice('задача|задачи|задач',$project->tasks->count()) }}</span>
             @endif
         </div>
         @endforeach
