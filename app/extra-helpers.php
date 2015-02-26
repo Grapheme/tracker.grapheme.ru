@@ -23,7 +23,7 @@ function culcLeadTime($task){
     return getLeadTimeFromMinutes($sub_minutes,$task->lead_time);
 }
 
-function costCalculation($cooperator = NULL, $data = NULL){
+function costCalculation($taskID = NULL, $data = NULL){
 
     $accountsIDs = [Auth::user()->id];
     $tasks = array();
@@ -36,90 +36,19 @@ function costCalculation($cooperator = NULL, $data = NULL){
         endif;
     endif;
     if (empty($tasks)):
-        if($projectsIDs = Project::whereIn('superior_id',$accountsIDs)->lists('id')):
-            $tasks = ProjectTask::whereIn('project_id',$projectsIDs)->with('cooperator','project')->get();
-        else:
-            return array();
-        endif;
+        $tasks = ProjectTask::WhereIn('user_id',$accountsIDs)->with('cooperator','project.client')->get();
     endif;
-    $projectsIDs = $userTasksMinutes = $projectsData = [];
+    $userTasksMinutes = [];
     foreach($tasks as $task):
-        if ($task->project):
-            $projectsIDs[$task->project->id] = $task->project->id;
-            $userTasksMinutes[$task->project->id][$task->id] = ['user_id'=>$task->user_id,'minutes'=>getLeadTimeMinutes($task)+floor($task->lead_time/60),'earnings'=>0,'overdose'=>FALSE,'overdose_money'=>0,'work_price'=>0,'budget'=>0];
-        endif;
+        $hourPrice = isset($task->project->client->hour_price) ? $task->project->client->hour_price : $task->cooperator->hour_price;
+        $userTasksMinutes[$task->id] = ['user_id'=>$task->user_id,'minutes'=>getLeadTimeMinutes($task)+floor($task->lead_time/60),'earnings'=>0,'hour_price'=>$hourPrice];
     endforeach;
-    if ($projectsIDs):
-        foreach(Project::whereIn('id',$projectsIDs)->with('team','owners')->get() as $project):
-            $projectsData[$project->id] = [];
-            if ($project->owners):
-                foreach($project->owners as $user):
-                    $projectsData[$project->id][$user->id] = ['hour_price'=>$user->hour_price,'budget'=>$user->budget];
-                endforeach;
-            endif;
-            if ($project->team):
-                foreach($project->team as $user):
-                    $projectsData[$project->id][$user->id] = ['hour_price'=>$user->hour_price,'budget'=>$user->budget];
-                endforeach;
-            endif;
-        endforeach;
-        foreach($projectsData as $project_id => $project):
-            foreach($project as $user_id => $prices):
-                if (isset($userTasksMinutes[$project_id])):
-                    foreach($userTasksMinutes[$project_id] as $task_id => $task):
-                        if ($task['user_id'] == $user_id):
-                            $userTasksMinutes[$project_id][$task_id]['work_price'] = $prices['hour_price'];
-                            $userTasksMinutes[$project_id][$task_id]['budget'] = $prices['budget'];
-                        endif;
-                    endforeach;
-                endif;
-            endforeach;
-        endforeach;
-        foreach($userTasksMinutes as $project_id => $task):
-            foreach($task as $task_id => $prices):
-                $summaInMinute = round($prices['work_price']/60,2);
-                $userTasksMinutes[$project_id][$task_id]['earnings'] = round($prices['minutes']*$summaInMinute);
-            endforeach;
-        endforeach;
-        if ($userTasksMinutes):
-            foreach($userTasksMinutes as $project_id => $task):
-                foreach($task as $task_id => $prices):
-                    $userTaskEarnings[$project_id][$prices['user_id']] = 0;
-                endforeach;
-            endforeach;
-            foreach($userTasksMinutes as $project_id => $task):
-                foreach($task as $task_id => $prices):
-                    $userTaskEarnings[$project_id][$prices['user_id']] += $prices['earnings'];
-                endforeach;
-            endforeach;
-            foreach($userTasksMinutes as $project_id => $tasks):
-                foreach($tasks as $task_id => $prices):
-                    if (isset($userTaskEarnings[$project_id][$prices['user_id']])):
-                        if ($prices['budget'] > 0 && $userTaskEarnings[$project_id][$prices['user_id']] > $prices['budget']):
-                            $userTasksMinutes[$project_id][$task_id]['overdose'] = TRUE;
-                            $userTasksMinutes[$project_id][$task_id]['overdose_money'] = $userTaskEarnings[$project_id][$prices['user_id']];
-                        endif;
-                    endif;
-                endforeach;
-            endforeach;
-        endif;
-    endif;
-
-    $return = array('project_id'=> FALSE,'task_id'=> FALSE);
-    if (!is_null($cooperator) && is_array($cooperator)):
-        if (isset($cooperator['project_id'])):
-            $return['project_id'] = $cooperator['project_id'];
-        endif;
-        if (isset($cooperator['task_id'])):
-            $return['task_id'] = $cooperator['task_id'];
-        endif;
-    endif;
-    if (isset($cooperator['project_id']) && isset($cooperator['task_id'])):
-        if (isset($userTasksMinutes[$cooperator['project_id']][$cooperator['task_id']])):
-            return $userTasksMinutes[$cooperator['project_id']][$cooperator['task_id']];
-        else:
-            return 'Такой задачи нет';
-        endif;
+    foreach($userTasksMinutes as $task_id => $prices):
+        $summaInMinute = round($prices['hour_price']/60,2);
+        $userTasksMinutes[$task_id]['earnings'] = round($prices['minutes']*$summaInMinute);
+    endforeach;
+    if (!is_null($taskID) && isset($userTasksMinutes[$taskID])):
+        return $userTasksMinutes[$taskID];
     else:
         return $userTasksMinutes;
     endif;

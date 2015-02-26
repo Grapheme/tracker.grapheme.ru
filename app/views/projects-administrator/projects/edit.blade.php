@@ -5,53 +5,40 @@
     <h1 class="page-header">Редактирование проекта</h1>
     <div class="row">
         <div class="col-md-8">
-        {{ Form::model($project,array('route'=>array('projects.update',$project->id),'role'=>'form','class'=>'form-horizontal','method'=>'PUT','file'=>TRUE)) }}
+        {{ Form::model($project,array('route'=>array('projects.update',$project->id),'role'=>'form','class'=>'form-horizontal','method'=>'PUT')) }}
+            {{ Form::hidden('superior_hour_price',@$setProjectValues[Auth::user()->id]['hour_price'],['class'=>'form-control','placeholder'=>'']) }}
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Клиент</label>
+                <div class="col-sm-6">
+                    {{ Form::select('client_id',$clients, Input::old('client_id'),['class'=>'form-control']) }}
+                </div>
+            </div>
             <div class="form-group has-feedback">
                 <label for="inputTitle" class="col-sm-3 control-label">Название проекта</label>
-                <div class="col-sm-4">
-                    {{ Form::text('title',NULL,['class' => 'form-control','placeholder'=>'Первый проект','required'=>'','id'=>'inputTitle','autofocus'=>'','required'=>'']) }}
+                <div class="col-sm-6">
+                    {{ Form::text('title',Input::old('title'),['class' => 'form-control','placeholder'=>'Первый проект','required'=>'','id'=>'inputTitle','autofocus'=>'','required'=>'']) }}
                     <span class="glyphicon glyphicon-warning-sign form-control-feedback" aria-hidden="true"></span>
                     <span id="inputWarning2Status" class="sr-only">(warning)</span>
                 </div>
             </div>
-            <div class="form-group">
+            <div class="form-group has-feedback">
                 <label for="inputDescription" class="col-sm-3 control-label">Описание</label>
                 <div class="col-sm-6">
-                    {{ Form::text('description',NULL,['class' => 'form-control','placeholder'=>'Коротко опишите проект','id'=>'inputDescription']) }}
+                    {{ Form::text('description',Input::old('description'),['class' => 'form-control','placeholder'=>'Коротко опишите проект','id'=>'inputDescription']) }}
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-3 control-label">Клиент</label>
-                <div class="col-sm-6">
-                <?php
-                    $clientsLists[0] = 'Без клиента';
-                    foreach(Clients::where('superior_id',Auth::user()->id)->orderBy('title')->lists('title','id') as $client_id => $client_title):
-                        $clientsLists[$client_id] = $client_title;
-                    endforeach;
-                ?>
-                    {{ Form::select('client_id',$clientsLists, Input::old('client_id'),['class'=>'form-control']) }}
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="iconFile" class="col-sm-3 control-label">Изображение </label>
-                <div class="col-sm-6">
-                    {{ Form::file('file',['id'=>"iconFile"]) }}
-                    <p class="help-block">Доступные форматы: JPG, PNG, GIF.<br>Максимальный размер файла: 2 Мб</p>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="priceHour" class="col-sm-3 control-label">Цена за час</label>
-                <div class="col-sm-4">
-                    {{ Form::text('hour_price',@$setProjectValues[Auth::user()->id]['hour_price'],['class'=>'form-control','placeholder'=>'Цена за час для владельца']) }}
-                </div>
-            </div>
-            {{ Form::hidden('budget',@$setProjectValues[Auth::user()->id]['budget'],['class'=>'form-control','placeholder'=>'Бюджет для владельца']) }}
-            <!--<div class="form-group">
                 <label for="priceBudget" class="col-sm-3 control-label">Бюджет</label>
                 <div class="col-sm-4">
-                    {{-- Form::text('budget',@$setProjectValues[Auth::user()->id]['budget'],['class'=>'form-control','placeholder'=>'Бюджет для владельца']) --}}
+                    {{ Form::text('budget',Input::old('budget'),['class'=>'form-control','placeholder'=>'']) }}
                 </div>
-            </div>-->
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Доступ</label>
+                <div class="col-sm-6">
+                    {{ Form::select('visible',['Доступен всем','Ограниченный доступ'], Input::old('visible'),['class'=>'form-control']) }}
+                </div>
+            </div>
             @if(count($project_team))
             <div class="form-group">
                 <label for="commands" class="col-sm-3 control-label">Комманда </label>

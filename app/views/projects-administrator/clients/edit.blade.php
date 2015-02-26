@@ -5,7 +5,7 @@
     <h1 class="page-header">Редактирование клиента</h1>
     <div class="row">
         <div class="col-md-8">
-        {{ Form::model($client,array('route'=>array('clients.update',$client->id),'role'=>'form','class'=>'form-horizontal','method'=>'PUT','file'=>TRUE)) }}
+        {{ Form::model($client,array('route'=>array('clients.update',$client->id),'role'=>'form','class'=>'form-horizontal','method'=>'PUT')) }}
             <div class="form-group has-feedback">
                 <label for="inputTitle" class="col-sm-3 control-label">Название клиента</label>
                 <div class="col-sm-4">
@@ -14,35 +14,96 @@
                     <span id="inputWarning2Status" class="sr-only">(warning)</span>
                 </div>
             </div>
-            <div class="form-group">
-                <label for="inputDescription" class="col-sm-3 control-label">Описание</label>
-                <div class="col-sm-6">
-                    {{ Form::text('description',Input::old('description'),['class' => 'form-control','placeholder'=>'','id'=>'inputDescription']) }}
+            <div class="form-group has-feedback">
+                <label for="inputTitle" class="col-sm-3 control-label">Полное название</label>
+                <div class="col-sm-4">
+                    {{ Form::text('title',Input::old('title'),['class'=>'form-control','placeholder'=>'','id'=>'inputTitle','autofocus'=>'','required'=>'']) }}
+                    <span class="glyphicon glyphicon-warning-sign form-control-feedback" aria-hidden="true"></span>
+                    <span id="inputWarning2Status" class="sr-only">(warning)</span>
                 </div>
             </div>
-            <div class="form-group">
-                <label for="iconFile" class="col-sm-3 control-label">Изображение </label>
-                <div class="col-sm-6">
-                    {{ Form::file('file',['id'=>"iconFile"]) }}
-                    <p class="help-block">Доступные форматы: JPG, PNG, GIF.<br>Максимальный размер файла: 2 Мб</p>
+            <div class="form-group has-feedback">
+                <label for="inputShortTitle" class="col-sm-3 control-label">Краткое название</label>
+                <div class="col-sm-4">
+                    {{ Form::text('short_title',Input::old('short_title'),['class'=>'form-control','placeholder'=>'','id'=>'inputShortTitle']) }}
                 </div>
             </div>
-            <div class="form-group">
+            <div class="form-group has-feedback">
+                <label for="inputAddress" class="col-sm-3 control-label">Адрес</label>
+                <div class="col-sm-6">
+                    {{ Form::textarea('address',Input::old('address'),['class'=>'form-control','placeholder'=>'','id'=>'inputAddress','rows'=>2]) }}
+                </div>
+            </div>
+            <div class="form-group has-feedback">
+                <label for="inputPhone" class="col-sm-3 control-label">Телефон</label>
+                <div class="col-sm-4">
+                    {{ Form::text('phone',Input::old('phone'),['class'=>'form-control','placeholder'=>'','id'=>'inputPhone']) }}
+                </div>
+            </div>
+            <div class="form-group has-feedback">
+                <label for="inputEmail" class="col-sm-3 control-label">Email</label>
+                <div class="col-sm-4">
+                    {{ Form::email('email',Input::old('email'),['class'=>'form-control','placeholder'=>'','id'=>'inputEmail']) }}
+                </div>
+            </div>
+            <div class="form-group has-feedback">
                 <label for="priceHour" class="col-sm-3 control-label">Цена за час</label>
                 <div class="col-sm-4">
-                    {{ Form::text('hour_price',Input::old('hour_price'),['class'=>'form-control','placeholder'=>'']) }}
+                    {{ Form::text('hour_price',Input::old('hour_price'),['class'=>'form-control','placeholder'=>'Цена за час для владельца']) }}
                 </div>
             </div>
-            <div class="form-group">
-                <label for="priceBudget" class="col-sm-3 control-label">Бюджет</label>
+            <div class="form-group has-feedback">
+                <label for="inputBank" class="col-sm-3 control-label">Банк</label>
                 <div class="col-sm-4">
-                    {{ Form::text('budget',Input::old('budget'),['class'=>'form-control','placeholder'=>'']) }}
+                    {{ Form::text('bank',Input::old('bank'),['class'=>'form-control','placeholder'=>'','id'=>'inputBank']) }}
                 </div>
             </div>
-            <div class="form-group">
-                <label for="inputRequisites" class="col-sm-3 control-label">Реквизиты</label>
-                <div class="col-sm-6">
-                    {{ Form::textarea('requisites',Input::old('requisites'),['class' => 'form-control','placeholder'=>'','id'=>'inputRequisites']) }}
+            <div class="form-group has-feedback">
+                <label for="inputPaymentAccount" class="col-sm-3 control-label">Расчетный счет</label>
+                <div class="col-sm-4">
+                    {{ Form::text('payment_account',Input::old('payment_account'),['class'=>'form-control','placeholder'=>'','id'=>'inputPaymentAccount']) }}
+                </div>
+            </div>
+            <div class="form-group has-feedback">
+                <label for="inputFioSignature" class="col-sm-3 control-label">ФИО для подписи</label>
+                <div class="col-sm-4">
+                    {{ Form::text('fio_signature',Input::old('fio_signature'),['class'=>'form-control','placeholder'=>'','id'=>'inputFioSignature']) }}
+                </div>
+            </div>
+            <div class="form-group has-feedback">
+                <label for="inputContactPerson" class="col-sm-3 control-label">Контактное лицо</label>
+                <div class="col-sm-3">
+                    {{ Form::text('contact_person',Input::old('contact_person'),['class'=>'form-control','placeholder'=>'Должность','id'=>'inputContactPersonPosition']) }}
+                </div>
+                <div class="col-sm-3">
+                    {{ Form::text('fio',Input::old('fio'),['class'=>'form-control','placeholder'=>'Имя','id'=>'inputContactPersonFio']) }}
+                </div>
+                <div class="col-sm-3">
+                    {{ Form::text('fio_rod',Input::old('fio_rod'),['class'=>'form-control','placeholder'=>'Имя в род.падеже','id'=>'inputContactPersonFioRod']) }}
+                </div>
+            </div>
+            <div class="form-group has-feedback">
+                <label for="inputInn" class="col-sm-3 control-label">ИНН</label>
+                <div class="col-sm-4">
+                    {{ Form::text('inn',Input::old('inn'),['class'=>'form-control','placeholder'=>'','id'=>'inputInn']) }}
+                </div>
+            </div>
+            <div class="form-group has-feedback">
+                <label for="inputKpp" class="col-sm-3 control-label">КПП</label>
+                <div class="col-sm-4">
+                    {{ Form::text('kpp',Input::old('kpp'),['class'=>'form-control','placeholder'=>'','id'=>'inputKpp']) }}
+                </div>
+            </div>
+            <div class="form-group has-feedback">
+                <label for="inputOgrn" class="col-sm-3 control-label">ОГРН</label>
+                <div class="col-sm-4">
+                    {{ Form::text('ogrn',Input::old('ogrn'),['class'=>'form-control','placeholder'=>'','id'=>'inputOgrn']) }}
+                </div>
+            </div>
+            <div class="form-group has-feedback">
+                <label for="inputOkpo" class="col-sm-3 control-label">ОКПО</label>
+                <div class="col-sm-4">
+                    {{ Form::text('okpo',Input::old('okpo'),['class'=>'form-control','placeholder'=>'','id'=>'inputOkpo']) }}
                 </div>
             </div>
             <div class="form-group">

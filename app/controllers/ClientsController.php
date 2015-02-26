@@ -20,7 +20,7 @@ class ClientsController extends \BaseController {
 	public function store(){
         $validator = Validator::make(Input::all(),Clients::$rules);
         if($validator->passes()):
-            if($client = Clients::create(['superior_id' => Auth::user()->id, 'title' => Input::get('title'),'description' => Input::get('description'),'hour_price' => Input::get('hour_price'),'budget' => Input::get('budget'),'requisites' => Input::get('requisites')])):
+            if($client = Clients::create(Input::all())):
                 return Redirect::route('clients.show',$client->id)->with('message','Клиент добавлен успешно.');
             else:
                 return Redirect::back()->with('message','Возникла ошибка при записи в БД');
@@ -57,7 +57,7 @@ class ClientsController extends \BaseController {
 
         $validator = Validator::make(Input::all(),Clients::$rules);
         if($validator->passes()):
-            Clients::where('id',$id)->where('superior_id',Auth::user()->id)->update(['title' => Input::get('title'),'description' => Input::get('description'),'hour_price' => Input::get('hour_price'),'budget' => Input::get('budget'),'requisites' => Input::get('requisites')]);
+            Clients::where('id',$id)->where('superior_id',Auth::user()->id)->update(Input::except(['_method','_token']));
             return Redirect::route('clients.show',$id)->with('message','Клиент сохранен успешно.');
         else:
             return Redirect::back()->withErrors($validator)->withInput(Input::all());
@@ -65,6 +65,7 @@ class ClientsController extends \BaseController {
 	}
 
     public function destroy($id){
+
         if (Clients::where('id',$id)->where('superior_id',Auth::user()->id)->first()):
             Project::where('client_id',$id)->update(['client_id'=>0]);
             Clients::where('id',$id)->delete();

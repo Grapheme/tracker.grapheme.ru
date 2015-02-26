@@ -15,16 +15,10 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label">Проект</label>
                 <div class="col-sm-6">
-                    {{ Form::select('project',Project::where('superior_id',Auth::user()->id)->lists('title','id'),Input::old('project'),['class'=>'form-control']) }}
+                    {{ Form::select('project',$projects,Input::old('project'),['class'=>'form-control']) }}
                 </div>
             </div>
             {{ Form::hidden('performer',Auth::user()->id) }}
-            <!--<div class="form-group">
-                <label class="col-sm-3 control-label">Исполнитель</label>
-                <div class="col-sm-6">
-                    {{-- Form::select('performer',$project_team,Input::old('performer'),['class'=>'form-control']) --}}
-                </div>
-            </div>-->
             <div class="form-group has-feedback">
                 <label for="inputNote" class="col-sm-3 control-label">Описание</label>
                 <div class="col-sm-6">

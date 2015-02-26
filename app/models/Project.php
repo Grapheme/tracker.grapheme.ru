@@ -3,7 +3,8 @@
 class Project extends \BaseModel {
 
 	protected $table = 'projects';
-	protected $fillable = ['client_id','superior_id','title','description','image_id'];
+    protected $guarded = ['id','_method','_token','superior_hour_price'];
+	protected $fillable = ['superior_id','client_id','title','description','budget','visible'];
 	public static $rules = ['title' => 'required'];
 
 	public function icon(){
@@ -23,12 +24,12 @@ class Project extends \BaseModel {
 
 	public function team(){
 
-		return $this->belongsToMany('User','projects_team','project_id','user_id')->select(['users.*','projects_team.hour_price','projects_team.budget']);
+		return $this->belongsToMany('User','projects_team','project_id','user_id')->select(['users.*','projects_team.hour_price']);
 	}
 
 	public function owners(){
 
-		return $this->belongsToMany('User','projects_owners','project_id','user_id')->select(['users.*','projects_owners.hour_price','projects_owners.budget']);
+		return $this->belongsToMany('User','projects_owners','project_id','user_id')->select(['users.*','projects_owners.hour_price']);
 	}
 
 	public function tasks(){

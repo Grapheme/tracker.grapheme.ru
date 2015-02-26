@@ -11,7 +11,6 @@ class CreateProjectsOwnersTable extends Migration {
 			$table->integer('project_id')->nullable()->default(0)->unsigned();
 			$table->integer('user_id')->nullable()->default(0)->unsigned();
 			$table->integer('hour_price')->nullable()->default(0)->unsigned();
-			$table->integer('budget')->nullable()->default(0)->unsigned();
 			$table->timestamps();
 		});
 	}
@@ -19,5 +18,4 @@ class CreateProjectsOwnersTable extends Migration {
 	public function down(){
 		Schema::drop('projects_owners');
 	}
-
 }

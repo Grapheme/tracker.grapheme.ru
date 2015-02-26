@@ -16,6 +16,7 @@ class CreateClientsTable extends Migration {
             $table->string('email',100)->nullable();
             $table->integer('group_id')->nullable()->default(0)->unsigned();
             $table->integer('hour_price')->nullable()->default(0)->unsigned();
+            $table->string('bank',255)->nullable();
             $table->string('payment_account',100)->nullable();
             $table->string('fio_signature',100)->nullable();
             $table->string('contact_person',100)->nullable();
@@ -25,7 +26,6 @@ class CreateClientsTable extends Migration {
             $table->string('kpp',50)->nullable();
             $table->string('ogrn',50)->nullable();
             $table->string('okpo',50)->nullable();
-            $table->text('requisites')->nullable();
 			$table->timestamps();
 		});
 	}

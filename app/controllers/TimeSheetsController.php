@@ -18,20 +18,13 @@ class TimeSheetsController extends \BaseController {
 			$index = (new \Carbon\Carbon($dt_request))->startOfWeek()->AddDays($day);
 			$weekTasks[$index->format('Y-m-d')] = ['label'=>$index->format('d.m'),'lead_time'=>'0:00','tasks_count'=>0];
 		endfor;
-		if($projectsIDs = Project::where('superior_id',Auth::user()->id)->lists('id')):
-            if (Request::get('show') == 'all'):
-                $tasks = ProjectTask::whereIn('project_id',$projectsIDs)->whereBetween('set_date',[$startOfDay,$endOfDay])->with('cooperator','project')->get();
-                $tasksWeeek = ProjectTask::whereIn('project_id',$projectsIDs)->whereBetween('set_date',[$startOfWeek,$endOfWeek])->get();
-            else:
-                $tasks = ProjectTask::where('user_id',Auth::user()->id)->whereIn('project_id',$projectsIDs)->whereBetween('set_date',[$startOfDay,$endOfDay])->with('cooperator','project')->get();
-                $tasksWeeek = ProjectTask::where('user_id',Auth::user()->id)->whereIn('project_id',$projectsIDs)->whereBetween('set_date',[$startOfWeek,$endOfWeek])->get();
-            endif;
-			foreach($tasksWeeek as $task):
-				$index = (new myDateTime())->setDateString($task->set_date);
-				$weekTasks[$index->format('Y-m-d')]['lead_time'] += (getLeadTimeMinutes($task)+floor($task->lead_time/60));
-				$weekTasks[$index->format('Y-m-d')]['tasks_count'] += 1;
-			endforeach;
-		endif;
+        $tasks = ProjectTask::where('user_id',Auth::user()->id)->whereBetween('set_date',[$startOfDay,$endOfDay])->with('cooperator','project.client')->get();
+        $tasksWeeek = ProjectTask::where('user_id',Auth::user()->id)->whereBetween('set_date',[$startOfWeek,$endOfWeek])->get();
+        foreach($tasksWeeek as $task):
+            $index = (new myDateTime())->setDateString($task->set_date);
+            $weekTasks[$index->format('Y-m-d')]['lead_time'] += (getLeadTimeMinutes($task)+floor($task->lead_time/60));
+            $weekTasks[$index->format('Y-m-d')]['tasks_count'] += 1;
+        endforeach;
 		return View::make(Helper::acclayout('timesheets.list'),compact('tasks','weekTasks','dt_request','startOfWeek','endOfWeek'));
 	}
 
@@ -40,13 +33,11 @@ class TimeSheetsController extends \BaseController {
         if(strtotime(Request::get('date')) > strtotime(date("Y-m-d",time()))):
             return Redirect::route('timesheets.create',['date'=>date("Y-m-d")]);
         endif;
-		$project_team[Auth::user()->id] = Auth::user()->fio;
-		if($team = Team::where('superior_id',Auth::user()->id)->with('cooperator')->get()):
-			foreach($team as $user):
-				$project_team[$user->cooperator->id] = $user->cooperator->fio;
-			endforeach;
-		endif;
-		return View::make(Helper::acclayout('timesheets.create'),compact('project_team'));
+		$projects[0] = 'Без проекта';
+        foreach(Clients::where('superior_id',Auth::user()->id)->orderBy('title')->lists('title','id') as $client_id => $client_title):
+            $projects[$client_id] = $client_title;
+        endforeach;
+		return View::make(Helper::acclayout('timesheets.create'),compact('projects'));
 	}
 
 	public function store()	{
@@ -83,6 +74,19 @@ class TimeSheetsController extends \BaseController {
 			if ($task = ProjectTask::where('id',$id)->first()):
 				if(Project::where('id',$task->project_id)->where('superior_id',Auth::user()->id)->first()):
 					$task->note = Input::get('note');
+                    if (Input::get('new_lead_time') != ''):
+                        $lead_time = str2secLeadTime(Input::get('new_lead_time'));
+                        $task->start_date = '0000-00:00 00:00:00';
+                        if ($task->start_status == 1 && $task->stop_status == 0):
+                            $task->start_date = date("Y-m-d H:i:s");
+                        endif;
+                        $task->stop_date = '0000-00:00 00:00:00';
+                        $task->lead_time = $lead_time;
+                        if ($task->stop_status == 1):
+                            $task->start_date = date("Y-m-d H:i:s");
+                            $task->stop_date = date("Y-m-d H:i:s");
+                        endif;
+                    endif;
 					$task->save();
 					$task->touch();
 					return Redirect::route('timesheets.index',['date'=>$set_date])->with('message','Задача сохранена успешно.');

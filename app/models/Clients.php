@@ -3,7 +3,8 @@
 class Clients extends \BaseModel {
 
 	protected $table = 'clients';
-	protected $fillable = ['superior_id','title','description','image_id','hour_price','budget','requisites'];
+    protected $guarded = ['id','_method','_token'];
+	protected $fillable = ['superior_id','title','short_title','address','phone','email','group_id','hour_price','bank','payment_account','fio_signature','contact_person','fio','fio_rod','inn','kpp','ogrn','okpo'];
 	public static $rules = ['title' => 'required'];
 
 	public function icon(){
