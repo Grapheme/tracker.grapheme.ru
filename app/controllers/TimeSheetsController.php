@@ -59,9 +59,7 @@ class TimeSheetsController extends \BaseController {
 	public function edit($id){
 
 		if ($task = ProjectTask::where('id',$id)->first()):
-			if(Project::where('id',$task->project_id)->where('superior_id',Auth::user()->id)->first()):
-				return View::make(Helper::acclayout('timesheets.edit'),compact('task'));
-			endif;
+            return View::make(Helper::acclayout('timesheets.edit'),compact('task'));
 		endif;
 		App::abort(404);
 	}
@@ -72,25 +70,23 @@ class TimeSheetsController extends \BaseController {
 		$validator = Validator::make(Input::all(),ProjectTask::$update_rules);
 		if($validator->passes()):
 			if ($task = ProjectTask::where('id',$id)->first()):
-				if(Project::where('id',$task->project_id)->where('superior_id',Auth::user()->id)->first()):
-					$task->note = Input::get('note');
-                    if (Input::get('new_lead_time') != ''):
-                        $lead_time = str2secLeadTime(Input::get('new_lead_time'));
-                        $task->start_date = '0000-00:00 00:00:00';
-                        if ($task->start_status == 1 && $task->stop_status == 0):
-                            $task->start_date = date("Y-m-d H:i:s");
-                        endif;
-                        $task->stop_date = '0000-00:00 00:00:00';
-                        $task->lead_time = $lead_time;
-                        if ($task->stop_status == 1):
-                            $task->start_date = date("Y-m-d H:i:s");
-                            $task->stop_date = date("Y-m-d H:i:s");
-                        endif;
+                $task->note = Input::get('note');
+                if (Input::get('new_lead_time') != ''):
+                    $lead_time = str2secLeadTime(Input::get('new_lead_time'));
+                    $task->start_date = '0000-00:00 00:00:00';
+                    if ($task->start_status == 1 && $task->stop_status == 0):
+                        $task->start_date = date("Y-m-d H:i:s");
                     endif;
-					$task->save();
-					$task->touch();
-					return Redirect::route('timesheets.index',['date'=>$set_date])->with('message','Задача сохранена успешно.');
-				endif;
+                    $task->stop_date = '0000-00:00 00:00:00';
+                    $task->lead_time = $lead_time;
+                    if ($task->stop_status == 1):
+                        $task->start_date = date("Y-m-d H:i:s");
+                        $task->stop_date = date("Y-m-d H:i:s");
+                    endif;
+                endif;
+                $task->save();
+                $task->touch();
+                return Redirect::route('timesheets.index',['date'=>$set_date])->with('message','Задача сохранена успешно.');
 			endif;
 		else:
 			return Redirect::back()->withErrors($validator)->withInput(Input::all());
@@ -99,13 +95,8 @@ class TimeSheetsController extends \BaseController {
 
 	public function destroy($id){
 
-		if ($task = ProjectTask::where('id',$id)->first()):
-			if(Project::where('id',$task->project_id)->where('superior_id',Auth::user()->id)->first()):
-				$task->delete();
-				return Redirect::back()->with('message','Задача удалена успешно.');
-			endif;
-		endif;
-		App::abort(404);
+		ProjectTask::where('id',$id)->where('user_id',Auth::user()->id)->delete();
+        return Redirect::back()->with('message','Задача удалена успешно.');
 	}
 
 	public function RunningTimer(){
