@@ -23,7 +23,7 @@
             <div class="form-group">
                 <label for="inputLeadTime" class="col-sm-3 control-label">Время выполнения</label>
                 <div class="col-sm-6">
-                    {{ Form::text('new_lead_time',Input::old('new_lead_time'),['class' => 'form-control','placeholder'=>'0:00','id'=>'inputLeadTime']) }}
+                    {{ Form::text('lead_time',Input::old('lead_time'),['class' => 'form-control','placeholder'=>'0:00','id'=>'inputLeadTime']) }}
                     <p id="helpBlock" class="help-block">Заполните поле если требуется корекция времении или оставьте его пустым, чтобы сохранить текущее значение. Вы также можете ввести время, как 1.3 или 1:30 (они оба подразумевают 1 час и 30 минут).</p>
                 </div>
             </div>

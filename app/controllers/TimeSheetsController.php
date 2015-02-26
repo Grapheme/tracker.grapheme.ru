@@ -59,6 +59,7 @@ class TimeSheetsController extends \BaseController {
 	public function edit($id){
 
 		if ($task = ProjectTask::where('id',$id)->first()):
+            $task->lead_time = culcLeadTime($task);
             return View::make(Helper::acclayout('timesheets.edit'),compact('task'));
 		endif;
 		App::abort(404);
@@ -71,8 +72,8 @@ class TimeSheetsController extends \BaseController {
 		if($validator->passes()):
 			if ($task = ProjectTask::where('id',$id)->first()):
                 $task->note = Input::get('note');
-                if (Input::get('new_lead_time') != ''):
-                    $lead_time = str2secLeadTime(Input::get('new_lead_time'));
+                if (Input::get('lead_time') != ''):
+                    $lead_time = str2secLeadTime(Input::get('lead_time'));
                     $task->start_date = '0000-00:00 00:00:00';
                     if ($task->start_status == 1 && $task->stop_status == 0):
                         $task->start_date = date("Y-m-d H:i:s");
