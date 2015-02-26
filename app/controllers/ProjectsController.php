@@ -21,8 +21,8 @@ class ProjectsController extends \BaseController {
 			endforeach;
 		endif;
         $clients[0] = 'Без клиента';
-        foreach(Project::where('superior_id',Auth::user()->id)->lists('title','id') as $project_id => $project_title):
-            $clients[$project_id] = $project_title;
+        foreach(Clients::where('superior_id',Auth::user()->id)->lists('title','id') as $client_id => $client_title):
+            $clients[$client_id] = $client_title;
         endforeach;
 		return View::make(Helper::acclayout('projects.create'),compact('project_team','clients'));
 	}
