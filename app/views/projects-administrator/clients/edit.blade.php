@@ -7,14 +7,6 @@
         <div class="col-md-8">
         {{ Form::model($client,array('route'=>array('clients.update',$client->id),'role'=>'form','class'=>'form-horizontal','method'=>'PUT')) }}
             <div class="form-group has-feedback">
-                <label for="inputTitle" class="col-sm-3 control-label">Название клиента</label>
-                <div class="col-sm-4">
-                    {{ Form::text('title',Input::old('title'),['class' => 'form-control','placeholder'=>'','required'=>'','id'=>'inputTitle','autofocus'=>'','required'=>'']) }}
-                    <span class="glyphicon glyphicon-warning-sign form-control-feedback" aria-hidden="true"></span>
-                    <span id="inputWarning2Status" class="sr-only">(warning)</span>
-                </div>
-            </div>
-            <div class="form-group has-feedback">
                 <label for="inputTitle" class="col-sm-3 control-label">Полное название</label>
                 <div class="col-sm-4">
                     {{ Form::text('title',Input::old('title'),['class'=>'form-control','placeholder'=>'','id'=>'inputTitle','autofocus'=>'','required'=>'']) }}
