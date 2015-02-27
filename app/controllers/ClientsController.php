@@ -32,8 +32,8 @@ class ClientsController extends \BaseController {
 
 	public function show($id){
 
-        if($client = Clients::where('id',$id)->where('superior_id',Auth::user()->id)->with('icon')->first()):
-            $projects = Project::where('client_id',$client->id)->with('icon','basecamp_projects')->get();
+        if($client = Clients::where('id',$id)->where('superior_id',Auth::user()->id)->first()):
+            $projects = Project::where('client_id',$client->id)->with('basecamp_projects')->get();
             $tasks = array();
             if($projectIDs = Project::where('client_id',$client->id)->lists('id')):
                 $tasks = ProjectTask::whereIn('project_id',$projectIDs)->with('cooperator','basecamp_task')->get();
@@ -46,7 +46,7 @@ class ClientsController extends \BaseController {
 
 	public function edit($id){
 
-        if($client = Clients::where('id',$id)->where('superior_id',Auth::user()->id)->with('icon')->first()):
+        if($client = Clients::where('id',$id)->where('superior_id',Auth::user()->id)->first()):
             return View::make(Helper::acclayout('clients.edit'),compact('client'));
         else:
             App::abort(404);

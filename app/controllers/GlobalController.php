@@ -51,6 +51,12 @@ class GlobalController extends \BaseController {
 				});
 				Auth::login($account,TRUE);
 				if (Auth::check()):
+                    if (Input::has('invite_id') && Input::has('invitee_user_id') && Input::has('invite_redirect')):
+                        if (Invite::where('id',Input::get('invite_id'))->exists()):
+                            Invite::where('id',Input::get('invite_id'))->update(['note'=>json_encode(['redirect'=> FALSE,'params'=>['invitee_account'=>Input::get('invitee_user_id'),'redirect'=>URL::to(AuthAccount::getGroupStartUrl())]])]);
+                            return Redirect::to(Input::get('invite_redirect'));
+                        endif;
+                    endif;
 					return Redirect::to(AuthAccount::getGroupStartUrl());
 				endif;
 			else:
@@ -81,4 +87,35 @@ class GlobalController extends \BaseController {
 		endif;
 		return FALSE;
 	}
+
+    public function invite($token){
+
+        if ($invite = Invite::where('token',$token)->first()):
+            if ($invite->status == 1):
+                return Redirect::route('home')->with('message','Проверочный код устарел.');
+            endif;
+            $note = json_decode($invite->note,TRUE);
+            if ($note['redirect']):
+                if (Auth::check()):
+                    self::logout();
+                endif;
+                return Redirect::to($note['redirect'])->withInput(['email'=>$invite->email])->with('invite_id',$invite->id)->with('invitee_user_id',$note['params']['invitee_account'])->with('invite_redirect',$note['params']['redirect']);
+            else:
+                if($invitee = User::where('id',$note['params']['invitee_account'])->first()):
+                    if($accountID = User::where('email',$invite->email)->pluck('id')):
+                        Auth::loginUsingId($accountID);
+                        $invite->note = $note;
+                        if (Team::where('superior_id',$invite->user_id)->where('cooperator_id',$accountID)->exists()):
+                            return Redirect::route('dashboard');
+                        else:
+                            Team::create(['superior_id'=>$invite->user_id,'cooperator_id'=>$accountID]);
+                            Invite::where('id',$invite->id)->update(['status'=>1,'updated_at'=>date("Y-m-d H:i:s")]);
+                            return View::make(Helper::layout('invite'),compact('invitee'))->with('redirect',URL::route('dashboard'));
+                        endif;
+                    endif;
+                endif;
+            endif;
+        endif;
+        App::abort(404);
+    }
 }

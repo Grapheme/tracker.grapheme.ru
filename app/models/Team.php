@@ -7,7 +7,7 @@ class Team extends \BaseModel {
 
 	public function superior(){
 
-		return $this->hasOne('User','superior_id');
+		return $this->hasOne('User','id','superior_id');
 	}
 
 	public function cooperator(){

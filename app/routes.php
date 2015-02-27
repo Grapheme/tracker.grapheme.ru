@@ -2,6 +2,7 @@
 
 Route::get('/',array('as'=>'home','uses' => 'GuestController@index'));
 Route::any('logout',array('as'=>'logout','uses' => 'GlobalController@logout'));
+Route::get('invite/{token}',array('as'=>'invite','uses' => 'GlobalController@invite'));
 
 Route::group(array('before' => 'guest'), function(){
     Route::post('login',array('as'=>'login','uses' => 'GlobalController@login'));
@@ -74,6 +75,7 @@ if (Auth::check()):
                 )
             );
             Route::post('timesheets/running_timer',array('as'=>'timesheets.run_timer','uses'=>'TimeSheetsController@RunningTimer'));
+            Route::delete('invite/reject/{invite_id}',array('as'=>'cooperators.invite_reject','uses'=>'CooperatorsController@inviteReject'));
         endif;
     });
     Route::group(array('before' => 'auth','prefix' => @$prefixes['performer']), function(){

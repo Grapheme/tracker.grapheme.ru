@@ -6,20 +6,45 @@
     @if(!empty($users))
     <div class="row placeholders">
         @foreach($users as $user)
+            @if($user->cooperator->id == Auth::user()->id)
+                <?php $type = 'superior'; ?>
+            @else
+                <?php $type = 'cooperator'; ?>
+            @endif
         <div class="col-xs-6 col-sm-3 placeholder">
-            <a href="{{ URL::route('cooperators.show',$user->cooperator->id) }}" class="">
+            <a href="{{ URL::route('cooperators.show',$user->$type->id) }}" class="">
                 <img data-src="holder.js/200x200/auto/sky" class="img-responsive" alt="Generic placeholder thumbnail">
             </a>
-            <a href="{{ URL::route('cooperators.show',$user->cooperator->id) }}" class=""><h4>{{ $user->cooperator->fio }}</h4></a>
-            <span class="text-muted">{{ $user->cooperator->position }}</span>
-            @if( $user->cooperator->tasks->count())
-                <br><span class="text-muted">{{  $user->cooperator->tasks->count() }} {{ Lang::choice('задача|задачи|задач', $user->cooperator->tasks->count()) }}</span>
+            <a href="{{ URL::route('cooperators.show',$user->$type->id) }}" class=""><h4>{{ $user->$type->fio }}</h4></a>
+            @if(!empty($user->$type->position))<span class="text-muted">{{ $user->$type->position }}</span><br>@endif
+            @if( $user->$type->tasks->count() && $type == 'cooperator')
+                <span class="text-muted">{{  $user->$type->tasks->count() }} {{ Lang::choice('задача|задачи|задач', $user->$type->tasks->count()) }}</span>
             @endif
         </div>
         @endforeach
     </div>
-    @else
-
+    @endif
+    @if($invites->count())
+        <h1 class="page-header">Заявки</h1>
+        <div class="row">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <tbody>
+                    @foreach($invites as $invite)
+                        <tr>
+                            <td>{{ $invite->email }}</td>
+                            <td>{{ $invite->created_at->format("d.m.Y H:i") }}</td>
+                            <td>
+                            {{ Form::open(array('route'=>array('cooperators.invite_reject',$invite->id),'method'=>'DELETE','style'=>'display:inline-block')) }}
+                                {{ Form::submit('Отклонить',['class'=>'btn btn-danger']) }}
+                            {{ Form::close() }}
+                            </td>
+                        </tr>
+                    @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
     @endif
 @stop
 @section('scripts')

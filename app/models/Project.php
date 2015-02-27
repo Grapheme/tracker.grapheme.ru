@@ -7,11 +7,6 @@ class Project extends \BaseModel {
 	protected $fillable = ['superior_id','client_id','title','description','budget','visible'];
 	public static $rules = ['title' => 'required'];
 
-	public function icon(){
-
-		return $this->hasOne('Upload', 'id', 'image_id');
-	}
-
 	public function superior(){
 
 		return $this->hasOne('User','id','superior_id');

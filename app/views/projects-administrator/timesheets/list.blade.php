@@ -31,13 +31,19 @@
                     <td>
                     @if(count($task->project))
                         <a href="{{ URL::route('projects.show',$task->project->id) }}">{{ $task->project->title }}</a>
-                        @if(count($task->project->client))
+                        @if($task->project->superior_id == Auth::user()->id)
+                            @if(count($task->project->client))
                             (<a href="{{ URL::route('clients.show',$task->project->client->id) }}">{{ $task->project->client->short_title }}</a>)
+                            @endif
+                        @else
+                            @if(count($task->project->client))({{ $task->project->client->short_title }})@endif
                         @endif
                         <br>
                     @endif
+                        @if($task->cooperator->id != Auth::user()->id)
                         <a href="{{ URL::route('cooperators.show',$task->cooperator->id) }}">{{ getInitials($task->cooperator->fio) }}</a>
                         <br>
+                        @endif
                         {{ $task->note }}
                     </td>
                     <td>

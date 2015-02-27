@@ -8,7 +8,8 @@ class ProjectsController extends \BaseController {
 
 	public function index(){
 
-		$projects = Project::where('superior_id',Auth::user()->id)->orderBy('updated_at','DESC')->with('client','team','tasks')->get();
+		$projects['my'] = Project::where('superior_id',Auth::user()->id)->orderBy('updated_at','DESC')->with('client','team','tasks')->get();
+		$projects['subscribe'] = ProjectTeam::where('user_id',Auth::user()->id)->with('projects','projects.client','projects.team','projects.tasks')->get();
         return View::make(Helper::acclayout('projects.list'),compact('projects'));
 	}
 
@@ -31,7 +32,7 @@ class ProjectsController extends \BaseController {
 
 		$validator = Validator::make(Input::all(),Project::$rules);
 		if($validator->passes()):
-			if($project = Project::create(Input::except('_token','superior_hour_price'))):
+			if($project = Project::create(Input::except('_token','superior_hour_price','team'))):
 				ProjectOwners::create(['project_id'=>$project->id,'user_id'=>Auth::user()->id,'hour_price'=>Input::get('superior_hour_price')]);
 				if (Input::has('team')):
 					Project::where('id',$project->id)->first()->owners()->sync([Auth::user()->id]);
@@ -60,9 +61,12 @@ class ProjectsController extends \BaseController {
 
 	public function show($id){
 
-		if($project = Project::where('id',$id)->where('superior_id',Auth::user()->id)->with('icon','client','team')->first()):
+		if($project = Project::where('id',$id)->where('superior_id',Auth::user()->id)->with('superior','client','team')->first()):
 			$tasks = ProjectTask::where('project_id',$project->id)->with('cooperator','basecamp_task')->get();
-			return View::make(Helper::acclayout('projects.show'),compact('project','tasks'));
+			return View::make(Helper::acclayout('projects.show'),compact('project','tasks'))->with('access',TRUE);
+		elseif($project = ProjectTeam::where('project_id',$id)->where('user_id',Auth::user()->id)->first()->project()->with('superior','client','team')->first()):
+            $tasks = ProjectTask::where('project_id',$project->id)->with('cooperator','basecamp_task')->get();
+			return View::make(Helper::acclayout('projects.show'),compact('project','tasks'))->with('access',FALSE);
 		else:
 			App::abort(404);
 		endif;
@@ -70,7 +74,7 @@ class ProjectsController extends \BaseController {
 
 	public function edit($id){
 
-		if($project = Project::where('id',$id)->where('superior_id',Auth::user()->id)->with('icon','team','owners')->first()):
+		if($project = Project::where('id',$id)->where('superior_id',Auth::user()->id)->with('team','owners')->first()):
 			$project_team = $setProjectTeamIDs = $setProjectValues = array();
 			foreach($project->owners as $owner):
 				$setProjectValues[$owner->id]['hour_price'] = ($owner->hour_price > 0) ? $owner->hour_price : '';
@@ -100,7 +104,7 @@ class ProjectsController extends \BaseController {
 
 		$validator = Validator::make(Input::all(),Project::$rules);
 		if($validator->passes()):
-			Project::where('id',$id)->where('superior_id',Auth::user()->id)->update(Input::except('_method','_token','superior_hour_price'));
+			Project::where('id',$id)->where('superior_id',Auth::user()->id)->update(Input::except('_method','_token','superior_hour_price','team'));
 			ProjectOwners::where('project_id',$id)->where('user_id',Auth::user()->id)->update(['hour_price'=>Input::get('hour_price')]);
 			if (Input::has('team')):
 				Project::where('id',$id)->first()->owners()->sync([Auth::user()->id]);

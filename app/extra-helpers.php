@@ -40,7 +40,14 @@ function costCalculation($taskID = NULL, $data = NULL){
     endif;
     $userTasksMinutes = [];
     foreach($tasks as $task):
-        $hourPrice = isset($task->project->client->hour_price) ? $task->project->client->hour_price : $task->cooperator->hour_price;
+        $hourPrice = 0;
+        if(isset($task->project->client->hour_price)):
+            $hourPrice = $task->project->client->hour_price;
+        elseif($task->cooperator->hour_price > 0):
+            $hourPrice = $task->cooperator->hour_price;
+        else:
+            $hourPrice = ProjectTeam::where('user_id',$task->cooperator->id)->where('project_id',$task->project_id)->pluck('hour_price');
+        endif;
         $userTasksMinutes[$task->id] = ['user_id'=>$task->user_id,'minutes'=>getLeadTimeMinutes($task)+floor($task->lead_time/60),'earnings'=>0,'hour_price'=>$hourPrice];
     endforeach;
     foreach($userTasksMinutes as $task_id => $prices):

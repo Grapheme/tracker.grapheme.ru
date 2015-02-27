@@ -46,10 +46,9 @@
                 @foreach($project_team as $user_id => $user_fio)
                     <?php
                         $selected = in_array($user_id,$setProjectTeamIDs);
-                        $hour_price = $budget = '';
+                        $hour_price = '';
                         if ($selected && isset($setProjectValues[$user_id])):
                             $hour_price = $setProjectValues[$user_id]['hour_price'];
-                            $budget = $setProjectValues[$user_id]['budget'];
                         endif;
                     ?>
                     <div class="checkbox">
@@ -59,7 +58,6 @@
                     </div>
                     <div class="form-inline">
                         {{ Form::text('team['.$user_id.'][hour_price]',$hour_price,['class'=>'form-control','placeholder'=>'Цена за час']) }}
-                        {{ Form::hidden('team['.$user_id.'][budget]',$budget,['class'=>'form-control','placeholder'=>'Бюджет']) }}
                     </div>
                 @endforeach
                 </div>

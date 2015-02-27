@@ -2,18 +2,10 @@
 @section('style') @stop
 
 @section('content')
-    <h1 class="page-header">Добавить сотрудника</h1>
+    <h1 class="page-header">Новый сотрудник</h1>
     <div class="row">
         <div class="col-md-8">
-        {{ Form::open(array('route'=>'cooperators.store','role'=>'form','class'=>'form-horizontal','file'=>TRUE)) }}
-            <div class="form-group has-feedback">
-                <label for="inputFIO" class="col-sm-3 control-label">Ф.И.О.</label>
-                <div class="col-sm-4">
-                    {{ Form::text('fio',Input::old('fio'),['class' => 'form-control','placeholder'=>'Иванов Иван Иванович','required'=>'','id'=>'inputFIO','autofocus'=>'']) }}
-                    <span class="glyphicon glyphicon-warning-sign form-control-feedback" aria-hidden="true"></span>
-                    <span id="inputWarning2Status" class="sr-only">(warning)</span>
-                </div>
-            </div>
+        {{ Form::open(array('route'=>'cooperators.store','role'=>'form','class'=>'form-horizontal')) }}
             <div class="form-group has-feedback">
                 <label for="inputEmail" class="col-sm-3 control-label">Email</label>
                 <div class="col-sm-4">
@@ -23,27 +15,8 @@
                 </div>
             </div>
             <div class="form-group">
-                <label for="inputPosition" class="col-sm-3 control-label">Должность</label>
-                <div class="col-sm-4">
-                    {{ Form::text('position',Input::old('position'),['class' => 'form-control','placeholder'=>'Программист','id'=>'inputPosition']) }}
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="priceHour" class="col-sm-3 control-label">Цена за час</label>
-                <div class="col-sm-4">
-                    {{ Form::text('hour_price',Input::old('hour_price'),['class'=>'form-control','placeholder'=>'Цена за час']) }}
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="iconFile" class="col-sm-3 control-label">Аватар </label>
-                <div class="col-sm-6">
-                    {{ Form::file('file',['id'=>"iconFile"]) }}
-                    <p class="help-block">Доступные форматы: JPG, PNG, GIF.<br>Максимальный размер файла: 2 Мб</p>
-                </div>
-            </div>
-            <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
-                    <button type="submit" class="btn btn-success">Добавить</button>
+                    <button type="submit" class="btn btn-success">Пригласить</button>
                     <a href="{{ URL::route('cooperators.index') }}" class="btn btn-default">Отмена</a>
                 </div>
             </div>
