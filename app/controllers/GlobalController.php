@@ -44,7 +44,7 @@ class GlobalController extends \BaseController {
 		$validator = Validator::make(Input::all(),User::$rules);
 		if($validator->passes()):
 			$password = Str::random(12);
-			if($account = User::create(['group_id' => 3, 'fio' => Input::get('fio'), 'position' => '','email' => Input::get('email'),'active' => TRUE, 'password' => Hash::make(Str::random(12)), 'remember_token' => ''])):
+			if($account = User::create(['group_id' => 3, 'fio' => Input::get('fio'), 'position' => '','email' => Input::get('email'),'active' => TRUE, 'password' => Hash::make($password), 'remember_token' => ''])):
 				Mail::send('emails.auth.register',['fio'=>$account->fio,'login'=>$account->email,'password'=>$password],function($message) use ($account){
 					$message->from(Config::get('mail.from.address'),Config::get('mail.from.name'));
 					$message->to($account->email)->subject('Регистрация на Tracker Grapheme');
