@@ -8,7 +8,7 @@ class ClientsController extends \BaseController {
 
     public function index(){
 
-        $clients = Clients::where('superior_id',Auth::user()->id)->orderBy('updated_at','DESC')->with('projects','icon')->get();
+        $clients = Clients::where('superior_id',Auth::user()->id)->orderBy('updated_at','DESC')->with('projects')->get();
         return View::make(Helper::acclayout('clients.list'),compact('clients'));
     }
 
