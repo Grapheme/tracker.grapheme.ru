@@ -79,10 +79,10 @@ class GlobalController extends \BaseController {
 			$data['password'] = Config::get('site.default_password');
 		endif;
 		if($account = User::create(['group_id' => 4, 'fio' => $data['fio'], 'position' => $data['position'],'email' => $data['email'],'active' => TRUE, 'password' => Hash::make($data['password']), 'remember_token' => ''])):
-			Mail::send('emails.auth.register',['fio'=>$account->fio,'login'=>$account->email,'password'=>$data['password']],function($message) use ($account){
+			/*Mail::send('emails.auth.register',['fio'=>$account->fio,'login'=>$account->email,'password'=>$data['password']],function($message) use ($account){
 				$message->from(Config::get('mail.from.address'),Config::get('mail.from.name'));
 				$message->to($account->email)->subject('Регистрация на Tracker Grapheme');
-			});
+			});*/
 			return $account;
 		endif;
 		return FALSE;
