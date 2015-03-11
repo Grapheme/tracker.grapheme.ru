@@ -14,11 +14,11 @@
 
 <h1 class="page-header">Dashboard</h1>
 <div class="row">
-    <div class="col-xs-6 pull-right">
+    <!--<div class="col-xs-6 pull-right">
         {{ Form::open(array('route'=>array('oauth.register'),'method'=>'POST','style'=>'display:inline-block')) }}
         {{ Form::submit('Импорт из Basecamp',['class'=>'btn btn-success']) }}
         {{ Form::close() }}
-    </div>
+    </div>-->
 </div>
 @if(count($projects))
 <div class="row placeholders">
