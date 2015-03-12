@@ -23,6 +23,7 @@
         </div>
     </div>
     @endif
+    @include(Helper::acclayout('assets.report-links'),['extended'=>['client'=>$client->id]])
     @if(count($tasks))
     <h2 class="sub-header">Список задач</h2>
     <div class="table-responsive">
@@ -86,8 +87,6 @@
             </tbody>
         </table>
     </div>
-    @else
-
     @endif
 @stop
 @section('scripts')

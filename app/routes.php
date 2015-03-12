@@ -19,6 +19,7 @@ if (Auth::check()):
         Route::get('',array('as'=>'dashboard','uses'=>'AccountController@dashboard'));
         Route::get('settings',array('as'=>'settings','uses'=>'AccountController@settings'));
         Route::get('profile',array('as'=>'profile','uses'=>'AccountController@profile'));
+        Route::get('report',array('as'=>'report','uses'=>'AccountController@report'));
     });
     Route::group(array('before' => 'auth','prefix' => @$prefixes['admin-projects']), function(){
         if(isProjectAdministrator()):

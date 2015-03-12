@@ -18,8 +18,6 @@
         </div>
         @endforeach
     </div>
-    @else
-
     @endif
 @stop
 @section('scripts')
