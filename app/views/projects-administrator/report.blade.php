@@ -2,6 +2,7 @@
 @section('style') @stop
 
 @section('content')
+    <a href="{{ URL::previous() }}" class="btn btn-link">Вернуться назад</a>
     @if(count($tasks))
         <h2 class="sub-header">Список задач</h2>
         <div class="table-responsive">
@@ -15,7 +16,10 @@
                     @if(isset($earnMoneyCurrentDate[$task->id]['earnings']))
                         <?php $tasks_total_price += $earnMoneyCurrentDate[$task->id]['earnings'];?>
                     @endif
-                    <tr {{ ($task->start_status && !$task->stop_status) ? 'class="success"' : '' }}>
+                    <tr>
+                        <td>
+                            {{ Carbon\Carbon::createFromFormat('Y-m-d 00:00:00',$task->set_date)->format('d.m.Y') }}
+                        </td>
                         <td>
                             <a href="{{ URL::route('cooperators.show',$task->cooperator->id) }}">{{ getInitials($task->cooperator->fio) }}</a>
                             <br>{{ $task->note }}
@@ -39,6 +43,8 @@
                 </tbody>
             </table>
         </div>
+    @else
+        <p>Список пуст</p>
     @endif
 @stop
 @section('scripts') @stop

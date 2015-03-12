@@ -41,6 +41,7 @@
         </div>
     </div>
     @endif
+    @include(Helper::acclayout('assets.report-links'),['extended'=>['project'=>$project->id]])
     @if(count($tasks))
     <h2 class="sub-header">Список задач</h2>
     <div class="table-responsive">
