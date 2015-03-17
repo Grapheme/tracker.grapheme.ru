@@ -35,7 +35,7 @@
                 <img class="img-circle" data-src="holder.js/140x140/auto/sky" alt="">
                 <h2>{{ getInitials($user->fio) }}</h2>
                 <p>{{ $user->position }}</p>
-                <p><a class="btn btn-default" href="{{ URL::route('cooperators.show',$user->id) }}" role="button">Подробнее &raquo;</a></p>
+                <!--<p><a class="btn btn-default" href="{{ URL::route('cooperators.show',$user->id) }}" role="button">Подробнее &raquo;</a></p>-->
             </div>
         @endforeach
         </div>
