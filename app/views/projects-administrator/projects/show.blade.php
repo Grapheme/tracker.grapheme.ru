@@ -57,7 +57,7 @@
                 @endif
                 <tr {{ ($task->start_status && !$task->stop_status) ? 'class="success"' : '' }}>
                     <td>
-                        <a href="{{ URL::route('cooperators.show',$task->cooperator->id) }}">{{ getInitials($task->cooperator->fio) }}</a>
+                        {{ getInitials($task->cooperator->fio) }}
                         <br>{{ $task->note }}
                         @if(count($task->basecamp_task))
                         <a href="{{ $task->basecamp_task->basecamp_task_link  }}" target="_blank"><span aria-hidden="true" class="glyphicon glyphicon-new-window"></span></a>
