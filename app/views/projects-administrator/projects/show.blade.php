@@ -27,7 +27,7 @@
                 <img class="img-circle" data-src="holder.js/140x140/auto/sky" alt="">
                 <h2>{{ getInitials($project->superior->fio) }}</h2>
                 <p>{{ $project->superior->position }}</p>
-                <p><a class="btn btn-default" href="{{ URL::route('cooperators.show',$project->superior->id) }}" role="button">Подробнее &raquo;</a></p>
+                <!--<p><a class="btn btn-default" href="{{ URL::route('cooperators.show',$project->superior->id) }}" role="button">Подробнее &raquo;</a></p>-->
             </div>
         @endif
         @foreach($project->team as $user)
