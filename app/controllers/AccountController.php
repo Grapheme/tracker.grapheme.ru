@@ -24,7 +24,7 @@ class AccountController extends \BaseController {
     public function report(){
 
         $startOfDay = Input::has('begin_date') ? \Carbon\Carbon::createFromFormat('Y-m-d',Input::get('begin_date'))->format('Y-m-d 00:00:00') : \Carbon\Carbon::createFromDate(2000,1,1,'GMT')->format('Y-m-d 00:00:00');
-        $endOfDay = Input::has('end_date') ? \Carbon\Carbon::createFromFormat('Y-m-d',Input::get('begin_date'))->format('Y-m-d 00:00:00') : \Carbon\Carbon::now()->format('Y-m-d 00:00:00');
+        $endOfDay = Input::has('end_date') ? \Carbon\Carbon::createFromFormat('Y-m-d',Input::get('end_date'))->format('Y-m-d 00:00:00') : \Carbon\Carbon::now()->format('Y-m-d 00:00:00');
         $tasks = $tasksIDs = [];
         if($tasksList = ProjectTask::where('user_id',Auth::user()->id)->where('stop_status',1)->whereBetween('set_date',[$startOfDay,$endOfDay])->with('project','project.client')->get()):
             if (Input::has('client')):
