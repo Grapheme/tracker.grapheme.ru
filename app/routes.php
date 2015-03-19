@@ -4,6 +4,8 @@ Route::get('/',array('as'=>'home','uses' => 'GuestController@index'));
 Route::any('logout',array('as'=>'logout','uses' => 'GlobalController@logout'));
 Route::get('invite/{token}',array('as'=>'invite','uses' => 'GlobalController@invite'));
 
+Route::controller('password', 'RemindersController');
+
 Route::group(array('before' => 'guest'), function(){
     Route::post('login',array('as'=>'login','uses' => 'GlobalController@login'));
     Route::get('register',array('as'=>'register','uses' => 'GuestController@register'));

@@ -29,7 +29,7 @@
                 @endif
                 @yield('content', @$content)
             </div>
-        <hr>
+        </div>
         @include(Helper::acclayout('assets.footer'))
     </div>
     @include(Helper::acclayout('assets.scripts'))
