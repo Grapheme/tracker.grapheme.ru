@@ -3,7 +3,7 @@
 
 @section('content')
     <div class="jumbotron" style="background-image: url(/uploads/images/1422287024_1908.jpg)">
-        <h1>{{ !empty($client->short_title) ? $client->short_title : $client->title }}</h1>
+        <h1>{{ !empty($client->title) ? $client->short_title : $client->title }}</h1>
         <p class="lead">{{ $client->description }}</p>
         <a role="button" href="{{ URL::route('clients.edit',$client->id) }}" class="btn btn-primary btn-sm">Редактировать</a>
         {{ Form::open(array('route'=>array('clients.destroy',$client->id),'method'=>'DELETE','style'=>'display:inline-block')) }}
@@ -57,7 +57,7 @@
                             {{ Form::submit('Остановить',['class'=>'btn btn-primary']) }}
                         @else
                             {{ Form::hidden('run',1) }}
-                            {{ Form::submit('Начать',['class'=>'btn btn-default']) }}
+                            {{ Form::submit('Продолжить',['class'=>'btn btn-default']) }}
                         @endif
                         {{ Form::close() }}
                     @endif

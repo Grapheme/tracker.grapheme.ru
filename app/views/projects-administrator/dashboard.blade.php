@@ -73,7 +73,7 @@
                         {{ Form::submit('Остановить',['class'=>'btn btn-primary']) }}
                     @else
                         {{ Form::hidden('run',1) }}
-                        {{ Form::submit('Начать',['class'=>'btn btn-default']) }}
+                        {{ Form::submit('Продолжить',['class'=>'btn btn-default']) }}
                     @endif
                     {{ Form::close() }}
                 </td>
