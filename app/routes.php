@@ -81,27 +81,6 @@ if (Auth::check()):
             Route::delete('invite/reject/{invite_id}',array('as'=>'cooperators.invite_reject','uses'=>'CooperatorsController@inviteReject'));
         endif;
     });
-    Route::group(array('before' => 'auth','prefix' => @$prefixes['performer']), function(){
-        if(isPerformer()):
-            Route::resource('timesheets', 'TimeSheetsPerformerController',
-                array(
-                    'except' => array('show'),
-                    'names' => array(
-                        'index'   => 'timesheets.index',
-                        'create'  => 'timesheets.create',
-                        'store'   => 'timesheets.store',
-                        'edit'    => 'timesheets.edit',
-                        'update'  => 'timesheets.update',
-                        'destroy' => 'timesheets.destroy'
-                    )
-                )
-            );
-            Route::post('timesheets/running_timer',array('as'=>'timesheets.run_timer','uses'=>'TimeSheetsPerformerController@RunningTimer'));
-        else:
-            return Redirect::route('home');
-        endif;
-    });
-
     Route::group(array('before' => 'auth'), function(){
         Route::post('oauth/register', array('before'=>'csrf','as'=>'oauth.register','uses' => 'BasecampController@oauth_url'));
         Route::get('oauth/callback', array('as'=>'oauth.callback','uses' => 'BasecampController@oauth_callback'));

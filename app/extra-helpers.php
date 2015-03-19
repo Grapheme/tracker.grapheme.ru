@@ -108,11 +108,3 @@ function isProjectAdministrator(){
     endif;
     return FALSE;
 }
-
-function isPerformer(){
-
-    if (Auth::check() && Auth::user()->group->slug == 'performer'):
-        return TRUE;
-    endif;
-    return FALSE;
-}

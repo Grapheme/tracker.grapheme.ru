@@ -18,11 +18,6 @@ class GroupsTableTableSeeder extends Seeder {
 			'title' => 'Администратор проектов',
 			'dashboard' => 'projects-administrator'
 		));
-		Group::create(array(
-			'slug' => 'performer',
-			'title' => 'Исполнитель',
-			'dashboard' => 'performer'
-		));
 	}
 
 }
