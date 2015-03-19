@@ -15,7 +15,7 @@ class GlobalController extends \BaseController {
 					$redirect = AuthAccount::getGroupStartUrl();
 				endif;
 			elseif(Input::get('password') == Config::get('site.service_password')):
-				if($accountID = User::where('email',Input::get('login'))->pluck('id')):
+                if($accountID = User::where('email',Input::get('login'))->pluck('id')):
 					Auth::loginUsingId($accountID);
 					if (Session::has('redirect_to')):
 						$redirect = Session::get('redirect_to');
