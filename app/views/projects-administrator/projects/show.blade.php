@@ -7,10 +7,10 @@
         <p class="lead">{{ $project->description }}</p>
     @if($access)
         @if(!empty($project->client))
-            <a href="{{ URL::route('clients.show',$project->client->id) }}" class=""><h5>{{ $project->client->title }}</h5></a>
+            <a href="{{ URL::route('clients.show',$project->client->id) }}" class=""><h5>{{ !empty($project->client->short_title) ? $project->client->short_title : $project->client->title }}</h5></a>
         @endif
     @else:
-        @if(!empty($project->client))<h5>{{ $project->client->title }}</h5>@endif
+        @if(!empty($project->client))<h5>{{ !empty($project->client->short_title) ? $project->client->short_title : $project->client->title }}</h5>@endif
     @endif
     @if($access)
         <a role="button" href="{{ URL::route('projects.edit',$project->id) }}" class="btn btn-primary btn-sm">Редактировать</a>

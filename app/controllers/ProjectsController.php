@@ -22,8 +22,8 @@ class ProjectsController extends \BaseController {
 			endforeach;
 		endif;
         $clients[0] = 'Без клиента';
-        foreach(Clients::where('superior_id',Auth::user()->id)->lists('title','id') as $client_id => $client_title):
-            $clients[$client_id] = $client_title;
+        foreach(Clients::where('superior_id',Auth::user()->id)->orderBy('title')->select('id','title','short_title')->get() as $client):
+            $clients[$client->id] = !empty($client->short_title) ? $client->short_title : $client->title;
         endforeach;
 		return View::make(Helper::acclayout('projects.create'),compact('project_team','clients'));
 	}
@@ -91,8 +91,8 @@ class ProjectsController extends \BaseController {
 				endforeach;
 			endif;
             $clients[0] = 'Без клиента';
-            foreach(Clients::where('superior_id',Auth::user()->id)->orderBy('title')->lists('title','id') as $client_id => $client_title):
-                $clients[$client_id] = $client_title;
+            foreach(Clients::where('superior_id',Auth::user()->id)->orderBy('title')->select('id','title','short_title')->get() as $client):
+                $clients[$client->id] = !empty($client->short_title) ? $client->short_title : $client->title;
             endforeach;
 			return View::make(Helper::acclayout('projects.edit'),compact('project','project_team','clients','setProjectTeamIDs','setProjectValues'));
 		else:

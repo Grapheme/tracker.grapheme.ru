@@ -15,7 +15,7 @@
             <span class="text-muted">{{ $project->description }}</span><br>
             @endif
             @if(!empty($project->client))
-                <a href="{{ URL::route('clients.show',$project->client->id) }}" class="">{{ $project->client->title }}</a><br>
+                <a href="{{ URL::route('clients.show',$project->client->id) }}" class="">{{ !empty($project->client->short_title) ? $project->client->short_title : $project->client->title }}</a><br>
             @endif
             @if($project->team->count())
             <span class="text-muted">{{ $project->team->count()+1 }} {{ Lang::choice('участник|участника|участников',$project->team->count()+1) }}</span><br>
