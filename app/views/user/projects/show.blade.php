@@ -5,18 +5,20 @@
     <div class="jumbotron" style="background-image: url(/uploads/images/1422287024_1908.jpg)">
         <h1>{{ $project->title }}</h1>
         <p class="lead">{{ $project->description }}</p>
-    @if($access)
+    @if($access && $project->user_id == Auth::user()->id)
         @if(!empty($project->client))
             <a href="{{ URL::route('clients.show',$project->client->id) }}" class=""><h5>{{ !empty($project->client->short_title) ? $project->client->short_title : $project->client->title }}</h5></a>
         @endif
-    @else:
+    @else
         @if(!empty($project->client))<h5>{{ !empty($project->client->short_title) ? $project->client->short_title : $project->client->title }}</h5>@endif
     @endif
     @if($access)
         <a role="button" href="{{ URL::route('projects.edit',$project->id) }}" class="btn btn-primary btn-sm">Редактировать</a>
+        @if($project->user_id == Auth::user()->id)
         {{ Form::open(array('route'=>array('projects.destroy',$project->id),'method'=>'DELETE','style'=>'display:inline-block')) }}
             {{ Form::submit('Удалить',['class'=>'btn btn-danger btn-sm']) }}
         {{ Form::close() }}
+        @endif
     @endif
     </div>
     @if($project->team->count())

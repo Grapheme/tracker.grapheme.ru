@@ -64,6 +64,15 @@ if (Auth::check()):
                     )
                 )
             );
+            Route::resource('officers.access', 'CooperatorsAccessController',
+                array(
+                    'except' => array('show','update','create','edit','destroy'),
+                    'names' => array(
+                        'index'    => 'cooperators.access.index',
+                        'store'  => 'cooperators.access.store',
+                    )
+                )
+            );
             Route::resource('timesheets', 'TimeSheetsController',
                 array(
                     'except' => array('show'),

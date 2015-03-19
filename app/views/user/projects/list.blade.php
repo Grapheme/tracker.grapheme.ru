@@ -7,21 +7,25 @@
     <div class="row placeholders">
         @foreach($projects['my'] as $project)
         <div class="col-xs-6 col-sm-3 placeholder">
-            <a href="{{ URL::route('projects.show',$project->id) }}" class="">
+            <a href="{{ URL::route('projects.show',$project->projects->id) }}" class="">
                 <img data-src="holder.js/200x200/auto/sky" class="img-responsive" alt="Generic placeholder thumbnail">
             </a>
-            <a href="{{ URL::route('projects.show',$project->id) }}" class=""><h4>{{ $project->title }}</h4></a>
-            @if(!empty($project->description))
-            <span class="text-muted">{{ $project->description }}</span><br>
+            <a href="{{ URL::route('projects.show',$project->id) }}" class=""><h4>{{ $project->projects->title }}</h4></a>
+            @if(!empty($project->projects->description))
+            <span class="text-muted">{{ $project->projects->description }}</span><br>
             @endif
-            @if(!empty($project->client))
-                <a href="{{ URL::route('clients.show',$project->client->id) }}" class="">{{ !empty($project->client->short_title) ? $project->client->short_title : $project->client->title }}</a><br>
+            @if(!empty($project->projects->client))
+                @if($project->projects->superior_id == Auth::user()->id)
+                <a href="{{ URL::route('clients.show',$project->projects->client->id) }}" class="">{{ !empty($project->projects->client->short_title) ? $project->projects->client->short_title : $project->projects->client->title }}</a><br>
+                @else
+                {{ !empty($project->projects->client->short_title) ? $project->projects->client->short_title : $project->projects->client->title }}<br>
+                @endif
             @endif
-            @if($project->team->count())
-            <span class="text-muted">{{ $project->team->count()+1 }} {{ Lang::choice('участник|участника|участников',$project->team->count()+1) }}</span><br>
+            @if($project->projects->team->count())
+            <span class="text-muted">{{ $project->projects->team->count()+1 }} {{ Lang::choice('участник|участника|участников',$project->projects->team->count()+1) }}</span><br>
             @endif
-            @if($project->tasks->count())
-            <span class="text-muted">{{ $project->tasks->count() }} {{ Lang::choice('задача|задачи|задач',$project->tasks->count()) }}</span>
+            @if($project->projects->tasks->count())
+            <span class="text-muted">{{ $project->projects->tasks->count() }} {{ Lang::choice('задача|задачи|задач',$project->projects->tasks->count()) }}</span>
             @endif
         </div>
         @endforeach

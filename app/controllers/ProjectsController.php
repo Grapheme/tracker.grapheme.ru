@@ -8,7 +8,8 @@ class ProjectsController extends \BaseController {
 
 	public function index(){
 
-		$projects['my'] = Project::where('superior_id',Auth::user()->id)->orderBy('updated_at','DESC')->with('client','team','tasks')->get();
+		#$projects['my'] = Project::where('superior_id',Auth::user()->id)->orderBy('updated_at','DESC')->with('client','team','tasks')->get();
+		$projects['my'] = ProjectOwners::where('user_id',Auth::user()->id)->orderBy('updated_at','DESC')->with('projects','projects.client','projects.team','projects.tasks')->get();
 		$projects['subscribe'] = ProjectTeam::where('user_id',Auth::user()->id)->with('projects','projects.client','projects.team','projects.tasks')->get();
         return View::make(Helper::acclayout('projects.list'),compact('projects'));
 	}
@@ -61,7 +62,7 @@ class ProjectsController extends \BaseController {
 
 	public function show($id){
 
-		if($project = Project::where('id',$id)->where('superior_id',Auth::user()->id)->with('superior','client','team')->first()):
+		if($project = ProjectOwners::where('project_id',$id)->where('user_id',Auth::user()->id)->first()->project()->with('superior','client','team')->first()):
 			$tasks = ProjectTask::where('project_id',$project->id)->with('cooperator','basecamp_task')->get();
 			return View::make(Helper::acclayout('projects.show'),compact('project','tasks'))->with('access',TRUE);
 		elseif($project = ProjectTeam::where('project_id',$id)->where('user_id',Auth::user()->id)->first()->project()->with('superior','client','team')->first()):
@@ -74,22 +75,26 @@ class ProjectsController extends \BaseController {
 
 	public function edit($id){
 
-		if($project = Project::where('id',$id)->where('superior_id',Auth::user()->id)->with('team','owners')->first()):
+		if($project = ProjectOwners::where('project_id',$id)->where('user_id',Auth::user()->id)->first()->project()->with('team','owners','client')->first()):
 			$project_team = $setProjectTeamIDs = $setProjectValues = array();
-			foreach($project->owners as $owner):
-				$setProjectValues[$owner->id]['hour_price'] = ($owner->hour_price > 0) ? $owner->hour_price : '';
-			endforeach;
-			if($team = Team::where('superior_id',Auth::user()->id)->with('cooperator')->get()):
-				foreach($team as $user):
-					$project_team[$user->cooperator->id] = $user->cooperator->fio;
-				endforeach;
-			endif;
-			if (count($project->team)):
-				foreach($project->team as $user):
-					$setProjectTeamIDs[] = $user->id;
-					$setProjectValues[$user->id]['hour_price'] = ($user->hour_price > 0) ? $user->hour_price : '';
-				endforeach;
-			endif;
+            if ($project->client):
+                $setProjectValues[$project->superior_id]['hour_price'] = $project->client->hour_price;
+            else:
+                foreach($project->owners as $owner):
+                    $setProjectValues[$owner->id]['hour_price'] = ($owner->hour_price > 0) ? $owner->hour_price : '';
+                endforeach;
+                if($team = Team::where('superior_id',Auth::user()->id)->with('cooperator')->get()):
+                    foreach($team as $user):
+                        $project_team[$user->cooperator->id] = $user->cooperator->fio;
+                    endforeach;
+                endif;
+                if (count($project->team)):
+                    foreach($project->team as $user):
+                        $setProjectTeamIDs[] = $user->id;
+                        $setProjectValues[$user->id]['hour_price'] = ($user->hour_price > 0) ? $user->hour_price : '';
+                    endforeach;
+                endif;
+            endif;
             $clients[0] = 'Без клиента';
             foreach(Clients::where('superior_id',Auth::user()->id)->orderBy('title')->select('id','title','short_title')->get() as $client):
                 $clients[$client->id] = !empty($client->short_title) ? $client->short_title : $client->title;
@@ -104,7 +109,11 @@ class ProjectsController extends \BaseController {
 
 		$validator = Validator::make(Input::all(),Project::$rules);
 		if($validator->passes()):
-			Project::where('id',$id)->where('superior_id',Auth::user()->id)->update(Input::except('_method','_token','superior_hour_price','team'));
+
+            if (ProjectOwners::where('project_id',$id)->where('user_id',Auth::user()->id)->exists() === FALSE):
+                return Redirect::route('projects.show',$id)->with('message','Проект редактировать запрещено.');
+            endif;
+			Project::where('id',$id)->update(Input::except('_method','_token','superior_hour_price','team'));
 			ProjectOwners::where('project_id',$id)->where('user_id',Auth::user()->id)->update(['hour_price'=>Input::get('hour_price')]);
 			if (Input::has('team')):
 				Project::where('id',$id)->first()->owners()->sync([Auth::user()->id]);
