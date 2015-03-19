@@ -63,14 +63,20 @@
                 </div>
             </div>
             <div class="form-group has-feedback">
-                <label for="inputContactPerson" class="col-sm-3 control-label">Контактное лицо</label>
-                <div class="col-sm-3">
+                <label for="inputContactPerson" class="col-sm-3 control-label">Должность контактного лица</label>
+                <div class="col-sm-4">
                     {{ Form::text('contact_person',Input::old('contact_person'),['class'=>'form-control','placeholder'=>'Должность','id'=>'inputContactPersonPosition']) }}
                 </div>
-                <div class="col-sm-3">
+            </div>
+            <div class="form-group has-feedback">
+                <label for="inputContactPerson" class="col-sm-3 control-label">Имя контактного лица</label>
+                <div class="col-sm-4">
                     {{ Form::text('fio',Input::old('fio'),['class'=>'form-control','placeholder'=>'Имя','id'=>'inputContactPersonFio']) }}
                 </div>
-                <div class="col-sm-3">
+            </div>
+            <div class="form-group has-feedback">
+                <label for="inputContactPerson" class="col-sm-3 control-label">Имя контактного лица в род.падеже</label>
+                <div class="col-sm-4">
                     {{ Form::text('fio_rod',Input::old('fio_rod'),['class'=>'form-control','placeholder'=>'Имя в род.падеже','id'=>'inputContactPersonFioRod']) }}
                 </div>
             </div>
