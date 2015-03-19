@@ -8,10 +8,11 @@
         <p class="lead">{{ $user->position }}</p>
         @if($access)
         {{ Form::open(array('route'=>array('cooperators.destroy',$user->id),'method'=>'DELETE','style'=>'display:inline-block')) }}
-            {{ Form::submit('Выгнать',['class'=>'btn btn-danger btn-sm']) }}
+            {{ Form::submit('Исключить',['class'=>'btn btn-danger btn-sm']) }}
         {{ Form::close() }}
         @endif
     </div>
+    @include(Helper::acclayout('assets.report-links'),['extended'=>['user'=>$user->id]])
 @stop
 @section('scripts')
     {{ HTML::script(Config::get('site.theme_path').'/js/docs.min.js') }}
