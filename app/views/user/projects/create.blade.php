@@ -45,18 +45,25 @@
                 <label for="faviconFile" class="col-sm-3 control-label">Комманда </label>
                 <div class="col-sm-6">
                 @foreach($project_team as $user_id => $user)
-                    <div class="checkbox">
-                        <label>
-                            {{ Form::checkbox('team['.$user_id.'][user_id]',$user_id) }} {{ $user['fio'] }}
-                        </label>
-                    </div>
                     <div class="form-inline">
+                        {{ Form::checkbox('team['.$user_id.'][user_id]',$user_id) }} {{ getInitials($user['fio']) }}
                         {{ Form::text('team['.$user_id.'][hour_price]',$user['hour_price'] ? $user['hour_price'] : '',['class'=>'form-control','placeholder'=>'Цена за час']) }}
                     </div>
                 @endforeach
                 </div>
             </div>
             @endif
+            <div class="form-group">
+                <label for="faviconFile" class="col-sm-3 control-label">Пригласить в команду</label>
+                <div class="col-sm-6">
+                    @for($i=0;$i<5;$i++)
+                        <div class="form-inline">
+                            {{ Form::text('invite_team[email][]','',['class'=>'form-control','placeholder'=>'Email-адрес']) }}
+                            {{ Form::text('invite_team[hour_price][]','',['class'=>'form-control','placeholder'=>'Цена за час']) }}
+                        </div>
+                    @endfor
+                </div>
+            </div>
             <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
                     <button type="submit" class="btn btn-success">Создать</button>

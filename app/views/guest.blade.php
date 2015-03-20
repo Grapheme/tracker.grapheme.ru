@@ -11,6 +11,9 @@
     @include(Helper::layout('assets.header'))
     @yield('register')
     <div class="container">
+        @if(Session::has('message'))
+            <div class="alert alert-info" role="alert">{{ Session::get('message') }}</div>
+        @endif
         @yield('content', @$content)
         <hr>
         @include(Helper::layout('assets.footer'))

@@ -11,11 +11,15 @@
     </div>
     @endif
     {{ Form::open(array('route'=>'register-store','role'=>'form','class'=>'form-register','id'=>'register-form')) }}
-        @if(Session::has('invite_id') && Session::has('invitee_user_id') && Session::has('invite_redirect'))
+    @if(Session::has('invite_id') && Session::has('invitee_user_id') && Session::has('invite_redirect'))
         {{ Form::hidden('invite_id',Session::get('invite_id')) }}
         {{ Form::hidden('invitee_user_id',Session::get('invitee_user_id')) }}
         {{ Form::hidden('invite_redirect',Session::get('invite_redirect')) }}
+        @if(Session::has('invite_project') && Session::has('invite_hour_price'))
+            {{ Form::hidden('invite_project',Session::get('invite_project')) }}
+            {{ Form::hidden('invite_hour_price',Session::get('invite_hour_price')) }}
         @endif
+    @endif
         <h2 class="form-register-heading">Заполните форму</h2>
         <label for="inputFIO" class="sr-only">ФИО</label>
         {{ Form::text('fio', Input::old('fio'), ['class' => 'form-control','placeholder'=>'Ф.И.О.','required'=>'','id'=>'inputFIO','autofocus'=>'']) }}

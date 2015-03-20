@@ -10,7 +10,7 @@
             <a href="{{ URL::route('projects.show',$project->projects->id) }}" class="">
                 <img data-src="holder.js/200x200/auto/sky" class="img-responsive" alt="Generic placeholder thumbnail">
             </a>
-            <a href="{{ URL::route('projects.show',$project->id) }}" class=""><h4>{{ $project->projects->title }}</h4></a>
+            <a href="{{ URL::route('projects.show',$project->projects->id) }}" class=""><h4>{{ $project->projects->title }}</h4></a>
             @if(!empty($project->projects->description))
             <span class="text-muted">{{ $project->projects->description }}</span><br>
             @endif

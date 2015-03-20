@@ -40,7 +40,6 @@ function costCalculation($taskID = NULL, $data = NULL){
     endif;
     $userTasksMinutes = $ProjectIDs = $hourPrices = [];
     foreach($tasks as $task):
-
         $ProjectIDs[$task->project_id] = $task->project_id;
     endforeach;
     if ($ProjectIDs):

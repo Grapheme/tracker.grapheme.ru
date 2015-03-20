@@ -157,6 +157,14 @@ function morph($n, $f1, $f2, $f5) {
 }
 
 function getInitials($fio){
-
-    return preg_replace('/(\w+) (\w)\w+ (\w)\w+/iu', '$1 $2. $3.',$fio);
+    if (empty($fio)):
+        return 'Пользователь';
+    else:
+        $fio_mas = explode(' ',$fio);
+        switch (count($fio_mas)):
+            case 2 : return preg_replace('/(\w+) (\w)\w+/iu', '$1 $2.',$fio);
+            case 3 : return preg_replace('/(\w+) (\w)\w+ (\w)\w+/iu', '$1 $2. $3.',$fio);
+        endswitch;
+    endif;
+    return $fio;
 }

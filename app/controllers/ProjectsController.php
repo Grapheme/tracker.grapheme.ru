@@ -19,7 +19,10 @@ class ProjectsController extends \BaseController {
 		$project_team = array();
 		if($team = Team::where('superior_id',Auth::user()->id)->with('cooperator')->get()):
 			foreach($team as $user):
-				$project_team[$user->cooperator->id] = ['fio'=>$user->cooperator->fio,'hour_price'=>$user->cooperator->hour_price];
+                if (!empty($user->cooperator)):
+                    $project_team[$user->cooperator->id]['fio'] = $user->cooperator->fio;
+				    $project_team[$user->cooperator->id]['hour_price'] = $user->cooperator->hour_price;
+                endif;
 			endforeach;
 		endif;
         $clients[0] = 'Без клиента';
@@ -33,23 +36,13 @@ class ProjectsController extends \BaseController {
 
 		$validator = Validator::make(Input::all(),Project::$rules);
 		if($validator->passes()):
-			if($project = Project::create(Input::except('_token','superior_hour_price','team'))):
+			if($project = Project::create(Input::except('_token','superior_hour_price','team','invite_team'))):
 				ProjectOwners::create(['project_id'=>$project->id,'user_id'=>Auth::user()->id,'hour_price'=>Input::get('superior_hour_price')]);
 				if (Input::has('team')):
-					Project::where('id',$project->id)->first()->owners()->sync([Auth::user()->id]);
-					$usersIDs = $users= array();
-					foreach(Input::get('team') as $user):
-						if (isset($user['user_id'])):
-							$usersIDs[] = $user['user_id'];
-							$users[$user['user_id']]['hour_price'] = $user['hour_price'] ? $user['hour_price'] : 0;
-						endif;
-					endforeach;
-					if ($usersIDs):
-						Project::where('id',$project->id)->first()->team()->sync($usersIDs);
-						foreach($users as $user_id => $user):
-							ProjectTeam::where('project_id',$project->id)->where('user_id',$user_id)->update(['hour_price'=>$user['hour_price']]);
-						endforeach;
-					endif;
+                    self::addTeam($project->id);
+				endif;
+                if (Input::has('invite_team')):
+                    self::inviteTeam($project->id);
 				endif;
 				return Redirect::route('projects.show',$project->id)->with('message','Проект создан успешно.');
 			else:
@@ -65,7 +58,7 @@ class ProjectsController extends \BaseController {
 		if(ProjectOwners::where('project_id',$id)->where('user_id',Auth::user()->id)->exists()):
             $project = ProjectOwners::where('project_id',$id)->where('user_id',Auth::user()->id)->first()->project()->with('superior','client','team')->first();
 			$tasks = ProjectTask::where('project_id',$project->id)->with('cooperator','basecamp_task')->get();
-			return View::make(Helper::acclayout('projects.show'),compact('project','tasks'))->with('access',TRUE);
+            return View::make(Helper::acclayout('projects.show'),compact('project','tasks'))->with('access',TRUE);
 		elseif(ProjectTeam::where('project_id',$id)->where('user_id',Auth::user()->id)->exists()):
             $project = ProjectTeam::where('project_id',$id)->where('user_id',Auth::user()->id)->first()->project()->with('superior','client','team')->first();
             $tasks = ProjectTask::where('project_id',$project->id)->with('cooperator','basecamp_task')->get();
@@ -78,24 +71,20 @@ class ProjectsController extends \BaseController {
 	public function edit($id){
 
 		if($project = ProjectOwners::where('project_id',$id)->where('user_id',Auth::user()->id)->first()->project()->with('team','owners','client')->first()):
-			$project_team = $setProjectTeamIDs = $setProjectValues = array();
-            if ($project->client):
-                $setProjectValues[$project->superior_id]['hour_price'] = $project->client->hour_price;
-            else:
-                foreach($project->owners as $owner):
-                    $setProjectValues[$owner->id]['hour_price'] = ($owner->hour_price > 0) ? $owner->hour_price : '';
-                endforeach;
-                if($team = Team::where('superior_id',Auth::user()->id)->with('cooperator')->get()):
-                    foreach($team as $user):
+            $setProjectValues[$project->superior_id]['hour_price'] = ProjectOwners::where('project_id',$id)->where('user_id',$project->superior_id)->pluck('hour_price');
+            $project_team = $setProjectTeamIDs = [];
+            if($team = Team::where('superior_id',Auth::user()->id)->with('cooperator')->get()):
+                foreach($team as $user):
+                    if (!empty($user->cooperator)):
                         $project_team[$user->cooperator->id] = $user->cooperator->fio;
-                    endforeach;
-                endif;
-                if (count($project->team)):
-                    foreach($project->team as $user):
-                        $setProjectTeamIDs[] = $user->id;
-                        $setProjectValues[$user->id]['hour_price'] = ($user->hour_price > 0) ? $user->hour_price : '';
-                    endforeach;
-                endif;
+                    endif;
+                endforeach;
+            endif;
+            if (count($project->team)):
+                foreach($project->team as $user):
+                    $setProjectTeamIDs[] = $user->id;
+                    $setProjectValues[$user->id]['hour_price'] = $user->hour_price;
+                endforeach;
             endif;
             $clients[0] = 'Без клиента';
             foreach(Clients::where('superior_id',Auth::user()->id)->orderBy('title')->select('id','title','short_title')->get() as $client):
@@ -111,28 +100,17 @@ class ProjectsController extends \BaseController {
 
 		$validator = Validator::make(Input::all(),Project::$rules);
 		if($validator->passes()):
-
             if (ProjectOwners::where('project_id',$id)->where('user_id',Auth::user()->id)->exists() === FALSE):
                 return Redirect::route('projects.show',$id)->with('message','Проект редактировать запрещено.');
             endif;
-			Project::where('id',$id)->update(Input::except('_method','_token','superior_hour_price','team'));
+			Project::where('id',$id)->update(Input::except('_method','_token','superior_hour_price','team','invite_team'));
 			ProjectOwners::where('project_id',$id)->where('user_id',Auth::user()->id)->update(['hour_price'=>Input::get('hour_price')]);
-			if (Input::has('team')):
-				Project::where('id',$id)->first()->owners()->sync([Auth::user()->id]);
-				$usersIDs = $users= array();
-				foreach(Input::get('team') as $user):
-					if (isset($user['user_id'])):
-						$usersIDs[] = $user['user_id'];
-						$users[$user['user_id']]['hour_price'] = $user['hour_price'] ? $user['hour_price'] : 0;
-					endif;
-				endforeach;
-				if ($usersIDs):
-					Project::where('id',$id)->first()->team()->sync($usersIDs);
-					foreach($users as $user_id => $user):
-						ProjectTeam::where('project_id',$id)->where('user_id',$user_id)->update(['hour_price'=>$user['hour_price']]);
-					endforeach;
-				endif;
-			endif;
+            if (Input::has('team')):
+                self::addTeam($id);
+            endif;
+            if (Input::has('invite_team')):
+                self::inviteTeam($id);
+            endif;
 			return Redirect::route('projects.show',$id)->with('message','Проект сохранен успешно.');
 		else:
 			return Redirect::back()->withErrors($validator)->withInput(Input::all());
@@ -150,4 +128,65 @@ class ProjectsController extends \BaseController {
 			App::abort(404);
 		endif;
 	}
+
+    private function addTeam($projectID){
+
+        Project::where('id',$projectID)->first()->owners()->sync([Auth::user()->id]);
+        $usersIDs = $users= array();
+        foreach(Input::get('team') as $user):
+            if (isset($user['user_id'])):
+                $usersIDs[] = $user['user_id'];
+                $users[$user['user_id']]['hour_price'] = $user['hour_price'] ? $user['hour_price'] : 0;
+            endif;
+        endforeach;
+        if ($usersIDs):
+            Project::where('id',$projectID)->first()->team()->sync($usersIDs);
+            foreach($users as $user_id => $user):
+                ProjectTeam::where('project_id',$projectID)->where('user_id',$user_id)->update(['hour_price'=>$user['hour_price']]);
+            endforeach;
+        endif;
+    }
+
+    private function inviteTeam($projectID){
+
+        $InviteTeams = [];
+        $invite_team_price = Input::get('invite_team.hour_price');
+        foreach(Input::get('invite_team.email') as $index => $email):
+            if (!empty($email)):
+                $InviteTeams[$email] = isset($invite_team_price[$index]) && $invite_team_price[$index] ? $invite_team_price[$index] : 0;
+            endif;
+        endforeach;
+        if (count($InviteTeams)):
+            foreach($InviteTeams as $email => $hour_price):
+                if(Auth::user()->email == $email):
+
+                elseif(Invite::where('user_id',Auth::user()->id)->where('email',$email)->where('status',0)->exists()):
+
+                elseif ($account = User::where('email',$email)->first()):
+                    if (Team::where('superior_id',Auth::user()->id)->where('cooperator_id',$account->id)->exists() === FALSE):
+                        $token = Str::random(48);
+                        Invite::create(['user_id'=>Auth::user()->id,'email'=>$email,'token'=>$token,'note'=>json_encode(['redirect'=> FALSE,'params'=>['invitee_account'=>Auth::user()->id,'redirect'=>URL::route('dashboard'),'project'=>$projectID,'hour_price'=>$hour_price]])]);
+                        Mail::send('emails.invite.exists',['token'=>$token],function($message) use ($account){
+                            $message->from(Config::get('mail.from.address'),Config::get('mail.from.name'));
+                            $message->to($account->email)->subject('Приглашение');
+                        });
+                    elseif(ProjectTeam::where('project_id',$projectID)->where('user_id',$account->id)->exists() === FALSE):
+                        ProjectTeam::create(['project_id'=>$projectID,'user_id'=>$account->id,'hour_price'=>$hour_price]);
+                        Mail::send('emails.invite.in_project',['project'=>Project::where('id',$projectID)->first()],function($message) use ($account){
+                            $message->from(Config::get('mail.from.address'),Config::get('mail.from.name'));
+                            $message->to($account->email)->subject('Приглашение в проект');
+                        });
+                    endif;
+                else:
+                    $token = Str::random(48);
+                    Invite::create(['user_id'=>Auth::user()->id,'email'=>$email,'token'=>$token,'note'=>json_encode(['redirect'=>URL::route('register'),'params'=>['invitee_account'=>Auth::user()->id,'redirect'=>URL::route('invite',$token),'project'=>$projectID,'hour_price'=>$hour_price]])]);
+                    Mail::send('emails.invite.register',['token'=>$token],function($message) use ($email){
+                        $message->from(Config::get('mail.from.address'),Config::get('mail.from.name'));
+                        $message->to($email)->subject('Приглашение');
+                    });
+                    return Redirect::back()->with('message','Приглашение отправлено.');
+                endif;
+            endforeach;
+        endif;
+    }
 }

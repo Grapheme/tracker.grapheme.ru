@@ -53,7 +53,11 @@ class GlobalController extends \BaseController {
 				if (Auth::check()):
                     if (Input::has('invite_id') && Input::has('invitee_user_id') && Input::has('invite_redirect')):
                         if (Invite::where('id',Input::get('invite_id'))->exists()):
-                            Invite::where('id',Input::get('invite_id'))->update(['note'=>json_encode(['redirect'=> FALSE,'params'=>['invitee_account'=>Input::get('invitee_user_id'),'redirect'=>URL::to(AuthAccount::getGroupStartUrl())]])]);
+                            if (Input::has('invite_project') && Input::has('invite_hour_price')):
+                                Invite::where('id',Input::get('invite_id'))->update(['note'=>json_encode(['redirect'=> FALSE,'params'=>['invitee_account'=>Input::get('invitee_user_id'),'redirect'=>URL::to(AuthAccount::getGroupStartUrl()),'project'=>Input::get('invite_project'),'hour_price'=>Input::get('invite_hour_price')]])]);
+                            else:
+                                Invite::where('id',Input::get('invite_id'))->update(['note'=>json_encode(['redirect'=> FALSE,'params'=>['invitee_account'=>Input::get('invitee_user_id'),'redirect'=>URL::to(AuthAccount::getGroupStartUrl())]])]);
+                            endif;
                             return Redirect::to(Input::get('invite_redirect'));
                         endif;
                     endif;
@@ -99,18 +103,34 @@ class GlobalController extends \BaseController {
                 if (Auth::check()):
                     self::logout();
                 endif;
-                return Redirect::to($note['redirect'])->withInput(['email'=>$invite->email])->with('invite_id',$invite->id)->with('invitee_user_id',$note['params']['invitee_account'])->with('invite_redirect',$note['params']['redirect']);
+                if (isset($note['params']['project']) && isset($note['params']['hour_price'])):
+                    return Redirect::to($note['redirect'])->withInput(['email'=>$invite->email])
+                        ->with('invite_id',$invite->id)->with('invitee_user_id',$note['params']['invitee_account'])
+                        ->with('invite_redirect',$note['params']['redirect'])
+                        ->with('invite_project',$note['params']['project'])
+                        ->with('invite_hour_price',$note['params']['hour_price']);
+                else:
+                    return Redirect::to($note['redirect'])->withInput(['email'=>$invite->email])
+                        ->with('invite_id',$invite->id)->with('invitee_user_id',$note['params']['invitee_account'])
+                        ->with('invite_redirect',$note['params']['redirect']);
+                endif;
             else:
                 if($invitee = User::where('id',$note['params']['invitee_account'])->first()):
                     if($accountID = User::where('email',$invite->email)->pluck('id')):
                         Auth::loginUsingId($accountID);
                         $invite->note = $note;
+                        if (isset($note['params']['project']) && isset($note['params']['hour_price'])):
+                            if (ProjectTeam::where('project_id',$note['params']['project'])->where('user_id',$accountID)->exists() === FALSE &&
+                                ProjectOwners::where('project_id',$note['params']['project'])->where('user_id',$accountID)->exists() === FALSE):
+                                ProjectTeam::create(['project_id'=>$note['params']['project'],'user_id'=>$accountID,'hour_price'=>$note['params']['hour_price'],'created_at'=>date('Y-m-d H:i:s'),'updated_at'=>date('Y-m-d H:i:s')]);
+                            endif;
+                        endif;
                         if (Team::where('superior_id',$invite->user_id)->where('cooperator_id',$accountID)->exists()):
                             return Redirect::route('dashboard');
                         else:
                             Team::create(['superior_id'=>$invite->user_id,'cooperator_id'=>$accountID]);
                             Invite::where('id',$invite->id)->update(['status'=>1,'updated_at'=>date("Y-m-d H:i:s")]);
-                            return View::make(Helper::layout('invite'),compact('invitee'))->with('redirect',URL::route('dashboard'));
+                            return View::make(Helper::layout('invite'),compact('invitee'))->with('redirect',URL::to(AuthAccount::getGroupStartUrl()));
                         endif;
                     endif;
                 endif;
