@@ -8,7 +8,7 @@
     if(count($projects)):
         $projectsIDs = ProjectOwners::where('user_id',Auth::user()->id)->lists('project_id');
         foreach(ProjectTask::whereIn('project_id',$projectsIDs)->where('start_status',1)->where('stop_status',0)->with('cooperator','project')->get() as $task):
-            $tasks[] = $task;
+            #$tasks[] = $task;
         endforeach;
     endif;
     $dt_request = Request::get('date') ? Request::get('date') : date('Y-m-d');
