@@ -3,11 +3,13 @@
 
 @section('content')
 <?php
-    $tasks = array();
+    $tasks[] = ProjectTask::where('user_id',Auth::user()->id)->where('start_status',1)->where('stop_status',0)->with('cooperator','project')->first();
     $projects = ProjectOwners::where('user_id',Auth::user()->id)->orderBy('updated_at','DESC')->with('projects','projects.client','projects.team','projects.tasks')->limit(4)->get();
     if(count($projects)):
         $projectsIDs = ProjectOwners::where('user_id',Auth::user()->id)->lists('project_id');
-        $tasks = ProjectTask::whereIn('project_id',$projectsIDs)->where('start_status',1)->where('stop_status',0)->with('cooperator','project')->get();
+        foreach(ProjectTask::whereIn('project_id',$projectsIDs)->where('start_status',1)->where('stop_status',0)->with('cooperator','project')->get() as $task):
+            $tasks[] = $task;
+        endforeach;
     endif;
     $dt_request = Request::get('date') ? Request::get('date') : date('Y-m-d');
 ?>
@@ -56,13 +58,22 @@
             @endif
             <tr>
                 <td>
-                    <a href="{{ URL::route('projects.show',$task->project->id) }}">{{ $task->project->title }}</a>
-                    <br>
-                    {{ getInitials($task->cooperator->fio) }}
-                    <br>{{ $task->note }}
-                    @if(count($task->basecamp_task))
-                        <a href="{{ $task->basecamp_task->basecamp_task_link  }}" target="_blank"><span aria-hidden="true" class="glyphicon glyphicon-new-window"></span></a>
+                    {{ $task->note }}
+                    <br>{{ getInitials($task->cooperator->fio) }}
+                    @if(count($task->project))
+                        <br>{{ $task->project->title }}
+                        @if(count($task->basecamp_task))
+                            <a href="{{ $task->basecamp_task->basecamp_task_link  }}" target="_blank"><span aria-hidden="true" class="glyphicon glyphicon-new-window"></span></a>
+                        @endif
+                        @if($task->project->superior_id == Auth::user()->id)
+                            @if(count($task->project->client))
+                                ({{ $task->project->client->short_title }})
+                            @endif
+                        @else
+                            @if(count($task->project->client))({{ $task->project->client->short_title }})@endif
+                        @endif
                     @endif
+                    <br>
                 </td>
                 <td>
                     {{ culcLeadTime($task) }} @if($task->user_id == Auth::user()->id)/ {{ isset($earnMoneyCurrentDate[$task->id]['earnings']) ? number_format($earnMoneyCurrentDate[$task->id]['earnings'],2,'.',' ').' руб.' : '' }}@endif
