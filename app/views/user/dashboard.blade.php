@@ -3,12 +3,15 @@
 
 @section('content')
 <?php
-    $tasks[] = ProjectTask::where('user_id',Auth::user()->id)->where('start_status',1)->where('stop_status',0)->with('cooperator','project')->first();
+    $tasks = [];
+    if (ProjectTask::where('user_id',Auth::user()->id)->where('start_status',1)->where('stop_status',0)->exists()):
+        $tasks[] = ProjectTask::where('user_id',Auth::user()->id)->where('start_status',1)->where('stop_status',0)->with('cooperator','project')->first();
+    endif;
     $projects = ProjectOwners::where('user_id',Auth::user()->id)->orderBy('updated_at','DESC')->with('projects','projects.client','projects.team','projects.tasks')->limit(4)->get();
     if(count($projects)):
         $projectsIDs = ProjectOwners::where('user_id',Auth::user()->id)->lists('project_id');
         foreach(ProjectTask::whereIn('project_id',$projectsIDs)->where('start_status',1)->where('stop_status',0)->with('cooperator','project')->get() as $task):
-            #$tasks[] = $task;
+            $tasks[] = $task;
         endforeach;
     endif;
     $dt_request = Request::get('date') ? Request::get('date') : date('Y-m-d');
