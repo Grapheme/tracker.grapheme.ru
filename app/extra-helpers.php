@@ -38,17 +38,30 @@ function costCalculation($taskID = NULL, $data = NULL){
     if (empty($tasks)):
         $tasks = ProjectTask::WhereIn('user_id',$accountsIDs)->with('cooperator','project.client')->get();
     endif;
-    $userTasksMinutes = [];
+    $userTasksMinutes = $ProjectIDs = $hourPrices = [];
     foreach($tasks as $task):
-        $hourPrice = 0;
-        if(isset($task->project->client->hour_price)):
+        $ProjectIDs[$task->project_id] = $task->project_id;
+    endforeach;
+    if ($ProjectIDs):
+        foreach(ProjectTeam::whereIn('project_id',$ProjectIDs)->select('project_id','hour_price','user_id')->get() as $team):
+            $hourPrices[$team->project_id][$team->user_id] = $team->hour_price;
+        endforeach;
+        foreach(ProjectOwners::where('project_id',$ProjectIDs)->select('project_id','hour_price','user_id')->get() as $team):
+            $hourPrices[$team->project_id][$team->user_id] = (int) $team->hour_price;
+        endforeach;
+    endif;
+    foreach($tasks as $task):
+        $hourPrice = isset($hourPrices[$task->project_id][$task->cooperator->id]) ? $hourPrices[$task->project_id][$task->cooperator->id] : 0;
+        $whose_price = 'цена договорная';
+        if($hourPrice == 0 && isset($task->project->client->hour_price) && $task->project->client->hour_price > 0):
+            $whose_price = 'цена клиента';
             $hourPrice = $task->project->client->hour_price;
-        elseif($task->cooperator->hour_price > 0):
-            $hourPrice = $task->cooperator->hour_price;
-        else:
-            $hourPrice = ProjectTeam::where('user_id',$task->cooperator->id)->where('project_id',$task->project_id)->pluck('hour_price');
         endif;
-        $userTasksMinutes[$task->id] = ['user_id'=>$task->user_id,'minutes'=>getLeadTimeMinutes($task)+floor($task->lead_time/60),'earnings'=>0,'hour_price'=>$hourPrice];
+        if($hourPrice == 0 && $task->cooperator->hour_price > 0):
+            $whose_price = 'цена пользователя';
+            $hourPrice = $task->cooperator->hour_price;
+        endif;
+        $userTasksMinutes[$task->id] = ['user_id'=>$task->user_id,'minutes'=>getLeadTimeMinutes($task)+floor($task->lead_time/60),'earnings'=>0,'whose_price'=>@$whose_price,'hour_price'=>$hourPrice];
     endforeach;
     foreach($userTasksMinutes as $task_id => $prices):
         $summaInMinute = round($prices['hour_price']/60,2);

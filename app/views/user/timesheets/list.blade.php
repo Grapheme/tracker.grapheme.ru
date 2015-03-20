@@ -35,25 +35,21 @@
                 @endif
                 <tr {{ ($task->start_status && !$task->stop_status) ? 'class="success"' : '' }}>
                     <td>
+                        {{ $task->note }}
                     @if(count($task->project))
-                        <a href="{{ URL::route('projects.show',$task->project->id) }}">{{ $task->project->title }}</a>
+                        <br>{{ $task->project->title }}
                         @if($task->project->superior_id == Auth::user()->id)
                             @if(count($task->project->client))
-                            (<a href="{{ URL::route('clients.show',$task->project->client->id) }}">{{ $task->project->client->short_title }}</a>)
+                            ({{ $task->project->client->short_title }})
                             @endif
                         @else
                             @if(count($task->project->client))({{ $task->project->client->short_title }})@endif
                         @endif
-                        <br>
                     @endif
-                        @if($task->cooperator->id != Auth::user()->id)
-                        <a href="{{ URL::route('cooperators.show',$task->cooperator->id) }}">{{ getInitials($task->cooperator->fio) }}</a>
-                        <br>
-                        @endif
-                        {{ $task->note }}
                     </td>
                     <td>
                         {{ culcLeadTime($task) }} / {{ isset($earnMoneyCurrentDate[$task->id]['earnings']) ? number_format($earnMoneyCurrentDate[$task->id]['earnings'],2,'.',' ').' руб.' : '' }}
+                        @if($earnMoneyCurrentDate[$task->id]['whose_price'])<br><span class="label label-info">{{ @$earnMoneyCurrentDate[$task->id]['whose_price'] }}</span>@endif
                     </td>
                     <td>
                     {{ Form::open(array('route'=>array('timesheets.run_timer'),'method'=>'POST','style'=>'display:inline-block')) }}

@@ -5,14 +5,12 @@ Route::group(array('before' => 'guest'), function(){
 Route::any('logout',array('as'=>'logout','uses' => 'GlobalController@logout'));
 Route::get('invite/{token}',array('as'=>'invite','uses' => 'GlobalController@invite'));
 
-Route::controller('password', 'RemindersController');
-
 Route::group(array('before' => 'guest'), function(){
     Route::post('login',array('as'=>'login','uses' => 'GlobalController@login'));
     Route::get('register',array('as'=>'register','uses' => 'GuestController@register'));
     Route::post('register',array('before' => 'csrf', 'as'=>'register-store','uses' => 'GlobalController@register'));
 });
-
+Route::controller('password', 'RemindersController');
 if (Auth::check()):
     foreach(Group::all() as $group):
         $prefixes[$group->slug] = $group->dashboard;
@@ -22,6 +20,7 @@ if (Auth::check()):
         Route::get('',array('as'=>'dashboard','uses'=>'AccountController@dashboard'));
         Route::get('settings',array('as'=>'settings','uses'=>'AccountController@settings'));
         Route::get('profile',array('as'=>'profile','uses'=>'AccountController@profile'));
+        Route::put('profile',array('before'=>'csrf','as'=>'profile.update','uses'=>'AccountController@profileUpdate'));
         Route::get('report',array('as'=>'report','uses'=>'AccountController@report'));
     });
     Route::group(array('before' => 'auth','prefix' => @$prefixes['admin-projects']), function(){

@@ -62,10 +62,12 @@ class ProjectsController extends \BaseController {
 
 	public function show($id){
 
-		if($project = ProjectOwners::where('project_id',$id)->where('user_id',Auth::user()->id)->first()->project()->with('superior','client','team')->first()):
+		if(ProjectOwners::where('project_id',$id)->where('user_id',Auth::user()->id)->exists()):
+            $project = ProjectOwners::where('project_id',$id)->where('user_id',Auth::user()->id)->first()->project()->with('superior','client','team')->first();
 			$tasks = ProjectTask::where('project_id',$project->id)->with('cooperator','basecamp_task')->get();
 			return View::make(Helper::acclayout('projects.show'),compact('project','tasks'))->with('access',TRUE);
-		elseif($project = ProjectTeam::where('project_id',$id)->where('user_id',Auth::user()->id)->first()->project()->with('superior','client','team')->first()):
+		elseif(ProjectTeam::where('project_id',$id)->where('user_id',Auth::user()->id)->exists()):
+            $project = ProjectTeam::where('project_id',$id)->where('user_id',Auth::user()->id)->first()->project()->with('superior','client','team')->first();
             $tasks = ProjectTask::where('project_id',$project->id)->with('cooperator','basecamp_task')->get();
 			return View::make(Helper::acclayout('projects.show'),compact('project','tasks'))->with('access',FALSE);
 		else:
