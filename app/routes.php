@@ -1,6 +1,7 @@
 <?php
-
-Route::get('/',array('as'=>'home','uses' => 'GuestController@index'));
+Route::group(array('before' => 'guest'), function(){
+    Route::get('/',array('as'=>'home','uses' => 'GuestController@index'));
+});
 Route::any('logout',array('as'=>'logout','uses' => 'GlobalController@logout'));
 Route::get('invite/{token}',array('as'=>'invite','uses' => 'GlobalController@invite'));
 

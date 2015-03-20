@@ -8,6 +8,8 @@ class GuestController extends \BaseController {
 
 	public function index(){
 
+
+
 		return View::make(Helper::layout('index'));
 	}
 
