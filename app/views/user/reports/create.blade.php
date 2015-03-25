@@ -1,6 +1,5 @@
 @extends(Helper::acclayout())
 @section('style') @stop
-
 @section('content')
     <div class="container marketing">
         <div class="row">
