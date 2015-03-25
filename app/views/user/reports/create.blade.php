@@ -16,6 +16,14 @@
                         {{ Form::text('end_date',Input::has('end_date') ? Input::get('end_date') : (new myDateTime())->setDateString($endOfDay)->format('Y-m-d'),['class'=>'form-control']) }}
                     </div>
                 </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label"></label>
+                    <div class="col-sm-6">
+                        <p class="text-info">
+                            Выберите один из доступных фильтров. Приоритет верху вниз.
+                        </p>
+                    </div>
+                </div>
                 @if(count($clients) > 1)
                     <div class="form-group">
                         <label class="col-sm-3 control-label">Клиент</label>

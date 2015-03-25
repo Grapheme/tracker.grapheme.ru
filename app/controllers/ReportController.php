@@ -162,13 +162,13 @@ class ReportController extends \BaseController {
     private function getReportTasks($startOfDay,$endOfDay){
 
         $tasks = [];
-        if (Input::has('project') && Input::get('project') > 0):
-            if(ProjectOwners::where('project_id',Input::get('project'))->where('user_id',Auth::user()->id)->exists()):
-                $tasks = ProjectTask::where('project_id',Input::get('project'))->where('stop_status',1)->whereBetween('set_date',[$startOfDay,$endOfDay])->with('project','project.client')->get();
-            endif;
-        elseif(Input::has('client') && Input::get('client') > 0):
+        if(Input::has('client') && Input::get('client') > 0):
             if($ProjectIDs = Clients::where('id',Input::get('client'))->first()->projects()->lists('id')):
                 $tasks = ProjectTask::whereIn('project_id',$ProjectIDs)->where('stop_status',1)->whereBetween('set_date',[$startOfDay,$endOfDay])->with('project','project.client')->get();
+            endif;
+        elseif (Input::has('project') && Input::get('project') > 0):
+            if(ProjectOwners::where('project_id',Input::get('project'))->where('user_id',Auth::user()->id)->exists()):
+                $tasks = ProjectTask::where('project_id',Input::get('project'))->where('stop_status',1)->whereBetween('set_date',[$startOfDay,$endOfDay])->with('project','project.client')->get();
             endif;
         elseif(Input::has('user') && Input::get('user') > 0):
             if (Input::get('user') == Auth::user()->id):
