@@ -144,7 +144,7 @@ class ReportController extends \BaseController {
             if (Clients::where('superior_id',Auth::user()->id)->exists()):
                 if($report = Report::where('id',Input::get('report_id'))->where('superior_id',Auth::user()->id)->first()):
                     if (File::exists(public_path($report->path))):
-                        return Response::download(public_path($report->path),$report->title,['content-type'=>'application/pdf']);
+                        return Response::download(public_path($report->path),$report->title.'.pdf',['content-type'=>'application/pdf']);
                     else:
                         return Redirect::back()->with('message','Файл счета отсутствует.');
                     endif;
