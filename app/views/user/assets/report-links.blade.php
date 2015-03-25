@@ -37,12 +37,12 @@ endif;
 
 ?>
 <ul>
-    <li><a href="{{ URL::route('report',$params['today']) }}">За сегодня</a></li>
-    <li><a href="{{ URL::route('report',$params['week']) }}">За неделю</a></li>
-    <li><a href="{{ URL::route('report',$params['last_week']) }}">За прошлую неделю</a></li>
-    <li><a href="{{ URL::route('report',$params['month']) }}">За месяц</a></li>
-    <li><a href="{{ URL::route('report',$params['last_month']) }}">За прошлый месяц</a></li>
-    <li><a href="{{ URL::route('report',$params['year']) }}">За год</a></li>
-    <li><a href="{{ URL::route('report',$params['last_year']) }}">За прошлый год</a></li>
-    <li><a href="{{ URL::route('report',$params['all']) }}">За все время</a></li>
+    <li><a href="{{ URL::route('report.create',$params['today']) }}">За сегодня</a></li>
+    <li><a href="{{ URL::route('report.create',$params['week']) }}">За неделю</a></li>
+    <li><a href="{{ URL::route('report.create',$params['last_week']) }}">За прошлую неделю</a></li>
+    <li><a href="{{ URL::route('report.create',$params['month']) }}">За месяц</a></li>
+    <li><a href="{{ URL::route('report.create',$params['last_month']) }}">За прошлый месяц</a></li>
+    <li><a href="{{ URL::route('report.create',$params['year']) }}">За год</a></li>
+    <li><a href="{{ URL::route('report.create',$params['last_year']) }}">За прошлый год</a></li>
+    <li><a href="{{ URL::route('report.create',$params['all']) }}">За все время</a></li>
 </ul>

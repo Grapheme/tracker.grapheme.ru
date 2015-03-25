@@ -10,7 +10,8 @@
 		"intervention/image": "2.1.1",
 		"doctrine/dbal": "2.6.x-dev",
 		"barryvdh/laravel-ide-helper": "v1.11.3",
-		"netvlies/basecamp-php": "1.*"
+		"netvlies/basecamp-php": "dev-master",
+        "lowerends/l4-mpdf": "dev-master"
 	},
 	"autoload": {
 		"classmap": [

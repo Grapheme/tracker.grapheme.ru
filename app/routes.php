@@ -21,7 +21,11 @@ if (Auth::check()):
         Route::get('settings',array('as'=>'settings','uses'=>'AccountController@settings'));
         Route::get('profile',array('as'=>'profile','uses'=>'AccountController@profile'));
         Route::put('profile',array('before'=>'csrf','as'=>'profile.update','uses'=>'AccountController@profileUpdate'));
-        Route::get('report',array('as'=>'report','uses'=>'AccountController@report'));
+
+        Route::get('reports',array('as'=>'reports.list','uses'=>'ReportController@index'));
+        Route::get('report',array('as'=>'report.create','uses'=>'ReportController@create'));
+        Route::post('report/save/{format}/{action}',array('as'=>'report.save','uses'=>'ReportController@save'));
+        Route::post('report/download',array('before'=>'csrf', 'as'=>'report.download','uses'=>'ReportController@download'));
     });
     Route::group(array('before' => 'auth','prefix' => @$prefixes['admin-projects']), function(){
         if(isProjectAdministrator()):

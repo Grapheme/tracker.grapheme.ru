@@ -29,7 +29,7 @@
                 <img class="img-circle" data-src="holder.js/140x140/auto/sky" alt="">
                 <h2>{{ getInitials($project->superior->fio) }}</h2>
                 <p>{{ $project->superior->position }}</p>
-                <!--<p><a class="btn btn-default" href="{{ URL::route('cooperators.show',$project->superior->id) }}" role="button">Подробнее &raquo;</a></p>-->
+                <p><a class="btn btn-default" href="{{ URL::route('cooperators.show',$project->superior->id) }}" role="button">Подробнее &raquo;</a></p>
             </div>
         @endif
         @foreach($project->team as $user)
@@ -37,13 +37,15 @@
                 <img class="img-circle" data-src="holder.js/140x140/auto/sky" alt="">
                 <h2>{{ getInitials($user->fio) }}</h2>
                 <p>{{ $user->position }}</p>
-                <!--<p><a class="btn btn-default" href="{{ URL::route('cooperators.show',$user->id) }}" role="button">Подробнее &raquo;</a></p>-->
+                <p><a class="btn btn-default" href="{{ URL::route('cooperators.show',$user->id) }}" role="button">Подробнее &raquo;</a></p>
             </div>
         @endforeach
         </div>
     </div>
     @endif
-    @include(Helper::acclayout('assets.report-links'),['extended'=>['project'=>$project->id]])
+    @if($access)
+        @include(Helper::acclayout('assets.report-links'),['extended'=>['project'=>$project->id]])
+    @endif
     @if(count($tasks))
     <h2 class="sub-header">Список задач</h2>
     <div class="table-responsive">

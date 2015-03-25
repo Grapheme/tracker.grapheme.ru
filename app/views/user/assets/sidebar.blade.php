@@ -11,6 +11,11 @@
     <li {{ Helper::isRoute('timesheets.index') }}>
         <a href="{{ URL::route('timesheets.index') }}">Табель учета рабочего времени</a>
     </li>
+    @if(Clients::where('superior_id',Auth::user()->id)->exists())
+    <li {{ Helper::isRoute('reports.list') }}>
+        <a href="{{ URL::route('reports.list') }}">Мои отчеты</a>
+    </li>
+    @endif
 </ul>
 <ul class="nav nav-sidebar">
     <li {{ Helper::isRoute('clients.create') }}>
@@ -24,5 +29,8 @@
     </li>
     <li {{ Request::has('now') ? Helper::isRoute('timesheets.create') : '' }}>
         <a href="{{ URL::route('timesheets.create',['date'=>date('Y-m-d'),'now'=>1]) }}">Добавить текущую задачу</a>
+    </li>
+    <li {{ Helper::isRoute('report.create') }}>
+        <a href="{{ URL::route('report.create') }}">Создать отчет</a>
     </li>
 </ul>

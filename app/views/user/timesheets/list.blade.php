@@ -29,7 +29,15 @@
             <?php $tasks_total_price = 0;?>
             <?php $earnMoneyCurrentDate = costCalculation(NULL,['tasks' => $tasks]);?>
             @foreach($tasks as $task)
-                <?php $tasks_total_time += (getLeadTimeMinutes($task)+floor($task->lead_time/60));?>
+                <?php
+                    $tasks_total_time += (getLeadTimeMinutes($task)+floor($task->lead_time/60));
+                    $showMoney = FALSE;
+                    if(isset($task->project->superior_id) && $task->project->superior_id == Auth::user()->id):
+                        $showMoney = TRUE;
+                    elseif(!$task->project_id):
+                        $showMoney = TRUE;
+                    endif;
+                ?>
                 @if(isset($earnMoneyCurrentDate[$task->id]['earnings']))
                 <?php $tasks_total_price += $earnMoneyCurrentDate[$task->id]['earnings'];?>
                 @endif
@@ -48,8 +56,11 @@
                     @endif
                     </td>
                     <td>
-                        {{ culcLeadTime($task) }} / {{ isset($earnMoneyCurrentDate[$task->id]['earnings']) ? number_format($earnMoneyCurrentDate[$task->id]['earnings'],2,'.',' ').' руб.' : '' }}
-                        @if($earnMoneyCurrentDate[$task->id]['whose_price'])<br><span class="label label-info">{{ @$earnMoneyCurrentDate[$task->id]['whose_price'] }}</span>@endif
+                        {{ culcLeadTime($task) }}
+                        @if($showMoney)
+                            / {{ isset($earnMoneyCurrentDate[$task->id]['earnings']) ? number_format($earnMoneyCurrentDate[$task->id]['earnings'],2,'.',' ').' руб.' : '' }}
+                            @if($earnMoneyCurrentDate[$task->id]['whose_price'])<br><span class="label label-info">{{ @$earnMoneyCurrentDate[$task->id]['whose_price'] }}</span>@endif
+                        @endif
                     </td>
                     <td>
                     {{ Form::open(array('route'=>array('timesheets.run_timer'),'method'=>'POST','style'=>'display:inline-block')) }}

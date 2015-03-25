@@ -13,7 +13,9 @@
         {{ Form::close() }}
         @endif
     </div>
-    @include(Helper::acclayout('assets.report-links'),['extended'=>['user'=>$user->id]])
+    @if($access)
+        @include(Helper::acclayout('assets.report-links'),['extended'=>['user'=>$user->id]])
+    @endif
     @if(count($tasks))
     <h2 class="sub-header">Список задач</h2>
     <div class="table-responsive">
@@ -35,7 +37,7 @@
                         @endif
                     </td>
                     <td>
-                        {{ culcLeadTime($task) }} / {{ isset($earnMoneyCurrentDate[$task->id]['earnings']) ? number_format($earnMoneyCurrentDate[$task->id]['earnings'],2,'.',' ').' руб.' : '' }}
+                        {{ culcLeadTime($task) }}@if($access) / {{ isset($earnMoneyCurrentDate[$task->id]['earnings']) ? number_format($earnMoneyCurrentDate[$task->id]['earnings'],2,'.',' ').' руб.' : '' }}@endif
                     </td>
                     <td>
                         @if($task->user_id == Auth::user()->id)

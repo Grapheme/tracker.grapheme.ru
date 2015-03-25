@@ -9,7 +9,7 @@ class CooperatorsController extends \BaseController {
 	public function index(){
 
 		$users = Team::where('superior_id',Auth::user()->id)->orWhere('cooperator_id',Auth::user()->id)->groupBy('superior_id')->groupBy('cooperator_id')->orderBy('updated_at','DESC')->with('cooperator.avatar','cooperator.tasks','superior.avatar','superior.tasks')->get();
-		$invites = Invite::where('user_id',Auth::user()->id)->where('status',0)->get();
+        $invites = Invite::where('user_id',Auth::user()->id)->where('status',0)->get();
         return View::make(Helper::acclayout('cooperators.list'),compact('users','invites'));
 	}
 
@@ -70,7 +70,9 @@ class CooperatorsController extends \BaseController {
             endif;
             return View::make(Helper::acclayout('cooperators.show'),compact('user','tasks'))->with('access',FALSE);
 		else:
-			App::abort(404);
+            $user = User::where('id',$id)->first();
+            $tasks = array();
+            return View::make(Helper::acclayout('cooperators.show'),compact('user','tasks'))->with('access',FALSE);
 		endif;
 	}
 
