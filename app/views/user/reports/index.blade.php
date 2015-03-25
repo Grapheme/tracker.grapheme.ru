@@ -5,7 +5,7 @@
     <div class="container marketing">
         <div class="row">
             <h2 class="sub-header">Список счетов</h2>
-@if(count($hasReports))
+@if($hasReports)
             <div class="table-responsive">
     @foreach($timeCell as $year_title => $kvartals)
             <?php $reportsInYearCount = 0; ?>
@@ -31,6 +31,12 @@
                                 {{ Form::open(['route'=>['report.download'],'method'=>'post']) }}
                                     {{ Form::hidden('report_id',$report['id']) }}
                                     {{ Form::submit('Скачать',['class'=>'btn btn-link']) }}
+                                {{ Form::close() }}
+                            </td>
+                            <td>
+                                {{ Form::open(['route'=>['report.delete'],'method'=>'delete']) }}
+                                    {{ Form::hidden('report_id',$report['id']) }}
+                                    {{ Form::submit('Удалить',['class'=>'btn btn-danger']) }}
                                 {{ Form::close() }}
                             </td>
                         </tr>

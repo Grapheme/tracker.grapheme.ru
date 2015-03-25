@@ -37,7 +37,7 @@ class ReportController extends \BaseController {
                     if (File::exists(public_path($report->path))):
                         File::delete(public_path($report->path));
                     endif;
-                    Report::where('id',$report->id)->delete();
+                    Report::where('id',$report->id)->where('superior_id',Auth::user()->id)->delete();
                 endif;
             endforeach;
             if (count($reportsList)):
@@ -115,6 +115,28 @@ class ReportController extends \BaseController {
         return Redirect::back();
     }
 
+    public function delete(){
+
+        $validator = Validator::make(Input::all(),['report_id'=>'required']);
+        if($validator->passes()):
+            if (Clients::where('superior_id',Auth::user()->id)->exists()):
+                if($report = Report::where('id',Input::get('report_id'))->where('superior_id',Auth::user()->id)->first()):
+                    if (File::exists(public_path($report->path))):
+                        File::delete(public_path($report->path));
+                    endif;
+                    Report::where('id',$report->id)->where('superior_id',Auth::user()->id)->delete();
+                    return Redirect::back()->with('message','Счет удален.');
+                else:
+                    return Redirect::back()->with('message','Отсутствует запрашиваемый счет.');
+                endif;
+            else:
+                return Redirect::route('dashboard')->with('message','Вы не можете управлять счетами. У Вас нет клиентов.');
+            endif;
+        else:
+            return Redirect::back()->withErrors($validator)->withInput(Input::all());
+        endif;
+    }
+
     public function download(){
 
         $validator = Validator::make(Input::all(),['report_id'=>'required']);
@@ -136,7 +158,6 @@ class ReportController extends \BaseController {
             return Redirect::back()->withErrors($validator)->withInput(Input::all());
         endif;
     }
-
     /*********************************************************************************************/
     private function getReportTasks($startOfDay,$endOfDay){
 
