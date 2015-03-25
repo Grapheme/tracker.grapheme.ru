@@ -102,22 +102,23 @@ class ReportController extends \BaseController {
             case 'pdf' :
                 $mpdf = new mPDF('utf-8', 'A4', '8', '', 10, 10, 7, 7, 10, 10);
                 $mpdf->SetDisplayMode('fullpage');
-                $mpdf->WriteHTML(View::make(Helper::acclayout('reports.templates.'.$type),compact('tasks','startOfDay','endOfDay'))->render(), 2);
                 $startOfDay = (new myDateTime())->setDateString($startOfDay)->format('dmy');
                 $endOfDay = (new myDateTime())->setDateString($endOfDay)->format('dmy');
                 if ($action == 'D'):
+                    $mpdf->WriteHTML(View::make(Helper::acclayout('reports.templates.'.$type),compact('tasks','startOfDay','endOfDay'))->render(), 2);
                     return $mpdf->Output("report-$startOfDay-$endOfDay.pdf", $action);
                 elseif(Input::has('client') && Input::get('client') > 0):
                     if(!File::exists(Config::get('site.public_invoice_dir').'/'.Auth::user()->id)):
                         File::makeDirectory(Config::get('site.public_invoice_dir').'/'.Auth::user()->id,0777,TRUE);
                     endif;
                     $fileName = uniqid('invoice-')."-$startOfDay-$endOfDay.pdf";
-                    $mpdf->Output(Config::get('site.public_invoice_dir').'/'.Auth::user()->id.'/'.$fileName, $action);
                     $report = Report::create(['superior_id'=>Auth::user()->id,'user_id'=>Input::get('user'),'client_id'=>Input::get('client'),'project_id'=>Input::get('project'),'title'=>'Cчет от '.date("d.m.Y"),'path'=>Config::get('site.invoice_dir').'/'.Auth::user()->id.'/'.$fileName]);
-                    if(!$clientTitle = Clients::where('superior_id',Auth::user()->id)->where('id',Input::get('client'))->pluck('short_title')):
-                        $clientTitle = Clients::where('superior_id',Auth::user()->id)->where('id',Input::get('client'))->pluck('title');
-                    endif;
+                    $client = Clients::where('superior_id',Auth::user()->id)->where('id',Input::get('client'))->first();
+                    $mpdf->WriteHTML(View::make(Helper::acclayout('reports.templates.'.$type),compact('client','report','tasks','startOfDay','endOfDay'))->render(), 2);
+                    $mpdf->Output(Config::get('site.public_invoice_dir').'/'.Auth::user()->id.'/'.$fileName, $action);
+
                     $date = date('d.m.Y');
+                    $clientTitle = !empty($client->short_title) ? $client->short_title : $client->title ;
                     return Redirect::back()->with('message',"Счет от $date для $clientTitle создан. ".'<a href="'.URL::route('report.show',$report->id).'" target="_blank">Просмотеть</a>');
                 else:
                     return Redirect::back()->with('message',"Создать счет невозможно. Не указан клиент.");

@@ -60,7 +60,7 @@
                     {{ Form::hidden('client',Input::get('client')) }}
                     {{ Form::hidden('project',Input::get('project')) }}
                     {{ Form::hidden('user',Input::get('user')) }}
-                    {{ Form::submit('Экспортировать отчет в PDF',['class'=>'btn btn-success']) }}
+                    {{ Form::submit('Экспорт в PDF',['class'=>'btn btn-success']) }}
                 {{ Form::close() }}
             </div>
             <div class="pull-right">
@@ -72,7 +72,7 @@
                     {{ Form::hidden('client',Input::get('client')) }}
                     {{ Form::hidden('project',Input::get('project')) }}
                     {{ Form::hidden('user',Input::get('user')) }}
-                    {{ Form::submit('Сохранить счет',['class'=>'btn btn-info']) }}
+                    {{ Form::submit('Сформирвать счет',['class'=>'btn btn-info']) }}
                 {{ Form::close() }}
                 @else
                 <p class="text-info">Для сохранения счета выберите клиента.</p>
@@ -80,7 +80,7 @@
             </div>
             <div class="clearfix"></div>
             @endif
-                @include(Helper::acclayout('reports.tasks-lists'),compact('tasks'))
+                @include(Helper::acclayout('reports.tasks-lists'),['tasks'=>$tasks,'showTotal'=>TRUE])
             @else
             <p>Список пуст</p>
         @endif

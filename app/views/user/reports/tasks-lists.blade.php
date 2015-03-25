@@ -22,6 +22,7 @@
                 </td>
             </tr>
         @endforeach
+        @if(isset($showTotal) && $showTotal)
         <tr>
             <td>
                 Всего {{ count($tasks) }} {{ Lang::choice('задача|задачи|задач',count($tasks)) }}. <br>
@@ -30,6 +31,7 @@
             </td>
             <td colspan="4"></td>
         </tr>
+        @endif
         </tbody>
     </table>
 </div>

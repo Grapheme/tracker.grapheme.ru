@@ -11,7 +11,7 @@
     <div class="container">
         <div class="row">
             <h2 class="sub-header">Список задач</h2>
-            @include(Helper::acclayout('reports.tasks-lists'),compact('tasks'))
+            @include(Helper::acclayout('reports.tasks-lists'),['tasks'=>$tasks,'showTotal'=>TRUE])
         </div>
     </div>
     @yield('scripts')
