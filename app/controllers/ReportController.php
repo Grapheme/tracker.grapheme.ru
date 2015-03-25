@@ -74,15 +74,13 @@ class ReportController extends \BaseController {
             $projects[$projectOwner->projects->id] = $projectOwner->projects->title;
         endforeach;
         foreach(Team::where('superior_id',Auth::user()->id)->orWhere('cooperator_id',Auth::user()->id)->with('cooperator','superior')->get() as $userTeam):
-            Helper::ta($userTeam);
             if ($userTeam->superior_id != Auth::user()->id):
                 $users[$userTeam->superior_id] = $userTeam->superior->fio;
             endif;
             if ($userTeam->cooperator_id != Auth::user()->id):
-                $users[$userTeam->cooperator_id] = $userTeam->cooperator->title;
+                $users[$userTeam->cooperator_id] = $userTeam->cooperator->fio;
             endif;
         endforeach;
-        Helper::tad(1);
         return View::make(Helper::acclayout('reports.create'),compact('clients','projects','users','tasks','startOfDay','endOfDay'));
     }
 
