@@ -68,7 +68,7 @@
                 {{ Form::hidden('user',Input::get('user')) }}
                 {{ Form::submit('Просмотреть счет',['class'=>'btn btn-success']) }}
             {{ Form::close() }}
-        @if(count($clients) > 1)
+        @if(count($clients) > 1 && Input::has('client') && Input::get('client') > 0)
             {{ Form::open(['route'=>['report.save','pdf','F'],'method'=>'post']) }}
                 {{ Form::hidden('begin_date',Input::has('begin_date') ? Input::get('begin_date') : (new myDateTime())->setDateString($startOfDay)->format('Y-m-d')) }}
                 {{ Form::hidden('end_date',Input::has('end_date') ? Input::get('end_date') : (new myDateTime())->setDateString($endOfDay)->format('Y-m-d')) }}
