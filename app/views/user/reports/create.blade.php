@@ -3,6 +3,7 @@
 @section('content')
     <div class="container marketing">
         <div class="row">
+            <h1 class="page-header">Статистика</h1>
             {{ Form::open(['route'=>'report.create','method'=>'get','role'=>'form','class'=>'form-horizontal']) }}
                 <div class="form-group">
                     <label class="col-sm-3 control-label">От</label>
@@ -14,14 +15,6 @@
                     <label class="col-sm-3 control-label">До</label>
                     <div class="col-sm-3">
                         {{ Form::text('end_date',Input::has('end_date') ? Input::get('end_date') : (new myDateTime())->setDateString($endOfDay)->format('Y-m-d'),['class'=>'form-control']) }}
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-sm-3 control-label"></label>
-                    <div class="col-sm-6">
-                        <p class="text-info">
-                            Выберите один из доступных фильтров. Приоритет верху вниз.
-                        </p>
                     </div>
                 </div>
                 @if(count($clients) > 1)
@@ -58,32 +51,37 @@
     </div>
     <div class="container marketing">
         <div class="row">
-            <h2 class="sub-header">Список задач (от {{ (new myDateTime())->setDateString($startOfDay)->format('d.m.Y') }} до {{ (new myDateTime())->setDateString($endOfDay)->format('d.m.Y') }})</h2>
-        @if(count($tasks))
-            {{ Form::open(['route'=>['report.save','pdf','D'],'method'=>'post']) }}
-                {{ Form::hidden('begin_date',Input::has('begin_date') ? Input::get('begin_date') : (new myDateTime())->setDateString($startOfDay)->format('Y-m-d')) }}
-                {{ Form::hidden('end_date',Input::has('end_date') ? Input::get('end_date') : (new myDateTime())->setDateString($endOfDay)->format('Y-m-d')) }}
-                {{ Form::hidden('client',Input::get('client')) }}
-                {{ Form::hidden('project',Input::get('project')) }}
-                {{ Form::hidden('user',Input::get('user')) }}
-                {{ Form::submit('Просмотреть счет',['class'=>'btn btn-success']) }}
-            {{ Form::close() }}
-        @if(count($clients) > 1)
-            @if(Input::has('client') && Input::get('client') > 0)
-            {{ Form::open(['route'=>['report.save','pdf','F'],'method'=>'post']) }}
-                {{ Form::hidden('begin_date',Input::has('begin_date') ? Input::get('begin_date') : (new myDateTime())->setDateString($startOfDay)->format('Y-m-d')) }}
-                {{ Form::hidden('end_date',Input::has('end_date') ? Input::get('end_date') : (new myDateTime())->setDateString($endOfDay)->format('Y-m-d')) }}
-                {{ Form::hidden('client',Input::get('client')) }}
-                {{ Form::hidden('project',Input::get('project')) }}
-                {{ Form::hidden('user',Input::get('user')) }}
-                {{ Form::submit('Сохранить счет',['class'=>'btn btn-info']) }}
-            {{ Form::close() }}
-            @else
-            <p class="text-info">Для сохранения счета выберите клиента.</p>
+            <h2 class="sub-header">Список задач</h2>
+            <div class="pull-left">
+            @if(count($tasks))
+                {{ Form::open(['route'=>['report.save','default','pdf','D'],'method'=>'post']) }}
+                    {{ Form::hidden('begin_date',Input::has('begin_date') ? Input::get('begin_date') : (new myDateTime())->setDateString($startOfDay)->format('Y-m-d')) }}
+                    {{ Form::hidden('end_date',Input::has('end_date') ? Input::get('end_date') : (new myDateTime())->setDateString($endOfDay)->format('Y-m-d')) }}
+                    {{ Form::hidden('client',Input::get('client')) }}
+                    {{ Form::hidden('project',Input::get('project')) }}
+                    {{ Form::hidden('user',Input::get('user')) }}
+                    {{ Form::submit('Экспортировать отчет в PDF',['class'=>'btn btn-success']) }}
+                {{ Form::close() }}
+            </div>
+            <div class="pull-right">
+            @if(count($clients) > 1)
+                @if(Input::has('client') && Input::get('client') > 0)
+                {{ Form::open(['route'=>['report.save','invoice','pdf','F'],'method'=>'post']) }}
+                    {{ Form::hidden('begin_date',Input::has('begin_date') ? Input::get('begin_date') : (new myDateTime())->setDateString($startOfDay)->format('Y-m-d')) }}
+                    {{ Form::hidden('end_date',Input::has('end_date') ? Input::get('end_date') : (new myDateTime())->setDateString($endOfDay)->format('Y-m-d')) }}
+                    {{ Form::hidden('client',Input::get('client')) }}
+                    {{ Form::hidden('project',Input::get('project')) }}
+                    {{ Form::hidden('user',Input::get('user')) }}
+                    {{ Form::submit('Сохранить счет',['class'=>'btn btn-info']) }}
+                {{ Form::close() }}
+                @else
+                <p class="text-info">Для сохранения счета выберите клиента.</p>
+                @endif
+            </div>
+            <div class="clearfix"></div>
             @endif
-        @endif
-            @include(Helper::acclayout('assets.invoice'),compact('tasks'))
-        @else
+                @include(Helper::acclayout('reports.tasks-lists'),compact('tasks'))
+            @else
             <p>Список пуст</p>
         @endif
         </div>

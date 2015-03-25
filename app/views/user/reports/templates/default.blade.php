@@ -10,8 +10,8 @@
 <body>
     <div class="container">
         <div class="row">
-            <h2 class="sub-header">Список задач (от {{ (new myDateTime())->setDateString($startOfDay)->format('d.m.Y') }} до {{ (new myDateTime())->setDateString($endOfDay)->format('d.m.Y') }})</h2>
-            @include(Helper::acclayout('assets.invoice'),compact('tasks'))
+            <h2 class="sub-header">Список задач</h2>
+            @include(Helper::acclayout('reports.tasks-lists'),compact('tasks'))
         </div>
     </div>
     @yield('scripts')

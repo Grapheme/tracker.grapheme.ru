@@ -13,7 +13,7 @@
     </li>
     @if(Clients::where('superior_id',Auth::user()->id)->exists())
     <li {{ Helper::isRoute('reports.list') }}>
-        <a href="{{ URL::route('reports.list') }}">Мои отчеты</a>
+        <a href="{{ URL::route('reports.list') }}">Мои счета</a>
     </li>
     @endif
 </ul>
@@ -31,6 +31,6 @@
         <a href="{{ URL::route('timesheets.create',['date'=>date('Y-m-d'),'now'=>1]) }}">Добавить текущую задачу</a>
     </li>
     <li {{ Helper::isRoute('report.create') }}>
-        <a href="{{ URL::route('report.create') }}">Создать отчет</a>
+        <a href="{{ URL::route('report.create') }}">Статистика</a>
     </li>
 </ul>

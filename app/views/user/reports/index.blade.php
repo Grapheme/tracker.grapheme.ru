@@ -22,15 +22,22 @@
                         <?php $reportsInKvartalCount++;?>
                         <tr>
                             <td>
-                                {{ $report['title'] }}
+                                <a href="{{ URL::route('report.show',$report['id']) }}" target="_blank">{{ $report['title'] }}</a>
                             </td>
                             <td>
                                 {{ (new myDateTime())->setDateString($report['date'])->format('d.m.Y') }}
                             </td>
                             <td>
+                                {{ Form::open(['route'=>['report.update'],'method'=>'put']) }}
+                                    {{ Form::hidden('report_id',$report['id']) }}
+                                    {{ Form::select('status',['Не отправлен','Отпавлен но не оплачен','Оплачен'],$report['status']) }}
+                                    {{ Form::submit('Сохранить',['class'=>'btn btn-default']) }}
+                                {{ Form::close() }}
+                            </td>
+                            <td>
                                 {{ Form::open(['route'=>['report.download'],'method'=>'post']) }}
                                     {{ Form::hidden('report_id',$report['id']) }}
-                                    {{ Form::submit('Скачать',['class'=>'btn btn-link']) }}
+                                    {{ Form::submit('Скачать в PDF',['class'=>'btn btn-link']) }}
                                 {{ Form::close() }}
                             </td>
                             <td>

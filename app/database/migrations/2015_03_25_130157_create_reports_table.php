@@ -14,6 +14,7 @@ class CreateReportsTable extends Migration {
             $table->integer('project_id')->nullable()->default(0)->unsigned();
             $table->string('title',255)->nullable();
             $table->string('path',255)->nullable();
+            $table->boolean('status')->nullable()->default(0)->unsigned();
 			$table->timestamps();
 		});
 	}

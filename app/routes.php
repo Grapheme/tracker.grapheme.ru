@@ -24,7 +24,9 @@ if (Auth::check()):
 
         Route::get('reports',array('as'=>'reports.list','uses'=>'ReportController@index'));
         Route::get('report',array('as'=>'report.create','uses'=>'ReportController@create'));
-        Route::post('report/save/{format}/{action}',array('as'=>'report.save','uses'=>'ReportController@save'));
+        Route::put('report/update',array('as'=>'report.update','uses'=>'ReportController@update'));
+        Route::get('reports/{report_id}/show',array('as'=>'report.show','uses'=>'ReportController@show'));
+        Route::post('report/{type}/save/{format}/{action}',array('as'=>'report.save','uses'=>'ReportController@save'));
         Route::delete('report/delete',array('as'=>'report.delete','uses'=>'ReportController@delete'));
         Route::post('report/download',array('before'=>'csrf', 'as'=>'report.download','uses'=>'ReportController@download'));
     });
