@@ -14,4 +14,14 @@ class ProjectOwners extends \BaseModel {
 
         return $this->belongsTo('Project','project_id','id');
     }
+
+    public function archived_projects(){
+
+        return $this->belongsTo('Project','project_id','id')->where('in_archive',1);
+    }
+
+    public function all_projects(){
+
+        return $this->belongsTo('Project','project_id','id');
+    }
 }

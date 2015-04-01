@@ -35,6 +35,15 @@
                 </div>
             </div>
             <div class="form-group">
+                <label class="col-sm-3 control-label"></label>
+                <div class="col-sm-6">
+                    <div class="form-inline">
+                        {{ Form::checkbox('favorite',TRUE) }} Добавить в избранные
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div class="form-group">
                 <label class="col-sm-3 control-label">Доступ</label>
                 <div class="col-sm-6">
                     {{ Form::select('visible',['Доступен всем','Ограниченный доступ'], Input::old('visible'),['class'=>'form-control']) }}

@@ -8,10 +8,16 @@ class ProjectsController extends \BaseController {
 
 	public function index(){
 
-		#$projects['my'] = Project::where('superior_id',Auth::user()->id)->orderBy('updated_at','DESC')->with('client','team','tasks')->get();
 		$projects['my'] = ProjectOwners::where('user_id',Auth::user()->id)->orderBy('updated_at','DESC')->with('projects','projects.client','projects.team','projects.tasks')->get();
 		$projects['subscribe'] = ProjectTeam::where('user_id',Auth::user()->id)->with('projects','projects.client','projects.team','projects.tasks')->get();
-        return View::make(Helper::acclayout('projects.list'),compact('projects'));
+        return View::make(Helper::acclayout('projects.list'),compact('projects'))->with('archive',0);
+	}
+
+    public function archive(){
+
+		$projects['my'] = ProjectOwners::where('user_id',Auth::user()->id)->orderBy('updated_at','DESC')->with('projects','projects.client','projects.team','projects.tasks')->get();
+		$projects['subscribe'] = ProjectTeam::where('user_id',Auth::user()->id)->with('projects','projects.client','projects.team','projects.tasks')->get();
+        return View::make(Helper::acclayout('projects.list'),compact('projects'))->with('archive',1);
 	}
 
 	public function create(){
@@ -38,7 +44,10 @@ class ProjectsController extends \BaseController {
 		if($validator->passes()):
 			if($project = Project::create(Input::except('_token','superior_hour_price','team','invite_team'))):
 				ProjectOwners::create(['project_id'=>$project->id,'user_id'=>Auth::user()->id,'hour_price'=>Input::get('superior_hour_price')]);
-				if (Input::has('team')):
+                if (Input::has('favorite')):
+                    Project::where('id',$project->id)->first()->favorites_projects()->sync([Auth::user()->id]);
+                endif;
+                if (Input::has('team')):
                     self::addTeam($project->id);
 				endif;
                 if (Input::has('invite_team')):
@@ -103,8 +112,16 @@ class ProjectsController extends \BaseController {
             if (ProjectOwners::where('project_id',$id)->where('user_id',Auth::user()->id)->exists() === FALSE):
                 return Redirect::route('projects.show',$id)->with('message','Проект редактировать запрещено.');
             endif;
-			Project::where('id',$id)->update(Input::except('_method','_token','superior_hour_price','team','invite_team'));
-			ProjectOwners::where('project_id',$id)->where('user_id',Auth::user()->id)->update(['hour_price'=>Input::get('hour_price')]);
+			Project::where('id',$id)->update(Input::except('_method','_token','superior_hour_price','team','invite_team','favorite'));
+            if (!Input::has('in_archive')):
+                Project::where('id',$id)->update(['in_archive'=>0]);
+            endif;
+            ProjectOwners::where('project_id',$id)->where('user_id',Auth::user()->id)->update(['hour_price'=>Input::get('hour_price')]);
+            if (Input::has('favorite')):
+                Project::where('id',$id)->first()->favorites_projects()->sync([Auth::user()->id]);
+            else:
+                Project::where('id',$id)->first()->favorites_projects()->detach([Auth::user()->id]);
+            endif;
             if (Input::has('team')):
                 self::addTeam($id);
             endif;

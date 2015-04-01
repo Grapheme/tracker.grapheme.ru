@@ -14,6 +14,7 @@ class CreateProjectsTable extends Migration {
 			$table->string('description',255)->nullable();
             $table->integer('budget')->nullable()->default(0)->unsigned();
             $table->boolean('visible')->nullable()->default(0)->unsigned();
+            $table->boolean('in_archive')->nullable()->default(0)->unsigned();
 			$table->timestamps();
 		});
 	}

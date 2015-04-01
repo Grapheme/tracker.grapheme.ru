@@ -45,6 +45,7 @@ if (Auth::check()):
                     )
                 )
             );
+            Route::get('projects/archive',array('as'=>'projects.archive','uses'=>'ProjectsController@archive'));
             Route::resource('projects', 'ProjectsController',
                 array(
                     'names' => array(

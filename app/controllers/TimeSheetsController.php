@@ -34,11 +34,13 @@ class TimeSheetsController extends \BaseController {
             return Redirect::route('timesheets.create',['date'=>date("Y-m-d")]);
         endif;
 		$projects[0] = 'Без проекта';
-        foreach(Project::where('superior_id',Auth::user()->id)->orderBy('title')->lists('title','id') as $project_id => $project_title):
+        foreach(Project::where('superior_id',Auth::user()->id)->where('in_archive',0)->orderBy('title')->lists('title','id') as $project_id => $project_title):
             $projects[$project_id] = $project_title;
         endforeach;
         foreach(ProjectTeam::where('user_id',Auth::user()->id)->groupBy('project_id')->with('project')->get() as $project_team):
-            $projects[$project_team->project->id] = $project_team->project->title;
+            if ($project_team->project->in_archive == 0):
+                $projects[$project_team->project->id] = $project_team->project->title;
+            endif;
         endforeach;
 		return View::make(Helper::acclayout('timesheets.create'),compact('projects'));
 	}

@@ -43,9 +43,26 @@
                     {{ Form::select('visible',['Доступен всем','Ограниченный доступ'], Input::old('visible'),['class'=>'form-control']) }}
                 </div>
             </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label"></label>
+                <div class="col-sm-6">
+                    <div class="form-inline">
+                        {{ Form::checkbox('favorite',TRUE,ProjectFavorite::where('project_id',$project->id)->where('user_id',Auth::user()->id)->exists()) }} В избранном
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label"></label>
+                <div class="col-sm-6">
+                    <div class="form-inline">
+                        {{ Form::checkbox('in_archive',TRUE) }} В архиве
+                    </div>
+                </div>
+            </div>
+            <hr>
             @if(count($project_team))
             <div class="form-group">
-                <label for="commands" class="col-sm-3 control-label">Комманда </label>
+                <label for="commands" class="col-sm-3 control-label">Комманда</label>
                 <div class="col-sm-6">
                 @foreach($project_team as $user_id => $user_fio)
                     <?php

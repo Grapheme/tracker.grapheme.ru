@@ -3,9 +3,15 @@
 
 @section('content')
     <h1 class="page-header">Список проектов</h1>
+    @if($archive)
+    <a href="{{ URL::route('projects.index') }}" class="btn btn-link">Активные</a>
+    @else
+    <a href="{{ URL::route('projects.archive') }}" class="btn btn-link">Архивные</a>
+    @endif
     @if(count($projects['my']))
     <div class="row placeholders">
-        @foreach($projects['my'] as $project)
+    @foreach($projects['my'] as $project)
+        @if($project->projects->in_archive == $archive)
         <div class="col-xs-6 col-sm-3 placeholder">
             <a href="{{ URL::route('projects.show',$project->projects->id) }}" class="">
                 <img data-src="holder.js/200x200/auto/sky" class="img-responsive" alt="Generic placeholder thumbnail">
@@ -28,12 +34,14 @@
             <span class="text-muted">{{ $project->projects->tasks->count() }} {{ Lang::choice('задача|задачи|задач',$project->projects->tasks->count()) }}</span>
             @endif
         </div>
+        @endif
         @endforeach
     </div>
     @endif
     @if(count($projects['subscribe']))
     <div class="row placeholders">
         @foreach($projects['subscribe'] as $project)
+        @if($project->projects->in_archive == $archive)
         <div class="col-xs-6 col-sm-3 placeholder">
             <a href="{{ URL::route('projects.show',$project->projects->id) }}" class="">
                 <img data-src="holder.js/200x200/auto/sky" class="img-responsive" alt="Generic placeholder thumbnail">
@@ -52,6 +60,7 @@
             <span class="text-muted">{{ $project->projects->tasks->count() }} {{ Lang::choice('задача|задачи|задач',$project->projects->tasks->count()) }}</span>
             @endif
         </div>
+        @endif
         @endforeach
     </div>
     @endif

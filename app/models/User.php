@@ -49,4 +49,9 @@ class User extends BaseModel implements UserInterface, RemindableInterface {
 
 		return $this->belongsToMany('Project','projects_team','user_id','project_id');
 	}
+
+    public function favorites_projects(){
+
+        return $this->belongsToMany('Project','projects_favorites','user_id','project_id');
+    }
 }

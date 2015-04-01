@@ -36,4 +36,9 @@ class Project extends \BaseModel {
 
 		return $this->hasMany('BasecampImportProject','project_id');
 	}
+
+    public function favorites_projects(){
+
+        return $this->belongsToMany('Project','projects_favorites','project_id','user_id');
+    }
 }

@@ -12,6 +12,9 @@
     @else
         @if(!empty($project->client))<h5>{{ !empty($project->client->short_title) ? $project->client->short_title : $project->client->title }}</h5>@endif
     @endif
+    @if($project->in_archive)
+        <p class="text-info">В архиве</p>
+    @endif
     @if($access)
         <a role="button" href="{{ URL::route('projects.edit',$project->id) }}" class="btn btn-primary btn-sm">Редактировать</a>
         @if($project->superior_id == Auth::user()->id)

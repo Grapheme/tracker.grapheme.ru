@@ -1,9 +1,26 @@
+<?php
+    $activeProjectCount = $archivedProjectCount = 0;
+    foreach(ProjectOwners::where('user_id',Auth::user()->id)->with('projects')->get() as $project):
+        if ($project->projects->in_archive):
+            $archivedProjectCount++;
+        else:
+            $activeProjectCount++;
+        endif;
+    endforeach;
+    foreach(ProjectTeam::where('user_id',Auth::user()->id)->with('projects')->get() as $project):
+        if ($project->projects->in_archive):
+            $archivedProjectCount++;
+        else:
+            $activeProjectCount++;
+        endif;
+    endforeach;
+?>
 <ul class="nav nav-sidebar">
     <li {{ Helper::isRoute('clients.index') }}>
         <a href="{{ URL::route('clients.index') }}">Клиенты <span class="badge">{{ Clients::where('superior_id',Auth::user()->id)->count() }}</span></a>
     </li>
     <li {{ Helper::isRoute('projects.index') }}>
-        <a href="{{ URL::route('projects.index') }}">Проекты <span class="badge">{{ ProjectOwners::where('user_id',Auth::user()->id)->count()+ProjectTeam::where('user_id',Auth::user()->id)->count() }}</span></a>
+        <a href="{{ URL::route('projects.index') }}">Проекты <span class="badge">{{ $activeProjectCount.'/'.$archivedProjectCount }}</span></a>
     </li>
     <li {{ Helper::isRoute('cooperators.index') }}>
         <a href="{{ URL::route('cooperators.index') }}">Комманда <span class="badge">{{ count(Team::where('superior_id',Auth::user()->id)->orWhere('cooperator_id',Auth::user()->id)->groupBy('superior_id')->groupBy('cooperator_id')->get()) }}</span></a>

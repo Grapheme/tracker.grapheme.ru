@@ -21,7 +21,6 @@ $params['year']['end_date'] = (new \Carbon\Carbon())->endOfYear()->format('Y-m-d
 $params['last_year']['begin_date'] = (new \Carbon\Carbon())->subYear()->startOfYear()->format('Y-m-d');
 $params['last_year']['end_date'] = (new \Carbon\Carbon())->subYear()->endOfYear()->format('Y-m-d');
 
-$params['all'] = [];
 if (isset($extended) && !empty($extended)):
     foreach($extended as $index => $value):
         $params['today'][$index] = $value;
@@ -31,7 +30,6 @@ if (isset($extended) && !empty($extended)):
         $params['last_month'][$index] = $value;
         $params['year'][$index] = $value;
         $params['last_year'][$index] = $value;
-        $params['all'][$index] = $value;
     endforeach;
 endif;
 
@@ -44,5 +42,4 @@ endif;
     <li><a href="{{ URL::route('report.create',$params['last_month']) }}">За прошлый месяц</a></li>
     <li><a href="{{ URL::route('report.create',$params['year']) }}">За год</a></li>
     <li><a href="{{ URL::route('report.create',$params['last_year']) }}">За прошлый год</a></li>
-    <li><a href="{{ URL::route('report.create',$params['all']) }}">За все время</a></li>
 </ul>

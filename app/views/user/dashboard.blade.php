@@ -7,9 +7,8 @@
     if (ProjectTask::where('user_id',Auth::user()->id)->where('start_status',1)->where('stop_status',0)->exists()):
         $tasks[] = ProjectTask::where('user_id',Auth::user()->id)->where('start_status',1)->where('stop_status',0)->with('cooperator','project')->first();
     endif;
-    $projects = ProjectOwners::where('user_id',Auth::user()->id)->orderBy('updated_at','DESC')->with('projects','projects.client','projects.team','projects.tasks')->limit(4)->get();
-    if(count($projects)):
-        $projectsIDs = ProjectOwners::where('user_id',Auth::user()->id)->lists('project_id');
+    $projects = ProjectFavorite::where('user_id',Auth::user()->id)->with('project','project.client','project.team','project.tasks')->get();
+    if($projectsIDs = ProjectOwners::where('user_id',Auth::user()->id)->lists('project_id')):
         foreach(ProjectTask::whereIn('project_id',$projectsIDs)->where('start_status',1)->where('stop_status',0)->with('cooperator','project')->get() as $task):
             $tasks[] = $task;
         endforeach;
@@ -29,22 +28,23 @@
 <div class="row placeholders">
     @foreach($projects as $project)
         <div class="col-xs-6 col-sm-3 placeholder">
-            <a href="{{ URL::route('projects.show',$project->projects->id) }}" class="">
+            <a href="{{ URL::route('projects.show',$project->project->id) }}" class="">
                 <img data-src="holder.js/200x200/auto/sky" class="img-responsive" alt="Generic placeholder thumbnail">
             </a>
-            <a href="{{ URL::route('projects.show',$project->projects->id) }}" class=""><h4>{{ $project->projects->title }}</h4></a>
-            <span class="text-muted">{{ $project->projects->description }}</span>
-            @if(count($project->projects->team))
-                <br><span class="text-muted">{{ $project->projects->team->count() }} {{ Lang::choice('участник|участника|участников',$project->projects->team->count()) }}</span>
+            {{ $project->project->in_archive? '<p>В архиве</p>' : '' }}
+            <a href="{{ URL::route('projects.show',$project->project->id) }}" class=""><h4>{{ $project->project->title }}</h4></a>
+            <span class="text-muted">{{ $project->project->description }}</span>
+            @if(count($project->project->team))
+                <br><span class="text-muted">{{ $project->project->team->count() }} {{ Lang::choice('участник|участника|участников',$project->project->team->count()) }}</span>
             @endif
-            @if(count($project->projects->tasks))
-                <br><span class="text-muted">{{ $project->projects->tasks->count() }} {{ Lang::choice('задача|задачи|задач',$project->projects->tasks->count()) }}</span>
+            @if(count($project->project->tasks))
+                <br><span class="text-muted">{{ $project->project->tasks->count() }} {{ Lang::choice('задача|задачи|задач',$project->project->tasks->count()) }}</span>
             @endif
         </div>
     @endforeach
 </div>
 @else
-    <p>В не являететсь админитратором проектов</p>
+    <p>Добавьте проекты в список избранных</p>
 @endif
 @if(count($tasks))
 <h2 class="sub-header">Список активных задач</h2>
@@ -112,7 +112,7 @@
     </table>
 </div>
 @else
-    <p>Сейчас никто не выполняет задачи</p>
+    <p>Нет выполняемых задач</p>
 @endif
 @stop
 @section('scripts')
