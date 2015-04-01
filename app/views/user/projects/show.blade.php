@@ -23,6 +23,14 @@
         {{ Form::close() }}
         @endif
     @endif
+        {{ Form::open(array('route'=>array('projects.favorite',$project->id),'style'=>'display:inline-block','method'=>'PUT')) }}
+            {{ Form::hidden('favorite',$inFavorite) }}
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button type="submit" class="btn btn-success">{{ $inFavorite ? 'Убрать из избранных' : 'Добавить в избранные' }}</button>
+                </div>
+            </div>
+        {{ Form::close() }}
     </div>
     @if($project->team->count())
     <div class="container marketing">

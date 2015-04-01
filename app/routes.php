@@ -46,6 +46,7 @@ if (Auth::check()):
                 )
             );
             Route::get('projects/archive',array('as'=>'projects.archive','uses'=>'ProjectsController@archive'));
+            Route::put('projects/{project_id}/favorite',array('as'=>'projects.favorite','uses'=>'ProjectsController@favorite'));
             Route::resource('projects', 'ProjectsController',
                 array(
                     'names' => array(

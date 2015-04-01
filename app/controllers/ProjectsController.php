@@ -64,14 +64,15 @@ class ProjectsController extends \BaseController {
 
 	public function show($id){
 
+        $inFavorite = ProjectFavorite::where('project_id',$id)->where('user_id',Auth::user()->id)->count();
 		if(ProjectOwners::where('project_id',$id)->where('user_id',Auth::user()->id)->exists()):
             $project = ProjectOwners::where('project_id',$id)->where('user_id',Auth::user()->id)->first()->project()->with('superior','client','team')->first();
 			$tasks = ProjectTask::where('project_id',$project->id)->with('cooperator','basecamp_task')->get();
-            return View::make(Helper::acclayout('projects.show'),compact('project','tasks'))->with('access',TRUE);
+            return View::make(Helper::acclayout('projects.show'),compact('project','tasks','inFavorite'))->with('access',TRUE);
 		elseif(ProjectTeam::where('project_id',$id)->where('user_id',Auth::user()->id)->exists()):
             $project = ProjectTeam::where('project_id',$id)->where('user_id',Auth::user()->id)->first()->project()->with('superior','client','team')->first();
             $tasks = ProjectTask::where('project_id',$project->id)->with('cooperator','basecamp_task')->get();
-			return View::make(Helper::acclayout('projects.show'),compact('project','tasks'))->with('access',FALSE);
+			return View::make(Helper::acclayout('projects.show'),compact('project','tasks','inFavorite'))->with('access',FALSE);
 		else:
 			App::abort(404);
 		endif;
@@ -132,6 +133,26 @@ class ProjectsController extends \BaseController {
 		else:
 			return Redirect::back()->withErrors($validator)->withInput(Input::all());
 		endif;
+	}
+
+    public function favorite($project_id){
+
+        if(ProjectOwners::where('project_id',$project_id)->where('user_id',Auth::user()->id)->exists() === FALSE &&
+            ProjectTeam::where('project_id',$project_id)->where('user_id',Auth::user()->id)->exists() === FALSE):
+            Helper::tad(2222);
+            return Redirect::back()->with('messages','Ошибка доступа.');
+        else:
+            if (Input::has('favorite')):
+                if (Input::get('favorite') == 0):
+                    Project::where('id',$project_id)->first()->favorites_projects()->sync([Auth::user()->id]);
+                    return Redirect::back()->with('messages','Проект добавлен в избранные');
+                else:
+                    Project::where('id',$project_id)->first()->favorites_projects()->detach([Auth::user()->id]);
+                    return Redirect::back()->with('messages','Проект удален из избранных');
+                endif;
+            endif;
+        endif;
+        return Redirect::back();
 	}
 
 	public function destroy($id){
