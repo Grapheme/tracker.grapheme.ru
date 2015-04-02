@@ -10,11 +10,15 @@
     @endif
     @if(count($projects['my']))
     <div class="row placeholders">
-    @foreach($projects['my'] as $project)
+    @foreach($projects['my'] as $index => $project)
         @if($project->projects->in_archive == $archive)
         <div class="col-xs-6 col-sm-3 placeholder">
             <a href="{{ URL::route('projects.show',$project->projects->id) }}" class="">
-                <img data-src="holder.js/200x200/auto/sky" class="img-responsive" alt="Generic placeholder thumbnail">
+                @if(File::exists(public_path('uploads/cats/cat-'.($index+1).'.jpg')))
+                    <img src="{{ asset('uploads/cats/cat-'.($index+1).'.jpg') }}" class="img-responsive" alt="{{ $project->projects->title }}">
+                @else
+                <img data-src="holder.js/200x200/auto/sky" class="img-responsive" alt="{{ $project->projects->title }}">
+                @endif
             </a>
             <a href="{{ URL::route('projects.show',$project->projects->id) }}" class=""><h4>{{ $project->projects->title }}</h4></a>
             @if(!empty($project->projects->description))
@@ -44,7 +48,11 @@
         @if($project->projects->in_archive == $archive)
         <div class="col-xs-6 col-sm-3 placeholder">
             <a href="{{ URL::route('projects.show',$project->projects->id) }}" class="">
-                <img data-src="holder.js/200x200/auto/sky" class="img-responsive" alt="Generic placeholder thumbnail">
+            @if(File::exists(public_path('uploads/cats/cat-'.(rand(0,14)+1).'.jpg')))
+                <img src="{{ asset('uploads/cats/cat-'.(rand(0,14)+1).'.jpg') }}" class="img-responsive" alt="{{ $project->projects->title }}">
+            @else
+                <img data-src="holder.js/200x200/auto/sky" class="img-responsive" alt="{{ $project->projects->title }}">
+            @endif
             </a>
             <a href="{{ URL::route('projects.show',$project->projects->id) }}" class=""><h4>{{ $project->projects->title }}</h4></a>
             @if(!empty($project->projects->description))

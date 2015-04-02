@@ -139,7 +139,6 @@ class ProjectsController extends \BaseController {
 
         if(ProjectOwners::where('project_id',$project_id)->where('user_id',Auth::user()->id)->exists() === FALSE &&
             ProjectTeam::where('project_id',$project_id)->where('user_id',Auth::user()->id)->exists() === FALSE):
-            Helper::tad(2222);
             return Redirect::back()->with('messages','Ошибка доступа.');
         else:
             if (Input::has('favorite')):

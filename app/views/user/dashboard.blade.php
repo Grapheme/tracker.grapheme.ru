@@ -29,7 +29,11 @@
     @foreach($projects as $project)
         <div class="col-xs-6 col-sm-3 placeholder">
             <a href="{{ URL::route('projects.show',$project->project->id) }}" class="">
-                <img data-src="holder.js/200x200/auto/sky" class="img-responsive" alt="Generic placeholder thumbnail">
+            @if(File::exists(public_path('uploads/cats/cat-'.(rand(0,14)+1).'.jpg')))
+                <img src="{{ asset('uploads/cats/cat-'.(rand(0,14)+1).'.jpg') }}" class="img-responsive" alt="{{ $project->projects->title }}">
+            @else
+                <img data-src="holder.js/200x200/auto/sky" class="img-responsive" alt="{{ $project->projects->title }}">
+            @endif
             </a>
             {{ $project->project->in_archive? '<p>В архиве</p>' : '' }}
             <a href="{{ URL::route('projects.show',$project->project->id) }}" class=""><h4>{{ $project->project->title }}</h4></a>

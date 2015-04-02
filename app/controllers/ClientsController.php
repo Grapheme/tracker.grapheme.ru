@@ -18,10 +18,15 @@ class ClientsController extends \BaseController {
 	}
 
 	public function store(){
+
         $validator = Validator::make(Input::all(),Clients::$rules);
         if($validator->passes()):
             if($client = Clients::create(Input::all())):
-                return Redirect::route('clients.show',$client->id)->with('message','Клиент добавлен успешно.');
+                if (Auth::user()->clients()->count() == 1):
+                    return Redirect::route('clients.show',$client->id)->with('message','Клиент добавлен успешно. Для выставления счета заполните реквизиты в Вашем '.HTML::link(URL::route('profile'),'профиле.'));
+                else:
+                    return Redirect::route('clients.show',$client->id)->with('message','Клиент добавлен успешно.');
+                endif;
             else:
                 return Redirect::back()->with('message','Возникла ошибка при записи в БД');
             endif;

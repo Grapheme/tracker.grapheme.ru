@@ -21,6 +21,7 @@ if (Auth::check()):
         Route::get('settings',array('as'=>'settings','uses'=>'AccountController@settings'));
         Route::get('profile',array('as'=>'profile','uses'=>'AccountController@profile'));
         Route::put('profile',array('before'=>'csrf','as'=>'profile.update','uses'=>'AccountController@profileUpdate'));
+        Route::put('profile/requisites',array('before'=>'csrf','as'=>'profile.requisites','uses'=>'AccountController@profileRequisitesUpdate'));
 
         Route::get('reports',array('as'=>'reports.list','uses'=>'ReportController@index'));
         Route::get('report',array('as'=>'report.create','uses'=>'ReportController@create'));

@@ -11,5 +11,4 @@ class Clients extends \BaseModel {
 
         return $this->hasMany('Project','client_id');
     }
-
 }

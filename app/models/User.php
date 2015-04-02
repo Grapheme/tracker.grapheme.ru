@@ -40,6 +40,11 @@ class User extends BaseModel implements UserInterface, RemindableInterface {
 		return $this->belongsToMany('Project','projects_team','project_id','user_id');
 	}
 
+    public function clients(){
+
+        return $this->hasMany('Clients','superior_id');
+    }
+
 	public function tasks(){
 
 		return $this->hasMany('ProjectTask','user_id');
@@ -53,5 +58,15 @@ class User extends BaseModel implements UserInterface, RemindableInterface {
     public function favorites_projects(){
 
         return $this->belongsToMany('Project','projects_favorites','user_id','project_id');
+    }
+
+    public function requisites(){
+
+        return $this->hasMany('UserRequisites', 'superior_id');
+    }
+
+    public function getRequisites(){
+
+        return $this->hasOne('UserRequisites','superior_id');
     }
 }

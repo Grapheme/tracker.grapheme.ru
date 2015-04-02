@@ -14,4 +14,13 @@ return array(
 
     'public_invoice_dir' => public_path('uploads/documents/invoice'),
     'invoice_dir' => 'uploads/documents/invoice',
+
+    'uploads_full_path' => public_path('uploads/other'),
+    'uploads_path' => 'uploads/other',
+
+    'images_full_path' => public_path('uploads/images'),
+    'images_thumbs_full_path' => public_path('uploads/images/thumbs'),
+
+    'images_path' => 'uploads/images',
+    'images_thumbs_path' => 'uploads/images/thumbs'
 );
