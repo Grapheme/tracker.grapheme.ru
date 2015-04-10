@@ -53,7 +53,7 @@
         <div class="row">
             <h2 class="sub-header">Список задач</h2>
             <div class="pull-left">
-            @if(count($tasks))
+        @if(count($tasks))
                 {{ Form::open(['route'=>['report.save','default','pdf','D'],'method'=>'post']) }}
                     {{ Form::hidden('begin_date',Input::has('begin_date') ? Input::get('begin_date') : (new myDateTime())->setDateString($startOfDay)->format('Y-m-d')) }}
                     {{ Form::hidden('end_date',Input::has('end_date') ? Input::get('end_date') : (new myDateTime())->setDateString($endOfDay)->format('Y-m-d')) }}
@@ -77,11 +77,11 @@
                 @else
                 <p class="text-info">Для сохранения счета выберите клиента.</p>
                 @endif
+            @endif
             </div>
             <div class="clearfix"></div>
-            @endif
-                @include(Helper::acclayout('reports.tasks-lists'),['tasks'=>$tasks,'showTotal'=>TRUE])
-            @else
+            @include(Helper::acclayout('reports.tasks-lists'),['tasks'=>$tasks,'showTotal'=>TRUE])
+        @else
             <p>Список пуст</p>
         @endif
         </div>
