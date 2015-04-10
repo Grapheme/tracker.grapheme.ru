@@ -18,6 +18,14 @@
                     <br>{{ getInitials($task->cooperator->fio) }}
                 </td>
                 <td>
+                @if(isset($task->project) && !empty($task->project))
+                    {{ $task->project->title }}
+                @endif
+                @if(isset($task->project->client) && !empty($task->project->client))
+                    ({{ !empty($task->project->client->short_title) ? $task->project->client->short_title : $task->project->client->title }})
+                @endif
+                </td>
+                <td>
                     {{ culcLeadTime($task) }} / {{ isset($earnMoneyCurrentDate[$task->id]['earnings']) ? number_format($earnMoneyCurrentDate[$task->id]['earnings'],2,'.',' ').' руб.' : '' }}
                 </td>
             </tr>

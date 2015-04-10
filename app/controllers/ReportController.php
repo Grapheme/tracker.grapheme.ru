@@ -71,9 +71,10 @@ class ReportController extends \BaseController {
         $startOfDay = Input::has('begin_date') && Input::has('begin_date') != '' ? \Carbon\Carbon::createFromFormat('Y-m-d',Input::get('begin_date'))->format('Y-m-d 00:00:00') : \Carbon\Carbon::now()->startOfWeek()->format('Y-m-d 00:00:00');
         $endOfDay = Input::has('end_date') && Input::has('end_date') != '' ? \Carbon\Carbon::createFromFormat('Y-m-d',Input::get('end_date'))->format('Y-m-d 00:00:00') : \Carbon\Carbon::now()->format('Y-m-d 00:00:00');
         $tasks = self::getReportTasks($startOfDay,$endOfDay);
-        $clients[0] = 'Без клиента';
-        $projects[0] = 'Без проекта';
-        $users[0] = 'Без сотрудника';
+        $clients[0] = 'Выберите клиента';
+        $projects[0] = 'Выберите проект';
+        $users[0] = 'Выберите сотрудника';
+        $users[Auth::user()->id] = Auth::user()->fio;
         foreach(Clients::where('superior_id',Auth::user()->id)->get() as $client):
             $clients[$client->id] = !empty($client->short_title) ? $client->short_title : $client->title ;
         endforeach;
@@ -188,13 +189,15 @@ class ReportController extends \BaseController {
     /*********************************************************************************************/
     private function getReportTasks($startOfDay,$endOfDay){
 
-        $taskIDs = ProjectTask::where('user_id',Auth::user()->id)->where('stop_status',1)->whereBetween('set_date',[$startOfDay,$endOfDay])->with('project','project.client')->lists('id');
+        $taskIDs = array(); $onlyMy = TRUE;
         if(Input::has('client') && Input::get('client') > 0):
+            $onlyMy = FALSE;
             if($ProjectIDs = Clients::where('id',Input::get('client'))->first()->projects()->lists('id')):
                 $taskIDs = ProjectTask::whereIn('project_id',$ProjectIDs)->where('stop_status',1)->whereBetween('set_date',[$startOfDay,$endOfDay])->with('project','project.client')->lists('id');
             endif;
         endif;
         if (Input::has('project') && Input::get('project') > 0):
+            $onlyMy = FALSE;
             if(ProjectOwners::where('project_id',Input::get('project'))->where('user_id',Auth::user()->id)->exists()):
                 if (!empty($taskIDs)):
                     $taskIDs = ProjectTask::whereIn('id',$taskIDs)->where('project_id',Input::get('project'))->where('stop_status',1)->whereBetween('set_date',[$startOfDay,$endOfDay])->with('project','project.client')->lists('id');
@@ -204,6 +207,7 @@ class ReportController extends \BaseController {
             endif;
         endif;
         if(Input::has('user') && Input::get('user') > 0):
+            $onlyMy = FALSE;
             if (Input::get('user') == Auth::user()->id):
                 if (!empty($taskIDs)):
                     $taskIDs = ProjectTask::whereIn('id',$taskIDs)->where('user_id',Auth::user()->id)->where('stop_status',1)->whereBetween('set_date',[$startOfDay,$endOfDay])->with('project','project.client')->lists('id');
@@ -223,6 +227,9 @@ class ReportController extends \BaseController {
                     $taskIDs = ProjectTask::where('user_id',Input::get('user'))->where('stop_status',1)->whereBetween('set_date',[$startOfDay,$endOfDay])->with('project','project.client')->lists('id');
                 endif;
             endif;
+        endif;
+        if ($onlyMy):
+            $taskIDs = ProjectTask::where('user_id',Auth::user()->id)->where('stop_status',1)->whereBetween('set_date',[$startOfDay,$endOfDay])->with('project','project.client')->lists('id');
         endif;
         return ProjectTask::whereIn('id',$taskIDs)->where('stop_status',1)->whereBetween('set_date',[$startOfDay,$endOfDay])->with('project','project.client')->get();
     }
