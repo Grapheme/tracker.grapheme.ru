@@ -51,7 +51,7 @@
             </div>
             @if(count($project_team))
             <div class="form-group">
-                <label for="faviconFile" class="col-sm-3 control-label">Комманда </label>
+                <label for="faviconFile" class="col-sm-3 control-label">Команда </label>
                 <div class="col-sm-6">
                 @foreach($project_team as $user_id => $user)
                     <div class="form-inline">

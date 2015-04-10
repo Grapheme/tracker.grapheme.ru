@@ -23,7 +23,7 @@
         <a href="{{ URL::route('projects.index') }}">Проекты <span class="badge">{{ $activeProjectCount.'/'.$archivedProjectCount }}</span></a>
     </li>
     <li {{ Helper::isRoute('cooperators.index') }}>
-        <a href="{{ URL::route('cooperators.index') }}">Комманда <span class="badge">{{ count(Team::where('superior_id',Auth::user()->id)->orWhere('cooperator_id',Auth::user()->id)->groupBy('superior_id')->groupBy('cooperator_id')->get()) }}</span></a>
+        <a href="{{ URL::route('cooperators.index') }}">Команда <span class="badge">{{ count(Team::where('superior_id',Auth::user()->id)->orWhere('cooperator_id',Auth::user()->id)->groupBy('superior_id')->groupBy('cooperator_id')->get()) }}</span></a>
     </li>
     <li {{ Helper::isRoute('timesheets.index') }}>
         <a href="{{ URL::route('timesheets.index') }}">Табель учета рабочего времени</a>

@@ -35,7 +35,7 @@
                 @endif
                 @if(count($users) > 1)
                 <div class="form-group">
-                    <label class="col-sm-3 control-label">Сотрудник</label>
+                    <label class="col-sm-3 control-label">Команда</label>
                     <div class="col-sm-6">
                         {{ Form::select('user',$users,Input::get('user'),['class'=>'form-control','autocomplete'=>'off']) }}
                     </div>
