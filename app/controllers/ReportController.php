@@ -83,6 +83,9 @@ class ReportController extends \BaseController {
         foreach(ProjectOwners::where('user_id',Auth::user()->id)->with('projects')->get() as $projectOwner):
             $projects[$projectOwner->projects->id] = $projectOwner->projects->title;
         endforeach;
+        foreach(ProjectTeam::where('user_id',Auth::user()->id)->with('projects')->get() as $projectTeam):
+            $projects[$projectTeam->projects->id] = $projectTeam->projects->title;
+        endforeach;
         foreach(Team::where('superior_id',Auth::user()->id)->orWhere('cooperator_id',Auth::user()->id)->with('cooperator','superior')->get() as $userTeam):
             if ($userTeam->superior_id != Auth::user()->id):
                 $users[$userTeam->superior_id] = $userTeam->superior->fio;
@@ -201,6 +204,12 @@ class ReportController extends \BaseController {
         if (Input::has('project') && Input::get('project') > 0):
             $All = FALSE;
             if(ProjectOwners::where('project_id',Input::get('project'))->where('user_id',Auth::user()->id)->exists()):
+                if (!empty($taskIDs)):
+                    $taskIDs = ProjectTask::whereIn('id',$taskIDs)->where('project_id',Input::get('project'))->where('stop_status',1)->whereBetween('set_date',[$startOfDay,$endOfDay])->with('project','project.client')->lists('id');
+                else:
+                    $taskIDs = ProjectTask::where('project_id',Input::get('project'))->where('stop_status',1)->whereBetween('set_date',[$startOfDay,$endOfDay])->with('project','project.client')->lists('id');
+                endif;
+            elseif(ProjectTeam::where('project_id',Input::get('project'))->where('user_id',Auth::user()->id)->exists()):
                 if (!empty($taskIDs)):
                     $taskIDs = ProjectTask::whereIn('id',$taskIDs)->where('project_id',Input::get('project'))->where('stop_status',1)->whereBetween('set_date',[$startOfDay,$endOfDay])->with('project','project.client')->lists('id');
                 else:
