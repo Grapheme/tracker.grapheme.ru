@@ -31,6 +31,13 @@
                 @endif
                 <tr {{ ($task->start_status && !$task->stop_status) ? 'class="success"' : '' }}>
                     <td>
+                        @if($task->stop_status)
+                            {{ (new myDateTime())->setDateString($task->stop_date)->format('d.m.y в H:i') }}
+                        @else
+                            Текущая
+                        @endif
+                    </td>
+                    <td>
                         {{ $task->note }}
                         @if(count($task->basecamp_task))
                             <a href="{{ $task->basecamp_task->basecamp_task_link  }}" target="_blank"><span aria-hidden="true" class="glyphicon glyphicon-new-window"></span></a>
