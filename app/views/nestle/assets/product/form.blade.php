@@ -139,7 +139,7 @@
         <hr>
         <div id="recommended-product-template">
             <div class="form-group">
-                <label class="col-sm-2 control-label">Фото продукта</label>
+                <label class="col-sm-2 control-label">Фото продукта(URI)</label>
                 <div class="col-sm-6">
                     <input type="text" name="recommended_product_image[]" class="form-control" />
                 </div>
@@ -151,7 +151,7 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-2 control-label">Ссылка на страницу продукта</label>
+                <label class="col-sm-2 control-label">Ссылка на страницу продукта(URI)</label>
                 <div class="col-sm-6">
                     <input type="text" name="recommended_product_page[]" class="form-control" />
                 </div>
