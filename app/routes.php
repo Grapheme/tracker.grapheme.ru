@@ -110,3 +110,11 @@ if (Auth::check()):
         Route::post('basecamp/project/import', array('before'=>'csrf','as'=>'basecamp.project.import','uses' => 'BasecampController@userAccountProjectImport'));
     });
 endif;
+
+Route::group(array('before' => '','prefix' => 'nestle'), function(){
+    Route::get('category',array('as'=>'category.show', 'uses'=>'NestleController@category'));
+    Route::get('product',array('as'=>'product.show', 'uses'=>'NestleController@product'));
+
+    Route::post('category',array('as'=>'category.create', 'uses'=>'NestleController@categoryCreate'));
+    Route::post('product',array('as'=>'product.create', 'uses'=>'NestleController@productCreate'));
+});
