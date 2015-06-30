@@ -8,14 +8,14 @@
     <div class="visuals">
         <div class="big">
             <a class="fancybox" rel="group" href="{{ $url_domen }}{{ $input['photo_root'] }}{{ $input['product_big_image'] }}">
-                <img src="{{ $url_domen }}{{ $input['product_big_image'] }}" alt="{{ $input['image_alt'] }}">
+                <img src="{{ $url_domen }}{{ $input['photo_root'] }}{{ $input['product_big_image'] }}" alt="{{ $input['image_alt'] }}">
             </a>
         </div>
         <div class="small">
     @if(count($input['product_small_images']))
         @foreach($input['product_small_images'] as $index => $product_small_image)
             @if(!empty($product_small_image))
-            <a href="{{ $url_domen }}{{ $product_small_image }}">
+            <a href="{{ $url_domen }}{{ $input['photo_root'] }}{{ $product_small_image }}">
                 <img alt="{{ $input['image_alt'] }}" src="{{ $url_domen }}{{ $input['photo_root'] }}{{ $product_small_image }}">
             </a>
             @endif
