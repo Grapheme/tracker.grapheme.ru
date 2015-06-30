@@ -3,6 +3,19 @@
         <h1 class="page-header">Форма для создания кода</h1>
         {{ Form::open(['route'=>'product.create','method'=>'post','role'=>'form','class'=>'form-horizontal']) }}
         <div class="form-group">
+            <label class="col-sm-2 control-label">Путь к документам категории товаров</label>
+            <div class="col-sm-3">
+                {{ Form::text('documents_root',Input::old('documents_root'),['class'=>'form-control']) }}
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Путь к изобажениям категории товаров</label>
+            <div class="col-sm-3">
+                {{ Form::text('photo_root',Input::old('photo_root'),['class'=>'form-control']) }}
+            </div>
+        </div>
+        <hr>
+        <div class="form-group">
             <label class="col-sm-2 control-label">Подпись к изображениям (ALT)</label>
 
             <div class="col-sm-3">
@@ -10,13 +23,13 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="col-sm-2 control-label">Таблица с описанием продукта (URL)</label>
+            <label class="col-sm-2 control-label">Таблица с описанием продукта (имя файла)</label>
             <div class="col-sm-6">
                 {{ Form::text('product_xslx','',['class'=>'form-control']) }}
             </div>
         </div>
         <div class="form-group">
-            <label class="col-sm-2 control-label">Фотографии высокого качества (URL)</label>
+            <label class="col-sm-2 control-label">Фотографии высокого качества (имя файла)</label>
             <div class="col-sm-6">
                 {{ Form::text('product_zip','',['class'=>'form-control']) }}
             </div>
@@ -35,15 +48,15 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="col-sm-2 control-label">Состав и аллергическая информация</label>
-            <div class="col-sm-6">
-                {{ Form::textarea('product_composition','',['class'=>'form-control redactor']) }}
-            </div>
-        </div>
-        <div class="form-group">
             <label class="col-sm-2 control-label">Свойства и преимущества</label>
             <div class="col-sm-6">
                 {{ Form::textarea('product_advantages','',['class'=>'form-control redactor']) }}
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Состав и аллергическая информация</label>
+            <div class="col-sm-6">
+                {{ Form::textarea('product_composition','',['class'=>'form-control redactor']) }}
             </div>
         </div>
         <div class="form-group">
@@ -103,14 +116,14 @@
         </div>
         <hr>
         <div class="form-group">
-            <label class="col-sm-2 control-label">Основное фото продукта</label>
+            <label class="col-sm-2 control-label">Основное фото продукта (имя файла)</label>
             <div class="col-sm-6">
                 <input type="text" name="product_big_image" class="form-control" />
             </div>
         </div>
         <div id="product-template">
             <div class="form-group">
-                <label class="col-sm-2 control-label">Малые фото продукта</label>
+                <label class="col-sm-2 control-label">Малые фото продукта (имя файла)</label>
                 <div class="col-sm-6">
                     <input type="text" name="product_small_images[]" class="form-control" />
                 </div>

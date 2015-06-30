@@ -1,13 +1,13 @@
 <?php $input = Input::old(); ?>
 <div>
-    <a class="grphm-top-link" href="{{ $url_domen }}{{ $input['product_xslx'] }}">Таблица с описанием продукта (Excel)</a>
-    <a class="grphm-top-link" href="{{ $url_domen }}{{ $input['product_zip'] }}">Фотографии высокого качества (ZIP)</a>
+    <a class="grphm-top-link" href="{{ $url_domen }}{{ $input['documents_root'] }}{{ $input['product_xslx'] }}">Таблица с описанием продукта (Excel)</a>
+    <a class="grphm-top-link" href="{{ $url_domen }}{{ $input['documents_root'] }}{{ $input['product_zip'] }}">Фотографии высокого качества (ZIP)</a>
 </div>
 <h2>{{ $input['products_name'] }}</h2>
 <div class="grphm">
     <div class="visuals">
         <div class="big">
-            <a class="fancybox" rel="group" href="{{ $url_domen }}{{ $input['product_big_image'] }}">
+            <a class="fancybox" rel="group" href="{{ $url_domen }}{{ $input['photo_root'] }}{{ $input['product_big_image'] }}">
                 <img src="{{ $url_domen }}{{ $input['product_big_image'] }}" alt="{{ $input['image_alt'] }}">
             </a>
         </div>
@@ -16,7 +16,7 @@
         @foreach($input['product_small_images'] as $index => $product_small_image)
             @if(!empty($product_small_image))
             <a href="{{ $url_domen }}{{ $product_small_image }}">
-                <img alt="{{ $input['image_alt'] }}" src="{{ $url_domen }}{{ $product_small_image }}">
+                <img alt="{{ $input['image_alt'] }}" src="{{ $url_domen }}{{ $input['photo_root'] }}{{ $product_small_image }}">
             </a>
             @endif
         @endforeach
