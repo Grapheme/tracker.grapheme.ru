@@ -68,7 +68,7 @@
             </li>
         </ol>
     </div>
-@if(count($input['recommended_product_name']))
+@if(isset($input['recommended_product_name'][0]) && !empty($input['recommended_product_name'][0]))
     <h3>С этим товаром также смотрят</h3>
     <div class="w490 catalog grphm">
         @foreach($input['recommended_product_name'] as $index => $product_name)
