@@ -4,13 +4,13 @@
         {{ Form::open(['route'=>'product.create','method'=>'post','role'=>'form','class'=>'form-horizontal']) }}
         <div class="form-group">
             <label class="col-sm-2 control-label">Путь к документам категории товаров</label>
-            <div class="col-sm-3">
+            <div class="col-sm-6">
                 {{ Form::text('documents_root',Input::old('documents_root'),['class'=>'form-control']) }}
             </div>
         </div>
         <div class="form-group">
             <label class="col-sm-2 control-label">Путь к изобажениям категории товаров</label>
-            <div class="col-sm-3">
+            <div class="col-sm-6">
                 {{ Form::text('photo_root',Input::old('photo_root'),['class'=>'form-control']) }}
             </div>
         </div>
