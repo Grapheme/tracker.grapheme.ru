@@ -43,7 +43,7 @@
                             <td>
                                 {{ Form::open(['route'=>['report.delete'],'method'=>'delete']) }}
                                     {{ Form::hidden('report_id',$report['id']) }}
-                                    {{ Form::submit('Удалить',['class'=>'btn btn-danger']) }}
+                                    {{ Form::submit('Удалить',['class'=>'btn btn-danger js-btn-delete']) }}
                                 {{ Form::close() }}
                             </td>
                         </tr>

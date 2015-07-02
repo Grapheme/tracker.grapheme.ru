@@ -68,7 +68,7 @@
                         Запущена: {{ (new myDateTime())->setDateString($task->start_date)->format('H:i') }}<br>
                         @endif
                         @if($task->stop_status)
-                        Выполнена: {{ (new myDateTime())->setDateString($task->stop_date)->format('H:i') }}<br>
+                        Остановлена: {{ (new myDateTime())->setDateString($task->stop_date)->format('H:i') }}<br>
                         @endif
                     </td>
                     <td>
@@ -86,7 +86,7 @@
                     <td><a href="{{ URL::route('timesheets.edit',[$task->id,'date'=>$dt_request]) }}" class="btn btn-success">Редактировать</a></td>
                     <td>
                         {{ Form::open(array('route'=>array('timesheets.destroy',$task->id),'method'=>'DELETE','style'=>'display:inline-block')) }}
-                            {{ Form::submit('Удалить',['class'=>'btn btn-danger']) }}
+                            {{ Form::submit('Удалить',['class'=>'btn btn-danger js-btn-delete']) }}
                         {{ Form::close() }}
                     </td>
                 </tr>

@@ -19,7 +19,7 @@
         <a role="button" href="{{ URL::route('projects.edit',$project->id) }}" class="btn btn-primary btn-sm">Редактировать</a>
         @if($project->superior_id == Auth::user()->id)
         {{ Form::open(array('route'=>array('projects.destroy',$project->id),'method'=>'DELETE','style'=>'display:inline-block')) }}
-            {{ Form::submit('Удалить',['class'=>'btn btn-danger btn-sm']) }}
+            {{ Form::submit('Удалить',['class'=>'btn btn-danger btn-sm js-btn-delete']) }}
         {{ Form::close() }}
         @endif
     @endif
@@ -102,7 +102,7 @@
                     <td>
                     @if($task->user_id == Auth::user()->id)
                         {{ Form::open(array('route'=>array('timesheets.destroy',$task->id),'method'=>'DELETE','style'=>'display:inline-block')) }}
-                        {{ Form::submit('Удалить',['class'=>'btn btn-danger']) }}
+                        {{ Form::submit('Удалить',['class'=>'btn btn-danger js-btn-delete']) }}
                         {{ Form::close() }}
                     @endif
                     </td>

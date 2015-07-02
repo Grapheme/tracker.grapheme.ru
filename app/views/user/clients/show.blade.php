@@ -7,7 +7,7 @@
         <p class="lead">{{ $client->description }}</p>
         <a role="button" href="{{ URL::route('clients.edit',$client->id) }}" class="btn btn-primary btn-sm">Редактировать</a>
         {{ Form::open(array('route'=>array('clients.destroy',$client->id),'method'=>'DELETE','style'=>'display:inline-block')) }}
-            {{ Form::submit('Удалить',['class'=>'btn btn-danger btn-sm']) }}
+            {{ Form::submit('Удалить',['class'=>'btn btn-danger btn-sm js-btn-delete']) }}
         {{ Form::close() }}
     </div>
     @if(count($projects))
@@ -70,7 +70,7 @@
                     <td>
                     @if($task->user_id == Auth::user()->id)
                         {{ Form::open(array('route'=>array('timesheets.destroy',$task->id),'method'=>'DELETE','style'=>'display:inline-block')) }}
-                        {{ Form::submit('Удалить',['class'=>'btn btn-danger']) }}
+                        {{ Form::submit('Удалить',['class'=>'btn btn-danger js-btn-delete']) }}
                         {{ Form::close() }}
                     @endif
                     </td>
