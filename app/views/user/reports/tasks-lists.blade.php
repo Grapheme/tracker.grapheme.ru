@@ -2,13 +2,18 @@
     <table class="table table-striped">
         <tbody>
         <?php $tasks_total_time = 0;?>
-        <?php $tasks_total_price = 0;?>
+        <?php $tasks_total_price = FALSE;?>
         <?php $earnMoneyCurrentDate = costCalculation(NULL,['tasks' => $tasks]);?>
         @foreach($tasks as $task)
-            <?php $tasks_total_time += (getLeadTimeMinutes($task)+floor($task->lead_time/60));?>
-            @if(isset($earnMoneyCurrentDate[$task->id]['earnings']))
-                <?php $tasks_total_price += $earnMoneyCurrentDate[$task->id]['earnings'];?>
-            @endif
+            <?php
+                $tasks_total_time += (getLeadTimeMinutes($task)+floor($task->lead_time/60));
+                $showMoney = FALSE;
+                if(isset($task->project->superior_id) && $task->project->superior_id == Auth::user()->id):
+                    $showMoney = TRUE;
+                elseif(!$task->project_id):
+                    $showMoney = TRUE;
+                endif;
+            ?>
             <tr>
                 <td>
                     {{ Carbon\Carbon::createFromFormat('Y-m-d 00:00:00',$task->set_date)->format('d.m.Y') }}
@@ -26,7 +31,14 @@
                 @endif
                 </td>
                 <td>
-                    {{ culcLeadTime($task) }} / {{ isset($earnMoneyCurrentDate[$task->id]['earnings']) ? number_format($earnMoneyCurrentDate[$task->id]['earnings'],2,'.',' ').' руб.' : '' }}
+                    {{ culcLeadTime($task) }}
+                @if($showMoney)
+                    @if(isset($earnMoneyCurrentDate[$task->id]['earnings']))
+                        <?php $tasks_total_price += $earnMoneyCurrentDate[$task->id]['earnings'];?>
+                    @endif
+                    / {{ isset($earnMoneyCurrentDate[$task->id]['earnings']) ? number_format($earnMoneyCurrentDate[$task->id]['earnings'],2,'.',' ').' руб.' : '' }}
+                    @if($earnMoneyCurrentDate[$task->id]['whose_price'])<br><span class="label label-info">{{ @$earnMoneyCurrentDate[$task->id]['whose_price'] }}</span>@endif
+                @endif
                 </td>
             </tr>
         @endforeach
@@ -35,7 +47,9 @@
             <td>
                 Всего {{ count($tasks) }} {{ Lang::choice('задача|задачи|задач',count($tasks)) }}. <br>
                 Время выполнения: {{ getLeadTimeFromMinutes($tasks_total_time) }} ч.<br>
+                @if($tasks_total_price !== FALSE)
                 Общая сумма: {{ number_format($tasks_total_price,2,'.',' ') }} руб.
+                @endif
             </td>
             <td colspan="4"></td>
         </tr>

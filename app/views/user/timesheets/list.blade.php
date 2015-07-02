@@ -26,7 +26,7 @@
         <table class="table table-striped">
             <tbody>
             <?php $tasks_total_time = 0;?>
-            <?php $tasks_total_price = 0;?>
+            <?php $tasks_total_price = FALSE;?>
             <?php $earnMoneyCurrentDate = costCalculation(NULL,['tasks' => $tasks]);?>
             @foreach($tasks as $task)
                 <?php
@@ -93,9 +93,11 @@
             @endforeach
                 <tr>
                     <td>
-                        Всего {{ count($tasks) }} {{ Lang::choice('задача|задачи|задач',count($tasks)) }}. <br>
-                        Время выполнения: {{ getLeadTimeFromMinutes($tasks_total_time) }} ч.<br>
-                        Общая сумма: {{ number_format($tasks_total_price,2,'.',' ') }} руб.
+                        Всего {{ count($tasks) }} {{ Lang::choice('задача|задачи|задач',count($tasks)) }}.
+                        <br>Время выполнения: {{ getLeadTimeFromMinutes($tasks_total_time) }} ч.
+                        @if($tasks_total_price !== FALSE)
+                        <br>Общая сумма: {{ number_format($tasks_total_price,2,'.',' ') }} руб.
+                        @endif
                     </td>
                     <td colspan="4"></td>
                 </tr>
