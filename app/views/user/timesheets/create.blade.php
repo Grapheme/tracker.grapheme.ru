@@ -15,7 +15,7 @@
             <div class="form-group">
                 <label class="col-sm-3 control-label">Проект</label>
                 <div class="col-sm-6">
-                    {{ Form::select('project',$projects,Input::old('project'),['class'=>'form-control']) }}
+                    {{ Form::select('project',$projects,Input::old('project_id'),['class'=>'form-control']) }}
                 </div>
             </div>
             {{ Form::hidden('performer',Auth::user()->id) }}

@@ -12,10 +12,16 @@
         @endif
         {{ Form::model($task,array('route'=>array('timesheets.update',$task->id),'role'=>'form','class'=>'form-horizontal','method'=>'PUT')) }}
             {{ Form::hidden('set_date',$dt_request) }}
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Проект</label>
+                <div class="col-sm-6">
+                    {{ Form::select('project',$projects,$task->project_id,['class'=>'form-control']) }}
+                </div>
+            </div>
             <div class="form-group has-feedback">
                 <label for="inputNote" class="col-sm-3 control-label">Описание</label>
                 <div class="col-sm-6">
-                    {{ Form::textarea('note',Input::old('note'),['rows'=>"3",'class' => 'form-control','placeholder'=>'Коротко опишите задачу','required'=>'','id'=>'inputNote']) }}
+                    {{ Form::textarea('note',NULL,['rows'=>"3",'class' => 'form-control','placeholder'=>'Коротко опишите задачу','required'=>'','id'=>'inputNote']) }}
                     <span class="glyphicon glyphicon-warning-sign form-control-feedback" aria-hidden="true"></span>
                     <span id="inputWarning2Status" class="sr-only">(warning)</span>
                 </div>
@@ -23,7 +29,7 @@
             <div class="form-group">
                 <label for="inputLeadTime" class="col-sm-3 control-label">Время выполнения</label>
                 <div class="col-sm-6">
-                    {{ Form::text('lead_time',Input::old('lead_time'),['class' => 'form-control','placeholder'=>'0:00','id'=>'inputLeadTime']) }}
+                    {{ Form::text('lead_time',NULL,['class' => 'form-control','placeholder'=>'0:00','id'=>'inputLeadTime']) }}
                     <p id="helpBlock" class="help-block">Заполните поле если требуется корекция времении или оставьте его пустым, чтобы сохранить текущее значение. Вы также можете ввести время, как 1.3 или 1:30 (они оба подразумевают 1 час и 30 минут).</p>
                 </div>
             </div>
