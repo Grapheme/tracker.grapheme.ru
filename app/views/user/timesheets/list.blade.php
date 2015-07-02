@@ -63,6 +63,15 @@
                         @endif
                     </td>
                     <td>
+                        Создана: {{ $task->created_at->format('H:i') }}<br>
+                        @if($task->created_at != $task->start_date)
+                        Запущена: {{ (new myDateTime())->setDateString($task->start_date)->format('H:i') }}<br>
+                        @endif
+                        @if($task->stop_status)
+                        Выполнена: {{ (new myDateTime())->setDateString($task->stop_date)->format('H:i') }}<br>
+                        @endif
+                    </td>
+                    <td>
                     {{ Form::open(array('route'=>array('timesheets.run_timer'),'method'=>'POST','style'=>'display:inline-block')) }}
                         {{ Form::hidden('task',$task->id) }}
                     @if($task->start_status && !$task->stop_status)
