@@ -22,6 +22,7 @@
         <a href="{{ URL::route('timesheets.index',['date'=>$endOfWeek->addWeek()->format('Y-m-d')]) }}" class="btn btn-primary">Следующая <br> неделя</a>
     </div>
     @if(count($tasks))
+    <div style="margin-top: 20px;"></div>
     <div class="table-responsive">
         <table class="table table-striped">
             <tbody>
