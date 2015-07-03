@@ -35,13 +35,13 @@
                     $showMoney = FALSE;
                     if(isset($task->project->superior_id) && $task->project->superior_id == Auth::user()->id):
                         $showMoney = TRUE;
+                        if(isset($earnMoneyCurrentDate[$task->id]['earnings'])):
+                            $tasks_total_price += $earnMoneyCurrentDate[$task->id]['earnings'];
+                        endif;
                     elseif(!$task->project_id):
                         $showMoney = TRUE;
                     endif;
                 ?>
-                @if(isset($earnMoneyCurrentDate[$task->id]['earnings']))
-                <?php $tasks_total_price += $earnMoneyCurrentDate[$task->id]['earnings'];?>
-                @endif
                 <tr {{ ($task->start_status && !$task->stop_status) ? 'class="success"' : '' }}>
                     <td>
                         {{ $task->note }}
