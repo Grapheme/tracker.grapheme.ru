@@ -7,7 +7,6 @@
         <div class="col-md-8">
         {{ Form::open(array('route'=>'projects.store','role'=>'form','class'=>'form-horizontal')) }}
             {{ Form::hidden('superior_id',Auth::user()->id) }}
-            {{ Form::hidden('superior_hour_price',Auth::user()->hour_price,['class'=>'form-control','placeholder'=>'']) }}
             <div class="form-group">
                 <label class="col-sm-3 control-label">Клиент</label>
                 <div class="col-sm-6">
@@ -26,6 +25,12 @@
                 <label for="inputDescription" class="col-sm-3 control-label">Описание</label>
                 <div class="col-sm-6">
                     {{ Form::text('description',Input::old('description'),['class' => 'form-control','placeholder'=>'Коротко опишите проект','id'=>'inputDescription']) }}
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="priceBudget" class="col-sm-3 control-label">Цена за час</label>
+                <div class="col-sm-4">
+                    {{ Form::text('superior_hour_price',Auth::user()->hour_price,['class'=>'form-control','placeholder'=>'']) }}
                 </div>
             </div>
             <div class="form-group">

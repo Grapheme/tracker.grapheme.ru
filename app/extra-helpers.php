@@ -46,13 +46,13 @@ function costCalculation($taskID = NULL, $data = NULL){
         foreach(ProjectTeam::whereIn('project_id',$ProjectIDs)->select('project_id','hour_price','user_id')->get() as $team):
             $hourPrices[$team->project_id][$team->user_id] = $team->hour_price;
         endforeach;
-        foreach(ProjectOwners::where('project_id',$ProjectIDs)->select('project_id','hour_price','user_id')->get() as $team):
+        foreach(ProjectOwners::whereIn('project_id',$ProjectIDs)->select('project_id','hour_price','user_id')->get() as $team):
             $hourPrices[$team->project_id][$team->user_id] = (int) $team->hour_price;
         endforeach;
     endif;
     foreach($tasks as $task):
         $hourPrice = isset($hourPrices[$task->project_id][$task->cooperator->id]) ? $hourPrices[$task->project_id][$task->cooperator->id] : 0;
-        $whose_price = 'цена договорная';
+        $whose_price = 'цена проекта';
         if($hourPrice == 0 && isset($task->project->client->hour_price) && $task->project->client->hour_price > 0):
             $whose_price = 'цена клиента';
             $hourPrice = $task->project->client->hour_price;

@@ -117,7 +117,7 @@ class ProjectsController extends \BaseController {
             if (!Input::has('in_archive')):
                 Project::where('id',$id)->update(['in_archive'=>0]);
             endif;
-            ProjectOwners::where('project_id',$id)->where('user_id',Auth::user()->id)->update(['hour_price'=>Input::get('hour_price')]);
+            ProjectOwners::where('project_id',$id)->where('user_id',Auth::user()->id)->update(['hour_price'=>Input::get('superior_hour_price')]);
             if (Input::has('favorite')):
                 Project::where('id',$id)->first()->favorites_projects()->sync([Auth::user()->id]);
             else:
