@@ -54,10 +54,22 @@
         </div>
     </div>
     @endif
+    @if(count($tasks))
     @if($access)
         @include(Helper::acclayout('assets.report-links'),['extended'=>['project'=>$project->id]])
+        {{ Form::open(array('route'=>'timesheets.move')) }}
+        <?php
+        $projects  = TimeSheetsController::getProjects();
+        $projects[0] = 'Выберите проект';
+        if(isset($projects[$project->id])):
+            unset($projects[$project->id]);
+        endif;
+        ?>
+        {{ Form::hidden('project_id',$project->id) }}
+        {{ Form::select('project_move',$projects) }}
+        {{ Form::submit('Перенести') }}
+        {{ Form::close() }}
     @endif
-    @if(count($tasks))
     <h2 class="sub-header">Список задач</h2>
     <div class="table-responsive">
         <table class="table table-striped">

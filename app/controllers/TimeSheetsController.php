@@ -36,7 +36,7 @@ class TimeSheetsController extends \BaseController {
         if (strtotime(Request::get('date')) > strtotime(date("Y-m-d", time()))):
             return Redirect::route('timesheets.create', ['date' => date("Y-m-d")]);
         endif;
-        $projects = $this->getProjects();
+        $projects = self::getProjects();
         return View::make(Helper::acclayout('timesheets.create'), compact('projects'));
     }
 
@@ -64,7 +64,7 @@ class TimeSheetsController extends \BaseController {
     public function edit($id) {
 
         if ($task = ProjectTask::where('id', $id)->first()):
-            $projects = $this->getProjects();
+            $projects = self::getProjects();
             $task->lead_time = culcLeadTime($task);
             return View::make(Helper::acclayout('timesheets.edit'), compact('task', 'projects'));
         endif;
@@ -137,7 +137,7 @@ class TimeSheetsController extends \BaseController {
         App::abort(404);
     }
 
-    private function getProjects() {
+    public static function getProjects() {
 
         $projects[0] = 'Без проекта';
         foreach (Project::where('superior_id', Auth::user()->id)->where('in_archive', 0)->orderBy('title')->lists('title', 'id') as $project_id => $project_title):
@@ -149,5 +149,19 @@ class TimeSheetsController extends \BaseController {
             endif;
         endforeach;
         return $projects;
+    }
+
+    public function move(){
+
+        $validator = Validator::make(Input::all(), ['project_id' => 'integer|required', 'project_move' => 'integer|required']);
+        if ($validator->passes()):
+            $project_id = Input::get('project_id');
+            $project_move = Input::get('project_move');
+            if($project_id > 0):
+                ProjectTask::where('project_id', $project_id)->update(['project_id'=>$project_move]);
+            endif;
+            return Redirect::back();
+        endif;
+        App::abort(404);
     }
 }

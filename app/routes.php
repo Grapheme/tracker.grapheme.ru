@@ -98,6 +98,9 @@ if (Auth::check()):
             );
             Route::post('timesheets/running_timer',array('as'=>'timesheets.run_timer','uses'=>'TimeSheetsController@RunningTimer'));
             Route::delete('invite/reject/{invite_id}',array('as'=>'cooperators.invite_reject','uses'=>'CooperatorsController@inviteReject'));
+
+            Route::post('timesheets/move',array('as'=>'timesheets.move','uses'=>'TimeSheetsController@move'));
+
         endif;
     });
     Route::group(array('before' => 'auth'), function(){
