@@ -51,18 +51,23 @@
     <p>Добавьте проекты в список избранных</p>
 @endif
 @if(count($tasks))
-<h2 class="sub-header">Список активных задач</h2>
+<h2 class="sub-header">Текущая задача</h2>
 <div class="table-responsive">
     <table class="table table-striped">
         <tbody>
-        <?php $tasks_total_time = 0;?>
-        <?php $tasks_total_price = 0;?>
         <?php $earnMoneyCurrentDate = costCalculation(NULL,['tasks' => $tasks]);?>
         @foreach($tasks as $task)
-            <?php $tasks_total_time += (getLeadTimeMinutes($task)+floor($task->lead_time/60));?>
-            @if(isset($earnMoneyCurrentDate[$task->id]['earnings']))
-                <?php $tasks_total_price += $earnMoneyCurrentDate[$task->id]['earnings'];?>
-            @endif
+            <?php
+            $showMoney = FALSE;
+            if(isset($task->project->superior_id) && $task->project->superior_id == Auth::user()->id):
+                $showMoney = TRUE;
+                if(isset($earnMoneyCurrentDate[$task->id]['earnings'])):
+                    $tasks_total_price += $earnMoneyCurrentDate[$task->id]['earnings'];
+                endif;
+            elseif(!$task->project_id):
+                $showMoney = TRUE;
+            endif;
+            ?>
             <tr>
                 <td>
                     {{ $task->note }}
@@ -83,10 +88,22 @@
                     <br>
                 </td>
                 <td>
-                    {{ culcLeadTime($task) }} @if($task->user_id == Auth::user()->id)/ {{ isset($earnMoneyCurrentDate[$task->id]['earnings']) ? number_format($earnMoneyCurrentDate[$task->id]['earnings'],2,'.',' ').' руб.' : '' }}@endif
+                    {{ culcLeadTime($task) }}
+                    @if($showMoney)
+                        / {{ isset($earnMoneyCurrentDate[$task->id]['earnings']) ? number_format($earnMoneyCurrentDate[$task->id]['earnings'],2,'.',' ').' руб.' : '' }}
+                        @if($earnMoneyCurrentDate[$task->id]['whose_price'])<br><span class="label label-info">{{ @$earnMoneyCurrentDate[$task->id]['whose_price'] }}</span>@endif
+                    @endif
                 </td>
                 <td>
-                @if($task->user_id == Auth::user()->id)
+                    Создана: {{ $task->created_at->format('H:i') }}<br>
+                    @if($task->created_at != $task->start_date)
+                        Запущена: {{ (new myDateTime())->setDateString($task->start_date)->format('H:i') }}<br>
+                    @endif
+                    @if($task->stop_status)
+                        Остановлена: {{ (new myDateTime())->setDateString($task->stop_date)->format('H:i') }}<br>
+                    @endif
+                </td>
+                <td>
                     {{ Form::open(array('route'=>array('timesheets.run_timer'),'method'=>'POST','style'=>'display:inline-block')) }}
                     {{ Form::hidden('task',$task->id) }}
                     @if($task->start_status && !$task->stop_status)
@@ -97,18 +114,13 @@
                         {{ Form::submit('Продолжить',['class'=>'btn btn-default']) }}
                     @endif
                     {{ Form::close() }}
-                @endif
                 </td>
                 <td>
-                @if($task->user_id == Auth::user()->id)
-                    <a href="{{ URL::route('timesheets.edit',[$task->id,'date'=>$dt_request]) }}" class="btn btn-success">Редактировать</a></td>
-                @endif
+                <td><a href="{{ URL::route('timesheets.edit',[$task->id,'date'=>$dt_request]) }}" class="btn btn-success">Редактировать</a></td>
                 <td>
-                @if($task->user_id == Auth::user()->id)
                     {{ Form::open(array('route'=>array('timesheets.destroy',$task->id),'method'=>'DELETE','style'=>'display:inline-block')) }}
                     {{ Form::submit('Удалить',['class'=>'btn btn-danger js-btn-delete']) }}
                     {{ Form::close() }}
-                @endif
                 </td>
             </tr>
         @endforeach
