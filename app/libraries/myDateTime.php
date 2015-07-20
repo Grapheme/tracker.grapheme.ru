@@ -130,7 +130,8 @@ class myDateTime {
     public function format($format){
 
         if ($this->validDate()):
-            return $this->date_string->format($format)->setTimezone('Europe/Moscow');
+            return $this->date_string->format($format);
+//                ->setTimezone('Europe/Moscow');
         else:
             return '';
         endif;
