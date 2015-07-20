@@ -4,6 +4,7 @@ class TimeSheetsController extends \BaseController {
 
     public function __construct() {
 
+        date_default_timezone_set(Config::get('app.timezone'));
     }
 
     public function index() {
