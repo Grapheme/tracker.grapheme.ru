@@ -8,16 +8,16 @@ class myDateTime {
     public function __construct($string = NULL){
 
         if (!is_null($string)):
-            $this->date_string = \Carbon\Carbon::createFromTimestamp($string);
+            $this->date_string = \Carbon\Carbon::createFromTimestamp($string)->setTimezone('Europe/Moscow');
         else:
-            $this->date_string = \Carbon\Carbon::now();
+            $this->date_string = \Carbon\Carbon::now()->setTimezone('Europe/Moscow');
         endif;
         $this->months = array("01"=>"января","02"=>"февраля","03"=>"марта","04"=>"апреля","05"=>"мая","06"=>"июня","07"=>"июля","08"=>"августа","09"=>"сентября","10"=>"октября","11"=>"ноября","12"=>"декабря");
     }
 
     public function setDateString($string){
 
-        $this->date_string = \Carbon\Carbon::createFromTimestamp(strtotime($string));
+        $this->date_string = \Carbon\Carbon::createFromTimestamp(strtotime($string))->setTimezone('Europe/Moscow');
         return $this;
     }
 
@@ -131,7 +131,6 @@ class myDateTime {
 
         if ($this->validDate()):
             return $this->date_string->format($format);
-//                ->setTimezone('Europe/Moscow');
         else:
             return '';
         endif;
