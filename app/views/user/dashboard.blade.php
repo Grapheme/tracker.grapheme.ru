@@ -3,16 +3,8 @@
 
 @section('content')
 <?php
-    $tasks = [];
-    if (ProjectTask::where('user_id',Auth::user()->id)->where('start_status',1)->where('stop_status',0)->exists()):
-        $tasks[] = ProjectTask::where('user_id',Auth::user()->id)->where('start_status',1)->where('stop_status',0)->with('cooperator','project')->first();
-    endif;
     $projects = ProjectFavorite::where('user_id',Auth::user()->id)->with('project','project.client','project.team','project.tasks')->get();
-    if($projectsIDs = ProjectOwners::where('user_id',Auth::user()->id)->lists('project_id')):
-        foreach(ProjectTask::whereIn('project_id',$projectsIDs)->where('start_status',1)->where('stop_status',0)->with('cooperator','project')->get() as $task):
-            $tasks[] = $task;
-        endforeach;
-    endif;
+    $tasks = ProjectTask::where('user_id',Auth::user()->id)->where('start_status',1)->where('stop_status',0)->with('cooperator','project')->get();
     $dt_request = Request::get('date') ? Request::get('date') : date('Y-m-d');
 ?>
 
@@ -50,7 +42,7 @@
 @else
     <p>Добавьте проекты в список избранных</p>
 @endif
-@if(count($tasks))
+@if($tasks->count())
 <h2 class="sub-header">Текущая задача</h2>
 <div class="table-responsive">
     <table class="table table-striped">
