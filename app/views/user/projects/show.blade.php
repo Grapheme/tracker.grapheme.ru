@@ -156,7 +156,9 @@
                     <td>
                         Всего {{ count($tasks) }} {{ Lang::choice('задача|задачи|задач',count($tasks)) }}. <br>
                         Время выполнения: {{ getLeadTimeFromMinutes($tasks_total_time) }} ч.<br>
-                        Общая сумма: {{ number_format($tasks_total_price,2,'.',' ') }} руб.
+                        @if($tasks_total_price !== FALSE)
+                            <br>Общая сумма: {{ number_format($tasks_total_price,2,'.',' ') }} руб.
+                        @endif
                     </td>
                     <td colspan="4"></td>
                 </tr>
