@@ -29,6 +29,21 @@ class AccountController extends \BaseController {
         if($validator->passes()):
             $user = Auth::user();
             $user->hour_price = Input::get('hour_price');
+            if ($image_path = UploadsController::getUploadedFile('avatar', TRUE)):
+                if($old_image_path = Upload::where('id', Auth::user()->image_id)->pluck('path')):
+                    if(File::exists(public_path($old_image_path))):
+                        File::delete(public_path($old_image_path));
+                        Upload::where('id', Auth::user()->image_id)->delete();
+                    endif;
+                endif;
+                $upload = new Upload();
+                $upload->path = $image_path;
+                $upload->original_name = 'avatar.jpg';
+                $upload->filesize = 0;
+                $upload->mimetype = '';
+                $upload->save();
+                $user->image_id = $upload->id;
+            endif;
             $user->save();
             $user->touch();
             return Redirect::back()->with('message','Профиль сохранен');

@@ -3,11 +3,17 @@
 
 @section('content')
     @if(!isset($status))
-    {{ Form::model($profile,['route'=>'profile.update','method'=>'put','role'=>'form','class'=>'form-horizontal']) }}
+    {{ Form::model($profile,['route'=>'profile.update','method'=>'put','role'=>'form','class'=>'form-horizontal','files'=>TRUE]) }}
     <div class="form-group">
         <label class="col-sm-3 control-label">Цена за час, руб</label>
         <div class="col-sm-2">
             {{ Form::text('hour_price',Input::old('hour_price'),['class' => 'form-control','required'=>'']) }}
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label">Аватар</label>
+        <div class="col-sm-2">
+            {{ Form::file('avatar') }}
         </div>
     </div>
     <div class="form-group">

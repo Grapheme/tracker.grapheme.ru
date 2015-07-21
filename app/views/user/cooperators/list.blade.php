@@ -13,7 +13,11 @@
             @endif
         <div class="col-xs-6 col-sm-3 placeholder">
             <a href="{{ URL::route('cooperators.show',$user->$type->id) }}" class="">
+                @if(!empty($user->$type->avatar) && File::exists(public_path($user->$type->avatar->path)))
+                <img src="{{ asset($user->$type->avatar->path) }}" class="img-responsive" alt="Generic placeholder thumbnail">
+                @else
                 <img data-src="holder.js/200x200/auto/sky" class="img-responsive" alt="Generic placeholder thumbnail">
+                @endif
             </a>
             <a href="{{ URL::route('cooperators.show',$user->$type->id) }}" class=""><h4>{{ $user->$type->fio }}</h4></a>
             @if(!empty($user->$type->position))<span class="text-muted">{{ $user->$type->position }}</span><br>@endif

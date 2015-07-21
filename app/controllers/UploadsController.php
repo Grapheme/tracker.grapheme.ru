@@ -8,11 +8,15 @@ class UploadsController extends BaseController {
 
     /****************************************************************************/
 
-    public static function getUploadedFile($input = 'file'){
+    public static function getUploadedFile($input = 'file', $resize = FALSE){
 
         if (Input::hasFile($input)):
             $fileName = time()."_".Auth::user()->id."_".rand(1000, 1999).'.'.Input::file($input)->getClientOriginalExtension();
-            Input::file($input)->move(Config::get('site.uploads_full_path').'/', $fileName);
+            if(!$resize):
+                Input::file($input)->move(Config::get('site.uploads_full_path').'/', $fileName);
+            else:
+                ImageManipulation::make(Input::file($input)->getRealPath())->resize(200, 200)->save(Config::get('site.uploads_full_path').'/'.$fileName);
+            endif;
             return Config::get('site.uploads_path').'/'.$fileName;
         endif;
         return null;
