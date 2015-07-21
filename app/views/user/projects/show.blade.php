@@ -83,7 +83,7 @@
         <table class="table table-striped">
             <tbody>
             <?php $tasks_total_time = 0;?>
-            <?php $tasks_total_price = 0;?>
+            <?php $tasks_total_price = FALSE;?>
             <?php $earnMoneyCurrentDate = costCalculation(NULL,['tasks' => $tasks]);?>
             @foreach($tasks as $task)
                 <?php
