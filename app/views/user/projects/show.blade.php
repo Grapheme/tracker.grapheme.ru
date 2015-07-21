@@ -62,7 +62,7 @@
         </div>
     </div>
     @endif
-    @if(count($tasks))
+@if(count($tasks))
     @if($access)
         @include(Helper::acclayout('assets.report-links'),['extended'=>['project'=>$project->id]])
         {{ Form::open(array('route'=>'timesheets.move')) }}
@@ -86,7 +86,18 @@
             <?php $tasks_total_price = 0;?>
             <?php $earnMoneyCurrentDate = costCalculation(NULL,['tasks' => $tasks]);?>
             @foreach($tasks as $task)
-                <?php $tasks_total_time += (getLeadTimeMinutes($task)+floor($task->lead_time/60));?>
+                <?php
+                    $tasks_total_time += (getLeadTimeMinutes($task)+floor($task->lead_time/60));
+                    $showMoney = FALSE;
+                    if(isset($task->project->superior_id) && $task->project->superior_id == Auth::user()->id):
+                        $showMoney = TRUE;
+                        if(isset($earnMoneyCurrentDate[$task->id]['earnings'])):
+                            $tasks_total_price += $earnMoneyCurrentDate[$task->id]['earnings'];
+                        endif;
+                    elseif(!$task->project_id):
+                        $showMoney = TRUE;
+                    endif;
+                ?>
                 @if(isset($earnMoneyCurrentDate[$task->id]['earnings']))
                     <?php $tasks_total_price += $earnMoneyCurrentDate[$task->id]['earnings'];?>
                 @endif
@@ -99,7 +110,20 @@
                         @endif
                     </td>
                     <td>
-                        {{ culcLeadTime($task) }} @if($task->user_id == Auth::user()->id)/ {{ isset($earnMoneyCurrentDate[$task->id]['earnings']) ? number_format($earnMoneyCurrentDate[$task->id]['earnings'],2,'.',' ').' руб.' : '' }}@endif
+                        {{ culcLeadTime($task) }}
+                        @if($showMoney)
+                            / {{ isset($earnMoneyCurrentDate[$task->id]['earnings']) ? number_format($earnMoneyCurrentDate[$task->id]['earnings'],2,'.',' ').' руб.' : '' }}
+                            @if($earnMoneyCurrentDate[$task->id]['whose_price'])<br><span class="label label-info">{{ @$earnMoneyCurrentDate[$task->id]['whose_price'] }}</span>@endif
+                        @endif
+                    </td>
+                    <td>
+                        Создана: {{ $task->created_at->format('H:i') }}<br>
+                        @if($task->created_at != $task->start_date)
+                            Запущена: {{ (new myDateTime())->setDateString($task->start_date)->format('H:i') }}<br>
+                        @endif
+                        @if($task->stop_status)
+                            Остановлена: {{ (new myDateTime())->setDateString($task->stop_date)->format('H:i') }}<br>
+                        @endif
                     </td>
                     <td>
                     @if($task->user_id == Auth::user()->id)
@@ -139,7 +163,7 @@
             </tbody>
         </table>
     </div>
-    @endif
+@endif
 @stop
 @section('scripts')
     {{ HTML::script(Config::get('site.theme_path').'/js/docs.min.js') }}
