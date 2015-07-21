@@ -2,7 +2,7 @@
 @section('style') @stop
 
 @section('content')
-    <div class="jumbotron" style="background-image: url(/uploads/images/1422287024_1908.jpg)">
+    <div class="jumbotron">
         <h1>{{ $project->title }}</h1>
         <p class="lead">{{ $project->description }}</p>
     @if($access && $project->user_id == Auth::user()->id)
@@ -37,7 +37,11 @@
         <div class="row">
         @if($project->superior->count())
             <div class="col-lg-4">
-                <img class="img-circle" data-src="holder.js/140x140/auto/sky" alt="">
+            @if(!empty($project->superior->avatar) && File::exists(public_path($project->superior->avatar->path)))
+                <img src="{{ asset($project->superior->avatar->path) }}" class="img-circle" style="width: 140px; height: 140px;" alt="">
+            @else
+                <img data-src="holder.js/200x200/auto/sky" class="img-circle" style="width: 140px; height: 140px;" alt="">
+            @endif
                 <h2>{{ getInitials($project->superior->fio) }}</h2>
                 <p>{{ $project->superior->position }}</p>
                 <p><a class="btn btn-default" href="{{ URL::route('cooperators.show',$project->superior->id) }}" role="button">Подробнее &raquo;</a></p>
@@ -45,7 +49,11 @@
         @endif
         @foreach($project->team as $user)
             <div class="col-lg-4">
-                <img class="img-circle" data-src="holder.js/140x140/auto/sky" alt="">
+            @if(!empty($user->avatar) && File::exists(public_path($user->avatar->path)))
+                <img src="{{ asset($user->avatar->path) }}" class="img-circle" style="width: 140px; height: 140px;" alt="">
+            @else
+                <img data-src="holder.js/200x200/auto/sky" class="img-circle" style="width: 140px; height: 140px;" alt="">
+            @endif
                 <h2>{{ getInitials($user->fio) }}</h2>
                 <p>{{ $user->position }}</p>
                 <p><a class="btn btn-default" href="{{ URL::route('cooperators.show',$user->id) }}" role="button">Подробнее &raquo;</a></p>

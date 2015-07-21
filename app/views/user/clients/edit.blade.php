@@ -5,7 +5,7 @@
     <h1 class="page-header">Редактирование клиента</h1>
     <div class="row">
         <div class="col-md-8">
-        {{ Form::model($client,array('route'=>array('clients.update',$client->id),'role'=>'form','class'=>'form-horizontal','method'=>'PUT')) }}
+        {{ Form::model($client,array('route'=>array('clients.update',$client->id),'role'=>'form','class'=>'form-horizontal','method'=>'PUT','files'=>TRUE)) }}
             <div class="form-group has-feedback">
                 <label for="inputTitle" class="col-sm-3 control-label">Полное название</label>
                 <div class="col-sm-4">
@@ -102,6 +102,12 @@
                 <label for="inputOkpo" class="col-sm-3 control-label">ОКПО</label>
                 <div class="col-sm-4">
                     {{ Form::text('okpo',Input::old('okpo'),['class'=>'form-control','placeholder'=>'','id'=>'inputOkpo']) }}
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Лого</label>
+                <div class="col-sm-2">
+                    {{ Form::file('logo') }}
                 </div>
             </div>
             <div class="form-group">

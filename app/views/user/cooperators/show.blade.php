@@ -3,7 +3,9 @@
 
 @section('content')
     <div class="jumbotron">
-        <img class="img-circle" data-src="holder.js/140x140/auto/sky" alt="">
+        @if(!empty($user->avatar) && File::exists(public_path($user->avatar->path)))
+            <img src="{{ asset($user->avatar->path) }}" alt="">
+        @endif
         <h1>{{ $user->fio }}</h1>
         <p class="lead">{{ $user->position }}</p>
         @if($access)

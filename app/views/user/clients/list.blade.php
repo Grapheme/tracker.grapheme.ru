@@ -8,7 +8,11 @@
         @foreach($clients as $client)
         <div class="col-xs-6 col-sm-3 placeholder">
             <a href="{{ URL::route('clients.show',$client->id) }}" class="">
-                <img data-src="holder.js/200x200/auto/sky" class="img-responsive" alt="Generic placeholder thumbnail">
+                @if(!empty($client->logo) && File::exists(public_path($client->logo->path)))
+                    <img src="{{ asset($client->logo->path) }}" class="img-responsive" alt="Generic placeholder thumbnail">
+                @else
+                    <img data-src="holder.js/200x200/auto/sky" class="img-responsive" alt="Generic placeholder thumbnail">
+                @endif
             </a>
             <a href="{{ URL::route('clients.show',$client->id) }}" class=""><h4>{{ !empty($client->short_title) ? $client->short_title : $client->title }}</h4></a>
             <span class="text-muted">{{ $client->description }}</span>

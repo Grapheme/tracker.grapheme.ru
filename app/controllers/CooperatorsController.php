@@ -57,14 +57,14 @@ class CooperatorsController extends \BaseController {
 			return Redirect::route('profile');
 		elseif(Team::where('superior_id',Auth::user()->id)->where('cooperator_id',$id)->exists()):
             $tasks = array();
-            $user = Team::where('superior_id',Auth::user()->id)->where('cooperator_id',$id)->first()->cooperator;
+            $user = Team::where('superior_id',Auth::user()->id)->where('cooperator_id',$id)->first()->cooperator()->with('avatar')->first();
             if ($ProjectIDs = ProjectOwners::where('user_id',Auth::user()->id)->lists('id')):
                 $tasks = ProjectTask::where('user_id',$id)->orderBy('updated_at', 'DESC')->whereIn('project_id',$ProjectIDs)->get();
             endif;
             return View::make(Helper::acclayout('cooperators.show'),compact('user','tasks'))->with('access',TRUE);
         elseif(Team::where('superior_id',$id)->where('cooperator_id',Auth::user()->id)->exists()):
             $tasks = array();
-            $user = Team::where('superior_id',$id)->where('cooperator_id',Auth::user()->id)->first()->superior;
+            $user = Team::where('superior_id',$id)->where('cooperator_id',Auth::user()->id)->first()->superior()->with('avatar')->first();
             if ($ProjectIDs = ProjectTeam::where('user_id',Auth::user()->id)->lists('project_id')):
                 $tasks = ProjectTask::where('user_id',$id)->orderBy('updated_at', 'DESC')->whereIn('project_id',$ProjectIDs)->get();
             endif;

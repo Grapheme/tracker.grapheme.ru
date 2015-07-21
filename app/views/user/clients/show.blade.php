@@ -2,7 +2,10 @@
 @section('style') @stop
 
 @section('content')
-    <div class="jumbotron" style="background-image: url(/uploads/images/1422287024_1908.jpg)">
+    <div class="jumbotron">
+        @if(!empty($client->logo) && File::exists(public_path($client->logo->path)))
+            <img src="{{ asset($client->logo->path) }}" alt="">
+        @endif
         <h1>{{ !empty($client->title) ? $client->short_title : $client->title }}</h1>
         <p class="lead">{{ $client->description }}</p>
         <a role="button" href="{{ URL::route('clients.edit',$client->id) }}" class="btn btn-primary btn-sm">Редактировать</a>

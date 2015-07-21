@@ -26,6 +26,7 @@ class CreateClientsTable extends Migration {
             $table->string('kpp',50)->nullable();
             $table->string('ogrn',50)->nullable();
             $table->string('okpo',50)->nullable();
+            $table->integer('image_id')->nullable()->default(0)->unsigned();
 			$table->timestamps();
 		});
 	}
