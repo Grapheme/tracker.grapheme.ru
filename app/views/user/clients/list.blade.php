@@ -6,7 +6,7 @@
     @if(count($clients))
     <div class="row placeholders">
         @foreach($clients as $client)
-        <div class="col-xs-6 col-sm-3 placeholder">
+        <div style="min-height: 300px;" class="col-xs-6 col-sm-3 placeholder">
             <a href="{{ URL::route('clients.show',$client->id) }}" class="">
                 @if(!empty($client->logo) && File::exists(public_path($client->logo->path)))
                     <img src="{{ asset($client->logo->path) }}" class="img-responsive" alt="Generic placeholder thumbnail">

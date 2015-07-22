@@ -12,7 +12,7 @@
     <div class="row placeholders">
     @foreach($projects['my'] as $index => $project)
         @if($project->projects->in_archive == $archive)
-        <div class="col-xs-6 col-sm-3 placeholder">
+        <div style="min-height: 350px;" class="col-xs-6 col-sm-3 placeholder">
             <a href="{{ URL::route('projects.show',$project->projects->id) }}" class="">
                 @if(File::exists(public_path('uploads/cats/cat-'.($index+1).'.jpg')))
                     <img src="{{ asset('uploads/cats/cat-'.($index+1).'.jpg') }}" class="img-responsive" alt="{{ $project->projects->title }}">

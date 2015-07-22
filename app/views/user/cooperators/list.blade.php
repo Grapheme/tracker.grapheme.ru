@@ -12,7 +12,7 @@
             @else
                 <?php $type = 'cooperator'; ?>
             @endif
-        <div class="col-xs-6 col-sm-3 placeholder">
+        <div style="min-height: 300px;" class="col-xs-6 col-sm-3 placeholder">
             <a href="{{ URL::route('cooperators.show',$user->$type->id) }}" class="">
                 @if(!empty($user->$type->avatar) && File::exists(public_path($user->$type->avatar->path)))
                 <img src="{{ asset($user->$type->avatar->path) }}" class="img-responsive" alt="Generic placeholder thumbnail">
