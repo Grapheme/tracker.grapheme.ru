@@ -8,6 +8,7 @@
     @else
     <a href="{{ URL::route('projects.archive') }}" class="btn btn-link">Архивные</a>
     @endif
+    <div style="margin-top: 40px"> </div>
     @if(count($projects['my']))
     <div class="row placeholders">
     @foreach($projects['my'] as $index => $project)
