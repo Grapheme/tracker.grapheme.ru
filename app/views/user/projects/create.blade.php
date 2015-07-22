@@ -60,7 +60,7 @@
                 <div class="col-sm-6">
                 @foreach($project_team as $user_id => $user)
                     <div class="form-inline">
-                        {{ Form::checkbox('team['.$user_id.'][user_id]',$user_id) }} {{ getInitials($user['fio']) }}
+                        {{ Form::checkbox('team['.$user_id.'][user_id]',$user_id, TRUE) }} {{ getInitials($user['fio']) }}
                         {{ Form::text('team['.$user_id.'][hour_price]',$user['hour_price'] ? $user['hour_price'] : '',['class'=>'form-control','placeholder'=>'Цена за час']) }}
                     </div>
                 @endforeach
