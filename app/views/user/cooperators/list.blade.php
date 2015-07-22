@@ -6,6 +6,7 @@
     @if(!empty($users))
     <div class="row placeholders">
         @foreach($users as $user)
+            @if($user->excluded == 1) <?php continue;?> @endif
             @if($user->cooperator->id == Auth::user()->id)
                 <?php $type = 'superior'; ?>
             @else

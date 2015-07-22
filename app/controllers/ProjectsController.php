@@ -23,7 +23,7 @@ class ProjectsController extends \BaseController {
 	public function create(){
 
 		$project_team = array();
-		if($team = Team::where('superior_id',Auth::user()->id)->with('cooperator')->get()):
+		if($team = Team::where('superior_id',Auth::user()->id)->where('excluded', 0)->with('cooperator')->get()):
 			foreach($team as $user):
                 if (!empty($user->cooperator)):
                     $project_team[$user->cooperator->id]['fio'] = $user->cooperator->fio;
@@ -83,7 +83,7 @@ class ProjectsController extends \BaseController {
 		if($project = ProjectOwners::where('project_id',$id)->where('user_id',Auth::user()->id)->first()->project()->with('team','owners','client')->first()):
             $setProjectValues[$project->superior_id]['hour_price'] = ProjectOwners::where('project_id',$id)->where('user_id',$project->superior_id)->pluck('hour_price');
             $project_team = $setProjectTeamIDs = [];
-            if($team = Team::where('superior_id',Auth::user()->id)->with('cooperator')->get()):
+            if($team = Team::where('superior_id',Auth::user()->id)->where('excluded', 0)->with('cooperator')->get()):
                 foreach($team as $user):
                     if (!empty($user->cooperator)):
                         $project_team[$user->cooperator->id] = $user->cooperator->fio;

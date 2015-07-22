@@ -10,7 +10,7 @@
         <p class="lead">{{ $user->position }}</p>
         @if($access)
         <a role="button" href="{{ URL::route('cooperators.access.index',$user->id) }}" class="btn btn-primary btn-sm">Настройка доступа</a>
-        {{ Form::open(array('route'=>array('cooperators.destroy',$user->id),'method'=>'DELETE','style'=>'display:inline-block')) }}
+        {{ Form::open(array('route'=>array('cooperators.destroy',$user->id),'method'=>'DELETE','style'=>'display:inline-block', 'class'=>'js-btn-excluded')) }}
             {{ Form::submit('Исключить',['class'=>'btn btn-danger btn-sm']) }}
         {{ Form::close() }}
         @endif

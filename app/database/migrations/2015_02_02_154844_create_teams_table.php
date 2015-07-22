@@ -10,6 +10,7 @@ class CreateTeamsTable extends Migration {
 			$table->increments('id');
 			$table->integer('superior_id')->nullable()->default(0)->unsigned();
 			$table->integer('cooperator_id')->nullable()->default(0)->unsigned();
+			$table->boolean('excluded')->nullable()->default(0)->unsigned();
 			$table->timestamps();
 		});
 	}

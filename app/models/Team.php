@@ -3,7 +3,7 @@
 class Team extends \BaseModel {
 
 	protected $table = 'teams';
-	protected $fillable = ['superior_id','cooperator_id'];
+	protected $fillable = ['superior_id','cooperator_id','excluded'];
 
 	public function superior(){
 

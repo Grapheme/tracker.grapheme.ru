@@ -55,24 +55,24 @@ class CooperatorsController extends \BaseController {
 
 		if (Auth::user()->id == $id):
 			return Redirect::route('profile');
-		elseif(Team::where('superior_id',Auth::user()->id)->where('cooperator_id',$id)->exists()):
-            $tasks = array();
-            $user = Team::where('superior_id',Auth::user()->id)->where('cooperator_id',$id)->first()->cooperator()->with('avatar')->first();
-            if ($ProjectIDs = ProjectOwners::where('user_id',Auth::user()->id)->lists('id')):
-                $tasks = ProjectTask::where('user_id',$id)->orderBy('updated_at', 'DESC')->whereIn('project_id',$ProjectIDs)->get();
-            endif;
-            return View::make(Helper::acclayout('cooperators.show'),compact('user','tasks'))->with('access',TRUE);
-        elseif(Team::where('superior_id',$id)->where('cooperator_id',Auth::user()->id)->exists()):
-            $tasks = array();
-            $user = Team::where('superior_id',$id)->where('cooperator_id',Auth::user()->id)->first()->superior()->with('avatar')->first();
-            if ($ProjectIDs = ProjectTeam::where('user_id',Auth::user()->id)->lists('project_id')):
-                $tasks = ProjectTask::where('user_id',$id)->orderBy('updated_at', 'DESC')->whereIn('project_id',$ProjectIDs)->get();
-            endif;
-            return View::make(Helper::acclayout('cooperators.show'),compact('user','tasks'))->with('access',FALSE);
+		elseif (Team::where('superior_id', Auth::user()->id)->where('cooperator_id', $id)->where('excluded', 0)->exists()):
+			$tasks = array();
+			$user = Team::where('superior_id', Auth::user()->id)->where('cooperator_id', $id)->first()->cooperator()->with('avatar')->first();
+			if ($ProjectIDs = ProjectOwners::where('user_id', Auth::user()->id)->lists('id')):
+				$tasks = ProjectTask::where('user_id', $id)->orderBy('updated_at', 'DESC')->whereIn('project_id', $ProjectIDs)->get();
+			endif;
+			return View::make(Helper::acclayout('cooperators.show'), compact('user', 'tasks'))->with('access', TRUE);
+		elseif (Team::where('superior_id', $id)->where('cooperator_id', Auth::user()->id)->where('excluded', 0)->exists()):
+			$tasks = array();
+			$user = Team::where('superior_id', $id)->where('cooperator_id', Auth::user()->id)->first()->superior()->with('avatar')->first();
+			if ($ProjectIDs = ProjectTeam::where('user_id', Auth::user()->id)->lists('project_id')):
+				$tasks = ProjectTask::where('user_id', $id)->orderBy('updated_at', 'DESC')->whereIn('project_id', $ProjectIDs)->get();
+			endif;
+			return View::make(Helper::acclayout('cooperators.show'), compact('user', 'tasks'))->with('access', FALSE);
 		else:
-            $user = User::where('id',$id)->first();
-            $tasks = array();
-            return View::make(Helper::acclayout('cooperators.show'),compact('user','tasks'))->with('access',FALSE);
+			$user = User::where('id', $id)->first();
+			$tasks = array();
+			return View::make(Helper::acclayout('cooperators.show'), compact('user', 'tasks'))->with('access', FALSE);
 		endif;
 	}
 
@@ -104,10 +104,12 @@ class CooperatorsController extends \BaseController {
 
 	public function destroy($id){
 
-		if (Team::where('superior_id',Auth::user()->id)->where('cooperator_id',$id)->exists()):
-			Team::where('cooperator_id',$id)->delete();
-			ProjectTeam::where('user_id',$id)->delete();
-			return Redirect::route('cooperators.index')->with('message','Сотрудник исключен успешно.');
+		if ($team = Team::where('superior_id', Auth::user()->id)->where('cooperator_id', $id)->first()):
+			$team->excluded = 1;
+			$team->save();
+			$team->touch();
+			ProjectTeam::where('user_id', $id)->delete();
+			return Redirect::route('cooperators.index')->with('message', 'Сотрудник исключен успешно.');
 		else:
 			App::abort(404);
 		endif;
