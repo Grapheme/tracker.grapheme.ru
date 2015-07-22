@@ -16,9 +16,12 @@
     endforeach;
 ?>
 <ul class="nav nav-sidebar">
+    <?php $clients_count = Clients::where('superior_id',Auth::user()->id)->count(); ?>
+    @if($clients_count)
     <li {{ Helper::isRoute('clients.index') }}>
-        <a href="{{ URL::route('clients.index') }}">Клиенты <span class="badge">{{ Clients::where('superior_id',Auth::user()->id)->count() }}</span></a>
+        <a href="{{ URL::route('clients.index') }}">Клиенты <span class="badge">{{ $clients_count }}</span></a>
     </li>
+    @endif
     <li {{ Helper::isRoute('projects.index') }}>
         <a href="{{ URL::route('projects.index') }}">Проекты <span class="badge">{{ $activeProjectCount.'/'.$archivedProjectCount }}</span></a>
     </li>
