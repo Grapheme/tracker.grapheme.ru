@@ -3,6 +3,10 @@
 
 @section('content')
     @if(!isset($status))
+    @if(!empty($profile->avatar) && File::exists(public_path($profile->avatar->path)))
+        <img src="{{ asset($profile->avatar->path) }}" class="img-circle" style="width: 140px; height: 140px; position: fixed;" alt="">
+        <div class="clearfix"></div>
+    @endif
     {{ Form::model($profile,['route'=>'profile.update','method'=>'put','role'=>'form','class'=>'form-horizontal','files'=>TRUE]) }}
     <div class="form-group">
         <label class="col-sm-3 control-label">Цена за час, руб</label>

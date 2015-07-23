@@ -18,7 +18,7 @@ class AccountController extends \BaseController {
 
 	public function profile(){
 
-        $profile = Auth::user();
+        $profile = User::where('id',Auth::user()->id)->with('avatar')->first();
         $requisites = Auth::user()->getRequisites;
 		return View::make(Helper::acclayout('profile'),compact('profile','requisites'));
 	}
