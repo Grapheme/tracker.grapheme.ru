@@ -79,12 +79,6 @@ class ReportController extends \BaseController {
         foreach(Clients::where('superior_id',Auth::user()->id)->get() as $client):
             $clients[$client->id] = !empty($client->short_title) ? $client->short_title : $client->title ;
         endforeach;
-        foreach(ProjectOwners::where('user_id',Auth::user()->id)->with('projects')->get() as $projectOwner):
-            $projects[$projectOwner->projects->id] = $projectOwner->projects->title;
-        endforeach;
-        foreach(ProjectTeam::where('user_id',Auth::user()->id)->with('projects')->get() as $projectTeam):
-            $projects[$projectTeam->projects->id] = $projectTeam->projects->title;
-        endforeach;
         foreach(Team::where('superior_id',Auth::user()->id)->orWhere('cooperator_id',Auth::user()->id)->with('cooperator','superior')->get() as $userTeam):
             if ($userTeam->superior_id != Auth::user()->id):
                 $users[$userTeam->superior_id] = $userTeam->superior->fio;
@@ -92,6 +86,13 @@ class ReportController extends \BaseController {
             if ($userTeam->cooperator_id != Auth::user()->id):
                 $users[$userTeam->cooperator_id] = $userTeam->cooperator->fio;
             endif;
+        endforeach;
+
+        foreach(ProjectOwners::where('user_id',Auth::user()->id)->with('projects')->get() as $projectOwner):
+            $projects[$projectOwner->projects->id] = $projectOwner->projects->title;
+        endforeach;
+        foreach(ProjectTeam::where('user_id',Auth::user()->id)->with('projects')->get() as $projectTeam):
+            $projects[$projectTeam->projects->id] = $projectTeam->projects->title;
         endforeach;
         $projectsIDs = array();
         if(count($projects)):
@@ -109,7 +110,23 @@ class ReportController extends \BaseController {
 
         $startOfDay = Input::has('begin_date') && Input::has('begin_date') != '' ? \Carbon\Carbon::createFromFormat('Y-m-d',Input::get('begin_date'))->format('Y-m-d 00:00:00') : \Carbon\Carbon::now()->startOfWeek()->format('Y-m-d 00:00:00');
         $endOfDay = Input::has('end_date') && Input::has('end_date') != '' ? \Carbon\Carbon::createFromFormat('Y-m-d',Input::get('end_date'))->format('Y-m-d 00:00:00') : \Carbon\Carbon::now()->format('Y-m-d 00:00:00');
-        $tasks = self::getReportTasks($startOfDay,$endOfDay, []);
+
+        foreach(ProjectOwners::where('user_id',Auth::user()->id)->with('projects')->get() as $projectOwner):
+            $projects[$projectOwner->projects->id] = $projectOwner->projects->title;
+        endforeach;
+        foreach(ProjectTeam::where('user_id',Auth::user()->id)->with('projects')->get() as $projectTeam):
+            $projects[$projectTeam->projects->id] = $projectTeam->projects->title;
+        endforeach;
+        $projectsIDs = array();
+        if(count($projects)):
+            foreach($projects as $project_id => $project_title):
+                if($project_id):
+                    $projectsIDs[] = $project_id;
+                endif;
+            endforeach;
+        endif;
+
+        $tasks = self::getReportTasks($startOfDay,$endOfDay, $projectsIDs);
         switch($format):
             case 'html':
                 return View::make(Helper::acclayout('reports.templates.'.$type),compact('tasks','startOfDay','endOfDay'));
