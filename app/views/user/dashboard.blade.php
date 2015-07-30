@@ -9,7 +9,7 @@
 @stop
 @section('content')
 <?php
-    $projects = ProjectFavorite::where('user_id',Auth::user()->id)->with('project','project.client','project.team','project.tasks')->get();
+    $projects = ProjectFavorite::where('user_id',Auth::user()->id)->with('project.logo','project.client','project.team','project.tasks')->get();
     $tasks = ProjectTask::where('user_id',Auth::user()->id)->where('start_status',1)->where('stop_status',0)->with('cooperator','project')->get();
     $dt_request = Request::get('date') ? Request::get('date') : date('Y-m-d');
 ?>
