@@ -53,7 +53,11 @@ class TimeSheetsController extends \BaseController {
                 'start_date' => date("Y-m-d H:i:s"), 'set_date' => $set_date,
                 'lead_time' => str2secLeadTime(Input::get('lead_time'))])
             ):
-                return Redirect::route('timesheets.index', ['date' => $set_date])->with('message', 'Задача создана успешно.');
+                if(Input::has('redirect')):
+                    return Redirect::route('dashboard')->with('message', 'Задача создана успешно.');
+                else:
+                    return Redirect::route('timesheets.index', ['date' => $set_date])->with('message', 'Задача создана успешно.');
+                endif;
             else:
                 return Redirect::back()->with('message', 'Возникла ошибка при записи в БД');
             endif;

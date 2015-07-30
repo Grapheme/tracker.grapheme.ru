@@ -1,6 +1,12 @@
 @extends(Helper::acclayout())
-@section('style') @stop
-
+@section('style')
+<style type="text/css">
+    .popover{
+        width: 745px !important;
+        max-width: 745px !important;
+    }
+</style>
+@stop
 @section('content')
 <?php
     $projects = ProjectFavorite::where('user_id',Auth::user()->id)->with('project','project.client','project.team','project.tasks')->get();
@@ -20,13 +26,21 @@
 <div class="row placeholders">
     @foreach($projects as $project)
         <div class="col-xs-6 col-sm-3 placeholder">
-            <a href="{{ URL::route('projects.show',$project->project->id) }}" class="">
-            @if(File::exists(public_path('uploads/cats/cat-'.(rand(0,14)+1).'.jpg')))
-                <img src="{{ asset('uploads/cats/cat-'.(rand(0,14)+1).'.jpg') }}" class="img-responsive" alt="{{ $project->projects->title }}">
-            @else
-                <img data-src="holder.js/200x200/auto/sky" class="img-responsive" alt="{{ $project->projects->title }}">
-            @endif
-            </a>
+            <div class="project-img">
+                <a href="{{ URL::route('projects.show',$project->project->id) }}" class="">
+                @if(File::exists(public_path('uploads/cats/cat-'.(rand(0,14)+1).'.jpg')))
+                    <img src="{{ asset('uploads/cats/cat-'.(rand(0,14)+1).'.jpg') }}" class="img-responsive" alt="{{ $project->projects->title }}">
+                @else
+                    <img data-src="holder.js/200x200/auto/sky" class="img-responsive" alt="{{ $project->projects->title }}">
+                @endif
+                </a>
+                <button type="button" class="btn btn-link btn-popover-add-task" data-project-id="{{ $project->id }}" data-placement="bottom" data-toggle="popover" title="Добавить текущую задачу" style="position: absolute; left: 30px; top: 10px;">
+                    <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
+                </button>
+            </div>
+            <div id="popover_content_wrapper" class="hidden">
+                @include(Helper::acclayout('timesheets.forms.create'),['projects' => [], 'popover' => 1,'redirect_route' => 'dashboard'])
+            </div>
             {{ $project->project->in_archive? '<p>В архиве</p>' : '' }}
             <a href="{{ URL::route('projects.show',$project->project->id) }}" class=""><h4>{{ $project->project->title }}</h4></a>
             <span class="text-muted">{{ $project->project->description }}</span>
@@ -125,4 +139,32 @@
 @stop
 @section('scripts')
 {{ HTML::script(Config::get('site.theme_path').'/js/docs.min.js') }}
+    <script type="application/javascript">
+        $(function(){
+            $.fn.hasAttr = function(name) {
+                return this.attr(name) !== undefined;
+            };
+            $(".btn-popover-add-task").popover({
+                html : true,
+                content: function() {
+                    var project_id = $(this).data('project-id');
+                    $("#input-project-id").val(project_id);
+                    return $("#popover_content_wrapper").html();
+                }
+            }).on('shown.bs.popover', function(e) {
+                var current_popover_describedby = $(e.target).attr('aria-describedby');
+                $(".btn-popover-add-task").each(function(index){
+                    if($(this).hasAttr('aria-describedby')){
+                        var popover_describedby = $(this).attr('aria-describedby')
+                        if(popover_describedby != current_popover_describedby){
+                            $(this).popover('hide');
+                        }
+                    }
+                });
+            });;
+            $(document).on('click', '.btn-popover-task-cancel', function (event) {
+                $(".btn-popover-add-task").popover('hide');
+            });
+        });
+    </script>
 @stop
