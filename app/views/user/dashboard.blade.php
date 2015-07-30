@@ -27,6 +27,7 @@
     @foreach($projects as $index => $project)
         <div class="col-xs-6 col-sm-3 placeholder">
             <div class="project-img">
+                {{ Helper::ta($project); }}
                 <a href="{{ URL::route('projects.show',$project->project->id) }}" class="">
                     @if(!empty($project->projects->logo) && File::exists(public_path($project->projects->logo->path)))
                         <img src="{{ asset($project->projects->logo->path) }}" class="img-responsive" alt="{{ $project->projects->title }}">
