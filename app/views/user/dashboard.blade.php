@@ -24,15 +24,17 @@
 </div>
 @if(count($projects))
 <div class="row placeholders">
-    @foreach($projects as $project)
+    @foreach($projects as $index => $project)
         <div class="col-xs-6 col-sm-3 placeholder">
             <div class="project-img">
                 <a href="{{ URL::route('projects.show',$project->project->id) }}" class="">
-                @if(File::exists(public_path('uploads/cats/cat-'.(rand(0,14)+1).'.jpg')))
-                    <img src="{{ asset('uploads/cats/cat-'.(rand(0,14)+1).'.jpg') }}" class="img-responsive" alt="{{ $project->projects->title }}">
-                @else
-                    <img data-src="holder.js/200x200/auto/sky" class="img-responsive" alt="{{ $project->projects->title }}">
-                @endif
+                    @if(!empty($project->projects->logo) && File::exists(public_path($project->projects->logo->path)))
+                        <img src="{{ asset($project->projects->logo->path) }}" class="img-responsive" alt="{{ $project->projects->title }}">
+                    @elseif(File::exists(public_path('uploads/cats/cat-'.($index+1).'.jpg')))
+                        <img src="{{ asset('uploads/cats/cat-'.($index+1).'.jpg') }}" class="img-responsive" alt="{{ $project->projects->title }}">
+                    @else
+                        <img data-src="holder.js/200x200/auto/sky" class="img-responsive" alt="{{ $project->projects->title }}">
+                    @endif
                 </a>
                 <button type="button" class="btn btn-link btn-popover-add-task" data-project-id="{{ $project->id }}" data-placement="bottom" data-toggle="popover" title="Добавить текущую задачу" style="position: absolute; left: 30px; top: 10px;">
                     <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
