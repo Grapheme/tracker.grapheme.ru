@@ -48,7 +48,7 @@ class ClientsController extends \BaseController {
 	public function show($id){
 
         if($client = Clients::where('id',$id)->where('superior_id',Auth::user()->id)->with('logo')->first()):
-            $projects = Project::where('client_id',$client->id)->with('basecamp_projects')->get();
+            $projects = Project::where('client_id',$client->id)->with('basecamp_projects','logo')->get();
             $tasks = array();
             if($projectIDs = Project::where('client_id',$client->id)->lists('id')):
                 $tasks = ProjectTask::whereIn('project_id',$projectIDs)->with('cooperator','basecamp_task')->get();

@@ -3,8 +3,8 @@
 class Project extends \BaseModel {
 
 	protected $table = 'projects';
-    protected $guarded = ['id','_method','_token','superior_hour_price'];
-	protected $fillable = ['superior_id','client_id','title','description','budget','visible'];
+    protected $guarded = ['id','_method','_token','superior_hour_price','logo'];
+	protected $fillable = ['superior_id','client_id','title','description','budget','visible','image_id'];
 	public static $rules = ['title' => 'required'];
 
 	public function superior(){
@@ -41,4 +41,8 @@ class Project extends \BaseModel {
 
         return $this->belongsToMany('Project','projects_favorites','project_id','user_id');
     }
+	public function logo(){
+
+		return $this->hasOne('Upload', 'id', 'image_id');
+	}
 }

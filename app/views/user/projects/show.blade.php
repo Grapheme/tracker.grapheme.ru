@@ -3,6 +3,9 @@
 
 @section('content')
     <div class="jumbotron">
+        @if(!empty($project->logo) && File::exists(public_path($project->logo->path)))
+            <img src="{{ asset($project->logo->path) }}" alt="">
+        @endif
         <h1>{{ $project->title }}</h1>
         <p class="lead">{{ $project->description }}</p>
     @if($access && $project->user_id == Auth::user()->id)

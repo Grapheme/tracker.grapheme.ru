@@ -5,7 +5,7 @@
     <h1 class="page-header">Редактирование проекта</h1>
     <div class="row">
         <div class="col-md-8">
-        {{ Form::model($project,array('route'=>array('projects.update',$project->id),'role'=>'form','class'=>'form-horizontal','method'=>'PUT')) }}
+        {{ Form::model($project,array('route'=>array('projects.update',$project->id),'role'=>'form','class'=>'form-horizontal','method'=>'PUT','files'=>TRUE)) }}
             @if($project->superior_id == Auth::user()->id)
             <div class="form-group">
                 <label class="col-sm-3 control-label">Клиент</label>
@@ -40,6 +40,12 @@
                 <label for="priceBudget" class="col-sm-3 control-label">Бюджет</label>
                 <div class="col-sm-4">
                     {{ Form::text('budget',Input::old('budget'),['class'=>'form-control','placeholder'=>'']) }}
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Лого</label>
+                <div class="col-sm-2">
+                    {{ Form::file('logo') }}
                 </div>
             </div>
             <div class="form-group">

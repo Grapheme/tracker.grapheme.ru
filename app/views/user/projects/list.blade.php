@@ -15,10 +15,12 @@
         @if($project->projects->in_archive == $archive)
         <div style="min-height: 350px;" class="col-xs-6 col-sm-3 placeholder">
             <a href="{{ URL::route('projects.show',$project->projects->id) }}" class="">
-                @if(File::exists(public_path('uploads/cats/cat-'.($index+1).'.jpg')))
+                @if(!empty($project->projects->logo) && File::exists(public_path($project->projects->logo->path)))
+                    <img src="{{ asset($project->projects->logo->path) }}" class="img-responsive" alt="{{ $project->projects->title }}">
+                @elseif(File::exists(public_path('uploads/cats/cat-'.($index+1).'.jpg')))
                     <img src="{{ asset('uploads/cats/cat-'.($index+1).'.jpg') }}" class="img-responsive" alt="{{ $project->projects->title }}">
                 @else
-                <img data-src="holder.js/200x200/auto/sky" class="img-responsive" alt="{{ $project->projects->title }}">
+                    <img data-src="holder.js/200x200/auto/sky" class="img-responsive" alt="{{ $project->projects->title }}">
                 @endif
             </a>
             <a href="{{ URL::route('projects.show',$project->projects->id) }}" class=""><h4>{{ $project->projects->title }}</h4></a>

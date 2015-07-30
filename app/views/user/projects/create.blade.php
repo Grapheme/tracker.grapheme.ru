@@ -5,7 +5,7 @@
     <h1 class="page-header">Новый проект</h1>
     <div class="row">
         <div class="col-md-8">
-        {{ Form::open(array('route'=>'projects.store','role'=>'form','class'=>'form-horizontal')) }}
+        {{ Form::open(array('route'=>'projects.store','role'=>'form','class'=>'form-horizontal','files'=>TRUE)) }}
             {{ Form::hidden('superior_id',Auth::user()->id) }}
             <div class="form-group">
                 <label class="col-sm-3 control-label">Клиент</label>
@@ -37,6 +37,12 @@
                 <label for="priceBudget" class="col-sm-3 control-label">Бюджет</label>
                 <div class="col-sm-4">
                     {{ Form::text('budget',NULL,['class'=>'form-control','placeholder'=>'']) }}
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Лого</label>
+                <div class="col-sm-2">
+                    {{ Form::file('logo') }}
                 </div>
             </div>
             <div class="form-group">

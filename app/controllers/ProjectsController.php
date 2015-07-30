@@ -8,8 +8,8 @@ class ProjectsController extends \BaseController {
 
 	public function index(){
 
-		$projects['my'] = ProjectOwners::where('user_id',Auth::user()->id)->orderBy('updated_at','DESC')->with('projects','projects.client','projects.team','projects.tasks')->get();
-		$projects['subscribe'] = ProjectTeam::where('user_id',Auth::user()->id)->with('projects','projects.client','projects.team','projects.tasks')->get();
+		$projects['my'] = ProjectOwners::where('user_id',Auth::user()->id)->orderBy('updated_at','DESC')->with('projects.logo','projects.client','projects.team','projects.tasks')->get();
+		$projects['subscribe'] = ProjectTeam::where('user_id',Auth::user()->id)->with('projects.logo','projects.client','projects.team','projects.tasks')->get();
         return View::make(Helper::acclayout('projects.list'),compact('projects'))->with('archive',0);
 	}
 
@@ -42,7 +42,19 @@ class ProjectsController extends \BaseController {
 
 		$validator = Validator::make(Input::all(),Project::$rules);
 		if($validator->passes()):
-			if($project = Project::create(Input::except('_token','superior_hour_price','team','invite_team'))):
+
+            $post = Input::except('_token','superior_hour_price','team','invite_team');
+            if ($image_path = UploadsController::getUploadedFile('logo', TRUE)):
+                $upload = new Upload();
+                $upload->path = $image_path;
+                $upload->original_name = 'logo.jpg';
+                $upload->filesize = 0;
+                $upload->mimetype = '';
+                $upload->save();
+                $post['image_id'] = $upload->id;
+            endif;
+
+			if($project = Project::create($post)):
 				ProjectOwners::create(['project_id'=>$project->id,'user_id'=>Auth::user()->id,'hour_price'=>Input::get('superior_hour_price')]);
                 if (Input::has('favorite')):
                     Project::where('id',$project->id)->first()->favorites_projects()->sync([Auth::user()->id]);
@@ -66,7 +78,7 @@ class ProjectsController extends \BaseController {
 
         $inFavorite = ProjectFavorite::where('project_id',$id)->where('user_id',Auth::user()->id)->count();
 		if(ProjectOwners::where('project_id',$id)->where('user_id',Auth::user()->id)->exists()):
-            $project = ProjectOwners::where('project_id',$id)->where('user_id',Auth::user()->id)->first()->project()->with('superior.avatar','client.logo','team.avatar')->first();
+            $project = ProjectOwners::where('project_id',$id)->where('user_id',Auth::user()->id)->first()->project()->with('logo','superior.avatar','client.logo','team.avatar')->first();
 			$tasks = ProjectTask::where('project_id',$project->id)->with('cooperator','basecamp_task')->get();
             return View::make(Helper::acclayout('projects.show'),compact('project','tasks','inFavorite'))->with('access',TRUE);
 		elseif(ProjectTeam::where('project_id',$id)->where('user_id',Auth::user()->id)->exists()):
@@ -113,7 +125,24 @@ class ProjectsController extends \BaseController {
             if (ProjectOwners::where('project_id',$id)->where('user_id',Auth::user()->id)->exists() === FALSE):
                 return Redirect::route('projects.show',$id)->with('message','Проект редактировать запрещено.');
             endif;
-			Project::where('id',$id)->update(Input::except('_method','_token','superior_hour_price','team','invite_team','favorite'));
+            $post = Input::except('_method','_token','superior_hour_price','team','invite_team','favorite','logo');
+            $project = Project::where('id', $id)->first();
+            if ($image_path = UploadsController::getUploadedFile('logo', TRUE)):
+                if($old_image_path = Upload::where('id', $project->image_id)->pluck('path')):
+                    if(File::exists(public_path($old_image_path))):
+                        File::delete(public_path($old_image_path));
+                        Upload::where('id', Auth::user()->image_id)->delete();
+                    endif;
+                endif;
+                $upload = new Upload();
+                $upload->path = $image_path;
+                $upload->original_name = 'logo.jpg';
+                $upload->filesize = 0;
+                $upload->mimetype = '';
+                $upload->save();
+                $post['image_id'] = $upload->id;
+            endif;
+            Project::where('id',$id)->update($post);
             if (!Input::has('in_archive')):
                 Project::where('id',$id)->update(['in_archive'=>0]);
             endif;
