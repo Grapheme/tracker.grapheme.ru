@@ -109,7 +109,7 @@ class ReportController extends \BaseController {
 
         $startOfDay = Input::has('begin_date') && Input::has('begin_date') != '' ? \Carbon\Carbon::createFromFormat('Y-m-d',Input::get('begin_date'))->format('Y-m-d 00:00:00') : \Carbon\Carbon::now()->startOfWeek()->format('Y-m-d 00:00:00');
         $endOfDay = Input::has('end_date') && Input::has('end_date') != '' ? \Carbon\Carbon::createFromFormat('Y-m-d',Input::get('end_date'))->format('Y-m-d 00:00:00') : \Carbon\Carbon::now()->format('Y-m-d 00:00:00');
-        $tasks = self::getReportTasks($startOfDay,$endOfDay);
+        $tasks = self::getReportTasks($startOfDay,$endOfDay, []);
         switch($format):
             case 'html':
                 return View::make(Helper::acclayout('reports.templates.'.$type),compact('tasks','startOfDay','endOfDay'));
