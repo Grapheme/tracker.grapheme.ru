@@ -1,5 +1,7 @@
 @extends(Helper::acclayout())
-@section('style') @stop
+@section('style')
+    {{ HTML::style(Config::get('site.theme_path').'/css/select2.min.css') }}
+@stop
 
 @section('content')
     <h1 class="page-header">Редактирование задачи</h1>
@@ -44,4 +46,10 @@
     </div>
 @stop
 @section('scripts')
+    {{ HTML::script(Config::get('site.theme_path').'/js/select2.min.js') }}
+    <script type="application/javascript">
+        $(function(){
+            $("select").select2();
+        });
+    </script>
 @stop
