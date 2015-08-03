@@ -36,7 +36,7 @@
                         <img data-src="holder.js/200x200/auto/sky" class="img-responsive" alt="{{ $project->projects->title }}">
                     @endif
                 </a>
-                <button type="button" class="btn btn-link btn-popover-add-task" data-project-id="{{ $project->id }}" data-placement="bottom" data-toggle="popover" title="Добавить текущую задачу" style="position: absolute; left: 30px; top: 10px;">
+                <button type="button" class="btn btn-link btn-popover-add-task" data-project-id="{{ $project->project->id }}" data-placement="bottom" data-toggle="popover" title="Добавить текущую задачу" style="position: absolute; left: 30px; top: 10px;">
                     <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
                 </button>
             </div>
