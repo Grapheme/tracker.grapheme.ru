@@ -82,7 +82,7 @@ class ProjectsController extends \BaseController {
 			$tasks = ProjectTask::where('project_id',$project->id)->with('cooperator','basecamp_task')->get();
             return View::make(Helper::acclayout('projects.show'),compact('project','tasks','inFavorite'))->with('access',TRUE);
 		elseif(ProjectTeam::where('project_id',$id)->where('user_id',Auth::user()->id)->exists()):
-            $project = ProjectTeam::where('project_id',$id)->where('user_id',Auth::user()->id)->first()->project()->with('superior.avatar','client.logo','team.avatar')->first();
+            $project = ProjectTeam::where('project_id',$id)->where('user_id',Auth::user()->id)->first()->project()->with('logo', 'superior.avatar','client.logo','team.avatar')->first();
             $tasks = ProjectTask::where('project_id',$project->id)->with('cooperator','basecamp_task')->get();
 			return View::make(Helper::acclayout('projects.show'),compact('project','tasks','inFavorite'))->with('access',FALSE);
 		else:
