@@ -20,10 +20,13 @@
             <div style="min-height: 350px;" class="col-xs-6 col-sm-3 placeholder">
                 @if(!empty($project->logo) && File::exists(public_path($project->logo->path)))
                     <img src="{{ asset($project->logo->path) }}" class="img-responsive" alt="{{ $project->title }}">
-                @elseif(File::exists(public_path('uploads/cats/cat-'.($index+1).'.jpg')))
-                    <img src="{{ asset('uploads/cats/cat-'.($index+1).'.jpg') }}" class="img-responsive" alt="{{ $project->projects->title }}">
                 @else
-                    <img data-src="holder.js/200x200/auto/sky" class="img-responsive" alt="{{ $project->projects->title }}">
+                    <img src="http://www.iscalio.com/cats/{{ rand(1, 355) }}.jpg" class="img-responsive" alt="{{ $project->projects->title }}">
+                @endif
+                @if(!empty($project->logo) && File::exists(public_path($project->logo->path)))
+                    <img src="{{ asset($project->logo->path) }}" class="img-responsive" alt="{{ $project->title }}">
+                @else
+                    <img src="http://www.iscalio.com/cats/{{ rand(1, 355) }}.jpg" class="img-responsive" alt="{{ $project->projects->title }}">
                 @endif
                 <h2>{{ $project->title }}</h2>
                 <p><a class="btn btn-default" href="{{ URL::route('projects.show',$project->id) }}" role="button">Подробнее &raquo;</a></p>

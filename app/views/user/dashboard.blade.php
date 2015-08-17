@@ -30,10 +30,8 @@
                 <a href="{{ URL::route('projects.show',$project->project->id) }}" class="">
                     @if(!empty($project->project->logo) && File::exists(public_path($project->project->logo->path)))
                         <img src="{{ asset($project->project->logo->path) }}" class="img-responsive" alt="{{ $project->project->title }}">
-                    @elseif(File::exists(public_path('uploads/cats/cat-'.($index+1).'.jpg')))
-                        <img src="{{ asset('uploads/cats/cat-'.($index+1).'.jpg') }}" class="img-responsive" alt="{{ $project->projects->title }}">
                     @else
-                        <img data-src="holder.js/200x200/auto/sky" class="img-responsive" alt="{{ $project->projects->title }}">
+                        <img src="http://www.iscalio.com/cats/{{ rand(1, 355) }}.jpg" class="img-responsive" alt="{{ $project->projects->title }}">
                     @endif
                 </a>
                 <button type="button" class="btn btn-link btn-popover-add-task" data-project-id="{{ $project->project->id }}" data-placement="bottom" data-toggle="popover" title="Добавить текущую задачу" style="position: absolute; left: 30px; top: 10px;">

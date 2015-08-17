@@ -15,9 +15,9 @@
         <div style="min-height: 300px;" class="col-xs-6 col-sm-3 placeholder">
             <a href="{{ URL::route('cooperators.show',$user->$type->id) }}" class="">
                 @if(!empty($user->$type->avatar) && File::exists(public_path($user->$type->avatar->path)))
-                <img src="{{ asset($user->$type->avatar->path) }}" class="img-responsive" alt="Generic placeholder thumbnail">
+                <img src="{{ asset($user->$type->avatar->path) }}" class="img-responsive" alt="">
                 @else
-                <img data-src="holder.js/200x200/auto/sky" class="img-responsive" alt="Generic placeholder thumbnail">
+                    <img src="http://www.iscalio.com/cats/{{ rand(1, 355) }}.jpg" class="img-responsive" alt="">
                 @endif
             </a>
             <a href="{{ URL::route('cooperators.show',$user->$type->id) }}" class=""><h4>{{ $user->$type->fio }}</h4></a>

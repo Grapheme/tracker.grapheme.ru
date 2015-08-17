@@ -42,8 +42,6 @@
             <div class="col-lg-4">
             @if(!empty($project->superior->avatar) && File::exists(public_path($project->superior->avatar->path)))
                 <img src="{{ asset($project->superior->avatar->path) }}" class="img-circle" style="width: 140px; height: 140px;" alt="">
-            @else
-                <img data-src="holder.js/200x200/auto/sky" class="img-circle" style="width: 140px; height: 140px;" alt="">
             @endif
                 <h2>{{ getInitials($project->superior->fio) }}</h2>
                 <p>{{ $project->superior->position }}</p>
@@ -54,8 +52,6 @@
             <div class="col-lg-4">
             @if(!empty($user->avatar) && File::exists(public_path($user->avatar->path)))
                 <img src="{{ asset($user->avatar->path) }}" class="img-circle" style="width: 140px; height: 140px;" alt="">
-            @else
-                <img data-src="holder.js/200x200/auto/sky" class="img-circle" style="width: 140px; height: 140px;" alt="">
             @endif
                 <h2>{{ getInitials($user->fio) }}</h2>
                 <p>{{ $user->position }}</p>
