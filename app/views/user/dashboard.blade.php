@@ -31,7 +31,7 @@
                     @if(!empty($project->project->logo) && File::exists(public_path($project->project->logo->path)))
                         <img src="{{ asset($project->project->logo->path) }}" class="img-responsive" alt="{{ $project->project->title }}">
                     @else
-                        <img src="http://www.iscalio.com/cats/{{ rand(1, 355) }}.jpg" class="img-responsive" alt="{{ $project->projects->title }}">
+                        <img style="max-height: 220px" src="http://www.iscalio.com/cats/{{ rand(1, 355) }}.jpg" class="img-responsive" alt="{{ $project->projects->title }}">
                     @endif
                 </a>
                 <button type="button" class="btn btn-link btn-popover-add-task" data-project-id="{{ $project->project->id }}" data-placement="bottom" data-toggle="popover" title="Добавить текущую задачу" style="position: absolute; left: 30px; top: 10px;">

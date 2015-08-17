@@ -19,7 +19,7 @@
                                 <img src="{{ asset($project->projects->logo->path) }}" class="img-responsive"
                                      alt="{{ $project->projects->title }}">
                             @else
-                                <img src="http://www.iscalio.com/cats/{{ rand(1, 355) }}.jpg" class="img-responsive"
+                                <img style="max-height: 220px" src="http://www.iscalio.com/cats/{{ rand(1, 355) }}.jpg" class="img-responsive"
                                      alt="{{ $project->projects->title }}">
                             @endif
                         </a>
@@ -60,7 +60,7 @@
                                 <img src="{{ asset($project->projects->logo->path) }}" class="img-responsive"
                                      alt="{{ $project->projects->title }}">
                             @else
-                                <img src="http://www.iscalio.com/cats/{{ rand(1, 355) }}.jpg" class="img-responsive"
+                                <img style="max-height: 220px" src="http://www.iscalio.com/cats/{{ rand(1, 355) }}.jpg" class="img-responsive"
                                      alt="{{ $project->projects->title }}">
                             @endif
                         </a>

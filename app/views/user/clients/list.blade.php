@@ -11,7 +11,7 @@
             @if(!empty($client->logo) && File::exists(public_path($client->logo->path)))
                 <img src="{{ asset($client->logo->path) }}" class="img-responsive" alt="">
             @else
-                <img src="http://www.iscalio.com/cats/{{ rand(1, 355) }}.jpg" class="img-responsive" alt="">
+                <img style="max-height: 220px" src="http://www.iscalio.com/cats/{{ rand(1, 355) }}.jpg" class="img-responsive" alt="">
             @endif
             </a>
             <a href="{{ URL::route('clients.show',$client->id) }}" class=""><h4>{{ !empty($client->short_title) ? $client->short_title : $client->title }}</h4></a>

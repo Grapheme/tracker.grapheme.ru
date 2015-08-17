@@ -17,7 +17,7 @@
                 @if(!empty($user->$type->avatar) && File::exists(public_path($user->$type->avatar->path)))
                 <img src="{{ asset($user->$type->avatar->path) }}" class="img-responsive" alt="">
                 @else
-                    <img src="http://www.iscalio.com/cats/{{ rand(1, 355) }}.jpg" class="img-responsive" alt="">
+                    <img style="max-height: 220px" src="http://www.iscalio.com/cats/{{ rand(1, 355) }}.jpg" class="img-responsive" alt="">
                 @endif
             </a>
             <a href="{{ URL::route('cooperators.show',$user->$type->id) }}" class=""><h4>{{ $user->$type->fio }}</h4></a>
