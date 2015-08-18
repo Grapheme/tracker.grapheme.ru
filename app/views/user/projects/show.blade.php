@@ -150,10 +150,10 @@
             @endforeach
                 <tr>
                     <td>
-                        Всего {{ count($tasks) }} {{ Lang::choice('задача|задачи|задач',count($tasks)) }}.
-                        <br>Время выполнения: {{ getLeadTimeFromMinutes($tasks_total_time) }} ч.
+                        <nobr>Всего {{ count($tasks) }} {{ Lang::choice('задача|задачи|задач',count($tasks)) }}.</nobr><br>
+                        <nobr>Время выполнения: {{ getLeadTimeFromMinutes($tasks_total_time) }} ч.</nobr><br>
                         @if($tasks_total_price !== FALSE)
-                            <br>Общая сумма: {{ number_format($tasks_total_price,2,'.',' ') }} руб.
+                        <nobr>Общая сумма: {{ number_format($tasks_total_price,2,'.',' ') }} руб.</nobr>
                         @endif
                     </td>
                     <td colspan="4"></td>

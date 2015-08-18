@@ -78,9 +78,9 @@
             @endforeach
             <tr>
                 <td>
-                    Всего {{ count($tasks) }} {{ Lang::choice('задача|задачи|задач',count($tasks)) }}. <br>
-                    Время выполнения: {{ getLeadTimeFromMinutes($tasks_total_time) }} ч.<br>
-                    Общая сумма: {{ number_format($tasks_total_price,2,'.',' ') }} руб.
+                    <nobr>Всего {{ count($tasks) }} {{ Lang::choice('задача|задачи|задач',count($tasks)) }}. </nobr><br>
+                    <nobr>Время выполнения: {{ getLeadTimeFromMinutes($tasks_total_time) }} ч.</nobr><br>
+                    <nobr>Общая сумма: {{ number_format($tasks_total_price,2,'.',' ') }} руб.</nobr>
                 </td>
                 <td colspan="4"></td>
             </tr>
