@@ -72,6 +72,7 @@ class ReportController extends \BaseController {
         $endOfDay = Input::has('end_date') && Input::has('end_date') != '' ? \Carbon\Carbon::createFromFormat('Y-m-d',Input::get('end_date'))->format('Y-m-d 00:00:00') : \Carbon\Carbon::now()->format('Y-m-d 23:59:59');
         $clients[0] = 'Все клиенты';
         $projects[0] = 'Все проекты';
+        $projects['empty'] = 'Без проектов';
 
         $users[0] = 'Вся команда';
         $users[Auth::user()->id] = Auth::user()->fio;
@@ -228,18 +229,26 @@ class ReportController extends \BaseController {
         endif;
         if (Input::has('project') && Input::get('project') > 0):
             $All = FALSE;
-            if(ProjectOwners::where('project_id',Input::get('project'))->where('user_id',Auth::user()->id)->exists()):
+            if(ProjectOwners::where('project_id', Input::get('project'))->where('user_id',Auth::user()->id)->exists()):
                 if (!empty($taskIDs)):
-                    $taskIDs = ProjectTask::whereIn('id',$taskIDs)->where('project_id',Input::get('project'))->where('stop_status',1)->whereBetween('set_date',[$startOfDay,$endOfDay])->with('project','project.client')->lists('id');
+                    $taskIDs = ProjectTask::whereIn('id',$taskIDs)->where('project_id', Input::get('project'))->where('stop_status',1)->whereBetween('set_date',[$startOfDay,$endOfDay])->with('project','project.client')->lists('id');
                 else:
-                    $taskIDs = ProjectTask::where('project_id',Input::get('project'))->where('stop_status',1)->whereBetween('set_date',[$startOfDay,$endOfDay])->with('project','project.client')->lists('id');
+                    $taskIDs = ProjectTask::where('project_id', Input::get('project'))->where('stop_status',1)->whereBetween('set_date',[$startOfDay,$endOfDay])->with('project','project.client')->lists('id');
                 endif;
-            elseif(ProjectTeam::where('project_id',Input::get('project'))->where('user_id',Auth::user()->id)->exists()):
+            elseif(ProjectTeam::where('project_id', Input::get('project'))->where('user_id',Auth::user()->id)->exists()):
                 if (!empty($taskIDs)):
-                    $taskIDs = ProjectTask::whereIn('id',$taskIDs)->where('project_id',Input::get('project'))->where('stop_status',1)->whereBetween('set_date',[$startOfDay,$endOfDay])->with('project','project.client')->lists('id');
+                    $taskIDs = ProjectTask::whereIn('id',$taskIDs)->where('project_id', Input::get('project'))->where('stop_status',1)->whereBetween('set_date',[$startOfDay,$endOfDay])->with('project','project.client')->lists('id');
                 else:
-                    $taskIDs = ProjectTask::where('project_id',Input::get('project'))->where('stop_status',1)->whereBetween('set_date',[$startOfDay,$endOfDay])->with('project','project.client')->lists('id');
+                    $taskIDs = ProjectTask::where('project_id', Input::get('project'))->where('stop_status',1)->whereBetween('set_date',[$startOfDay,$endOfDay])->with('project','project.client')->lists('id');
                 endif;
+            endif;
+        endif;
+        if (Input::has('project') && Input::get('project') === 'empty'):
+            $All = FALSE;
+            if (!empty($taskIDs)):
+                $taskIDs = ProjectTask::whereIn('id',$taskIDs)->where('project_id', 0)->where('user_id', Auth::user()->id)->where('stop_status',1)->whereBetween('set_date',[$startOfDay,$endOfDay])->with('project','project.client')->lists('id');
+            else:
+                $taskIDs = ProjectTask::where('project_id', 0)->where('user_id', Auth::user()->id)->where('stop_status',1)->whereBetween('set_date',[$startOfDay,$endOfDay])->with('project','project.client')->lists('id');
             endif;
         endif;
         if(Input::has('user') && Input::get('user') > 0):
