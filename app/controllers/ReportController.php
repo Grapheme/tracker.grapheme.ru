@@ -72,7 +72,7 @@ class ReportController extends \BaseController {
         $endOfDay = Input::has('end_date') && Input::has('end_date') != '' ? \Carbon\Carbon::createFromFormat('Y-m-d',Input::get('end_date'))->format('Y-m-d 00:00:00') : \Carbon\Carbon::now()->format('Y-m-d 23:59:59');
         $clients[0] = 'Все клиенты';
         $projects[0] = 'Все проекты';
-        $projects['empty'] = 'Без проектов';
+        $projects['empty'] = 'Без проекта';
 
         $users[0] = 'Вся команда';
         $users[Auth::user()->id] = Auth::user()->fio;
