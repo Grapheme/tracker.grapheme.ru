@@ -49,8 +49,8 @@
                 @if(isset($earnMoneyCurrentDate[$task->id]['earnings']))
                     <?php $tasks_total_price += $earnMoneyCurrentDate[$task->id]['earnings'];?>
                 @endif
-                <tr {{ ($task->start_status && !$task->stop_status) ? 'class="success"' : '' }} style="width: 800px;">
-                    <td>
+                <tr>
+                    <td {{ ($task->start_status && !$task->stop_status) ? 'class="success"' : '' }} style="width: 800px;">
                         {{ getInitials($task->cooperator->fio) }}
                         <br>{{ $task->note }}
                         @if(count($task->basecamp_task))

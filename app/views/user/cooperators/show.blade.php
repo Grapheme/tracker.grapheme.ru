@@ -31,8 +31,8 @@
                 @if(isset($earnMoneyCurrentDate[$task->id]['earnings']))
                     <?php $tasks_total_price += $earnMoneyCurrentDate[$task->id]['earnings'];?>
                 @endif
-                <tr {{ ($task->start_status && !$task->stop_status) ? 'class="success"' : '' }} style="width: 800px;">
-                    <td>
+                <tr>
+                    <td {{ ($task->start_status && !$task->stop_status) ? 'class="success"' : '' }} style="width: 800px;">
                         @if($task->stop_status)
                             {{ (new myDateTime())->setDateString($task->stop_date)->format('d.m.y в H:i') }}
                         @else

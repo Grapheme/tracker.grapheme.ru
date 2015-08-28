@@ -110,8 +110,8 @@
                         $showMoney = TRUE;
                     endif;
                     ?>
-                    <tr {{ ($task->start_status && !$task->stop_status) ? 'class="success"' : '' }} style="width: 800px;">
-                        <td>
+                    <tr>
+                        <td {{ ($task->start_status && !$task->stop_status) ? 'class="success"' : '' }} style="width: 800px;">
                             {{ $task->note }}
                             <br>{{ getInitials($task->cooperator->fio) }}
                             @if(count($task->basecamp_task))
