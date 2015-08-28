@@ -83,7 +83,7 @@
                     endif;
                     ?>
                     <tr>
-                        <td>
+                        <td {{ ($task->start_status && !$task->stop_status) ? 'class="success"' : '' }} style="width: 800px;">
                             {{ $task->note }}
                             <br>{{ getInitials($task->cooperator->fio) }}
                             @if(count($task->project))

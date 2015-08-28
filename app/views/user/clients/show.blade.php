@@ -49,7 +49,7 @@
                 @if(isset($earnMoneyCurrentDate[$task->id]['earnings']))
                     <?php $tasks_total_price += $earnMoneyCurrentDate[$task->id]['earnings'];?>
                 @endif
-                <tr {{ ($task->start_status && !$task->stop_status) ? 'class="success"' : '' }}>
+                <tr {{ ($task->start_status && !$task->stop_status) ? 'class="success"' : '' }} style="width: 800px;">
                     <td>
                         {{ getInitials($task->cooperator->fio) }}
                         <br>{{ $task->note }}

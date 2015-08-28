@@ -110,7 +110,7 @@
                         $showMoney = TRUE;
                     endif;
                     ?>
-                    <tr {{ ($task->start_status && !$task->stop_status) ? 'class="success"' : '' }}>
+                    <tr {{ ($task->start_status && !$task->stop_status) ? 'class="success"' : '' }} style="width: 800px;">
                         <td>
                             {{ $task->note }}
                             <br>{{ getInitials($task->cooperator->fio) }}
