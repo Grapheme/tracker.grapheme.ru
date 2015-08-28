@@ -64,12 +64,12 @@
                         @endif
                     </td>
                     <td>
-                        Создана: {{ $task->created_at->format('H:i') }}<br>
+                        <nobr>Создана: {{ $task->created_at->format('H:i') }}</nobr><br>
                         @if($task->created_at != $task->start_date)
-                        Запущена: {{ (new myDateTime())->setDateString($task->start_date)->format('H:i') }}<br>
+                        <nobr>Запущена: {{ (new myDateTime())->setDateString($task->start_date)->format('H:i') }}</nobr><br>
                         @endif
                         @if($task->stop_status)
-                        Остановлена: {{ (new myDateTime())->setDateString($task->stop_date)->format('H:i') }}<br>
+                        <nobr>Остановлена: {{ (new myDateTime())->setDateString($task->stop_date)->format('H:i') }}</nobr><br>
                         @endif
                     </td>
                     <td>
