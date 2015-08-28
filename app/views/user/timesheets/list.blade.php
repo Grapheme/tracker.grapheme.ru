@@ -42,8 +42,8 @@
                         $showMoney = TRUE;
                     endif;
                 ?>
-                <tr {{ ($task->start_status && !$task->stop_status) ? 'class="success"' : '' }} style="width: 800px;">
-                    <td>
+                <tr>
+                    <td {{ ($task->start_status && !$task->stop_status) ? 'class="success"' : '' }} style="width: 800px;">
                         {{ $task->note }}
                     @if(count($task->project))
                         <br>{{ $task->project->title }}
