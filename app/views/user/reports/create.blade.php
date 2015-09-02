@@ -1,52 +1,12 @@
 @extends(Helper::acclayout())
-@section('style') @stop
+@section('style')
+{{ HTML::style(Config::get('site.theme_path').'/css/datapicker/jquery-ui-datapicker.css') }}
+@stop
 @section('content')
     <div class="container marketing">
         <div class="row">
             <h1 class="page-header">Статистика</h1>
-            {{ Form::open(['route'=>'report.create','method'=>'get','role'=>'form','class'=>'form-horizontal']) }}
-                <div class="form-group">
-                    <label class="col-sm-3 control-label">От</label>
-                    <div class="col-sm-3">
-                        {{ Form::text('begin_date',Input::has('begin_date') ? Input::get('begin_date') : (new myDateTime())->setDateString($startOfDay)->format('Y-m-d'),['class'=>'form-control']) }}
-                    </div>
-                </div>
-                <div class="form-group has-feedback">
-                    <label class="col-sm-3 control-label">До</label>
-                    <div class="col-sm-3">
-                        {{ Form::text('end_date',Input::has('end_date') ? Input::get('end_date') : (new myDateTime())->setDateString($endOfDay)->format('Y-m-d'),['class'=>'form-control']) }}
-                    </div>
-                </div>
-                @if(count($clients) > 1)
-                    <div class="form-group">
-                        <label class="col-sm-3 control-label">Клиент</label>
-                        <div class="col-sm-6">
-                            {{ Form::select('client',$clients,Input::get('client'),['class'=>'form-control','autocomplete'=>'off']) }}
-                        </div>
-                    </div>
-                @endif
-                @if(count($projects) > 1)
-                <div class="form-group">
-                    <label class="col-sm-3 control-label">Проект</label>
-                    <div class="col-sm-6">
-                        {{ Form::select('project',$projects,Input::get('project'),['class'=>'form-control','autocomplete'=>'off']) }}
-                    </div>
-                </div>
-                @endif
-                @if(count($users) > 1)
-                <div class="form-group">
-                    <label class="col-sm-3 control-label">Команда</label>
-                    <div class="col-sm-6">
-                        {{ Form::select('user',$users,Input::get('user'),['class'=>'form-control','autocomplete'=>'off']) }}
-                    </div>
-                </div>
-                @endif
-                <div class="form-group">
-                    <div class="col-sm-offset-2 col-sm-10">
-                        {{ Form::submit('Сформировать',['class'=>'btn btn-success']) }}
-                    </div>
-                </div>
-            {{ Form::close() }}
+            @include(Helper::acclayout('reports.forms.report-create'))
         </div>
     </div>
     <div class="container marketing">
@@ -87,4 +47,13 @@
         </div>
     </div>
 @stop
-@section('scripts') @stop
+@section('scripts')
+{{ HTML::script(Config::get('site.theme_path').'/js/datepicker/jquery.ui.datepicker.js') }}
+{{ HTML::script(Config::get('site.theme_path').'/js/datepicker/jquery.ui.datepicker-ru.js') }}
+<script type="application/javascript">
+    $("input.datepicker").datepicker({
+        minDate: "01.01.2015",
+        maxDate: "{{ date('d.m.Y') }}"
+    });
+</script>
+@stop
