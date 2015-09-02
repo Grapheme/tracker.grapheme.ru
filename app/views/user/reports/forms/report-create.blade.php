@@ -1,13 +1,13 @@
 {{ Form::open(['route'=>'report.create','method'=>'get','role'=>'form','class'=>'form-horizontal']) }}
 <div class="form-group">
     <label class="col-sm-3 control-label">От</label>
-    <div class="col-sm-2">
+    <div class="col-sm-5">
         {{ Form::text('begin_date',Input::has('begin_date') ? Input::get('begin_date') : (new myDateTime())->setDateString($startOfDay)->format('d.m.Y'),['class'=>'form-control datepicker','readonly'=>'', 'style'=>'text-align:center;']) }}
     </div>
 </div>
-<div class="form-group has-feedback">
+<div class="form-group">
     <label class="col-sm-3 control-label">До</label>
-    <div class="col-sm-2">
+    <div class="col-sm-5">
         {{ Form::text('end_date',Input::has('end_date') ? Input::get('end_date') : (new myDateTime())->setDateString($endOfDay)->format('d.m.Y'),['class'=>'form-control datepicker', 'readonly'=>'', 'style'=>'text-align:center;']) }}
     </div>
 </div>
@@ -22,7 +22,7 @@
 @if(count($projects) > 1)
     <div class="form-group">
         <label class="col-sm-3 control-label">Проект</label>
-        <div class="col-sm-3">
+        <div class="col-sm-6">
             {{ Form::select('project',$projects,Input::get('project'),['class'=>'form-control','autocomplete'=>'off']) }}
         </div>
     </div>
