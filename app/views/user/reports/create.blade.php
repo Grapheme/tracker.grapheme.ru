@@ -59,6 +59,8 @@
             <h1 class="page-header">Статистика</h1>
             @if(Input::has('begin_date') && Input::has('end_date'))
                 <p>Период: от {{ Input::get('begin_date') }} до {{ Input::get('end_date') }}</p>
+            @else
+                <p>Текущая дата {{ date('d.m.Y') }}</p>
             @endif
             @if(Input::has('client') && Input::get('client') > 0)
                 <p>Клиент: "{{ @$clients[Input::get('client')] }}"</p>
