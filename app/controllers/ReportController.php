@@ -110,8 +110,8 @@ class ReportController extends \BaseController {
 
     public function save($type = 'default',$format = 'pdf',$action = 'D'){
 
-        $startOfDay = Input::has('begin_date') && Input::has('begin_date') != '' ? \Carbon\Carbon::createFromFormat('Y-m-d',Input::get('begin_date'))->format('Y-m-d 00:00:00') : \Carbon\Carbon::now()->startOfWeek()->format('Y-m-d 00:00:00');
-        $endOfDay = Input::has('end_date') && Input::has('end_date') != '' ? \Carbon\Carbon::createFromFormat('Y-m-d',Input::get('end_date'))->format('Y-m-d 00:00:00') : \Carbon\Carbon::now()->format('Y-m-d 00:00:00');
+        $startOfDay = Input::has('begin_date') ? \Carbon\Carbon::createFromFormat('d.m.Y',Input::get('begin_date'))->format('Y-m-d 00:00:00') : \Carbon\Carbon::now()->startOfWeek()->format('Y-m-d 00:00:00');
+        $endOfDay = Input::has('end_date') ? \Carbon\Carbon::createFromFormat('d.m.Y',Input::get('end_date'))->format('Y-m-d 00:00:00') : \Carbon\Carbon::now()->format('Y-m-d 00:00:00');
 
         foreach(ProjectOwners::where('user_id',Auth::user()->id)->with('projects')->get() as $projectOwner):
             $projects[$projectOwner->projects->id] = $projectOwner->projects->title;
