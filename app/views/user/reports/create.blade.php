@@ -5,7 +5,7 @@
     <style type="text/css">
         #report-filter-modal {
             width: 450px;
-            height: 250px; /* Рaзмеры дoлжны быть фиксирoвaны */
+            height: 310px; /* Рaзмеры дoлжны быть фиксирoвaны */
             border-radius: 5px;
             border: 3px #000 solid;
             background: #fff;
