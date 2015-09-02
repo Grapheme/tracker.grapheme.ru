@@ -188,6 +188,7 @@ class ProjectsController extends \BaseController {
 		if (Project::where('id',$id)->where('superior_id',Auth::user()->id)->first()):
 			ProjectOwners::where('project_id',$id)->delete();
 			ProjectTeam::where('project_id',$id)->delete();
+            ProjectFavorite::where('project_id', $id)->where('user_id', Auth::user()->id)->delete();
 			Project::where('id',$id)->delete();
 			return Redirect::route('projects.index')->with('message','Проект удален успешно.');
 		else:
